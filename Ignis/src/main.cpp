@@ -1,11 +1,10 @@
-#include "Ignis/Renderer.h"
+#include "Ignis/Ignis.h"
 #include "Ignis/Utility.h"
 
 #include <GLFW/glfw3.h>
 
 int main()
 {
-
 	// GLFW initialization
 	if (glfwInit() == GLFW_FALSE)
 	{
@@ -17,7 +16,7 @@ int main()
 	DEBUG_MESSAGE("[GLFW] Initialized GLFW " <<  glfwGetVersionString());
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef _DEBUG
@@ -46,20 +45,27 @@ int main()
 
 	bool debug = true;
 
-	Renderer renderer;
-	if (!renderer.Init(glfwGetProcAddress, debug))
+	Ignis ignis;
+	if (!ignis.LoadGL(glfwGetProcAddress, debug))
 	{
 		DEBUG_MESSAGE("[IGNIS] Failed to init renderer");
 		glfwTerminate();
 		return -1;
 	}
 
+	ignis.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	ignis.SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
 	while (!glfwWindowShouldClose(window))
 	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		
+
+		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 	
-
 	glfwDestroyWindow(window);
 	glfwTerminate();
 

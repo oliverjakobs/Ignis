@@ -41,6 +41,7 @@ project "Ignis"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/packages/glm",
+		"%{prj.name}/packages/stb",
 		"%{prj.name}/packages/glfw/include",
 		"%{prj.name}/packages/glad/include"
 	}

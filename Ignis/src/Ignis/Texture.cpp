@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include "Debugger.h"
+#include "Utility.h"
 
 Texture::Texture(const char* path, uint slot)
 	: slot(slot)
@@ -33,7 +33,7 @@ Texture::Texture(const char* path, uint slot)
 	}
 	else
 	{
-		DEBUG_ERROR("Failed to load texture: {0}", path);
+		DEBUG_MESSAGE("Failed to load texture: " << path);
 		id = 0;
 	}
 }
@@ -72,7 +72,7 @@ Texture::Texture(const char* path, TextureConfig config, uint slot)
 	}
 	else
 	{
-		DEBUG_ERROR("Failed to load texture: {0}", path);
+		DEBUG_MESSAGE("Failed to load texture: " << path);
 		id = 0;
 	}
 }
@@ -121,6 +121,6 @@ TextureAtlas::TextureAtlas(const char* path, uint rows, uint columns, uint slot)
 
 TextureAtlas::TextureAtlas(int width, int height, uint rows, uint columns, uint slot) : Texture(width, height, slot), rows(rows), columns(columns) { }
 
-TextureAtlas::TextureAtlas(const char * path, uint rows, uint columns, TextureConfig config, uint slot) : Texture(path, config, slot), rows(rows), columns(columns) { }
+TextureAtlas::TextureAtlas(const char* path, uint rows, uint columns, TextureConfig config, uint slot) : Texture(path, config, slot), rows(rows), columns(columns) { }
 
 TextureAtlas::TextureAtlas(int width, int height, uint rows, uint columns, TextureConfig config, uint slot) : Texture(width, height, config, slot), rows(rows), columns(columns) { }
