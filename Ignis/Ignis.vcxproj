@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClInclude Include="src\Ignis\Buffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
+    <ClInclude Include="src\Ignis\Renderer.h" />
     <ClInclude Include="src\Ignis\Shader.h" />
     <ClInclude Include="src\Ignis\Texture.h" />
     <ClInclude Include="src\Ignis\Types.h" />
@@ -101,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="src\Ignis\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
+    <ClCompile Include="src\Ignis\Renderer.cpp" />
     <ClCompile Include="src\Ignis\Shader.cpp" />
     <ClCompile Include="src\Ignis\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -112,6 +114,11 @@
     <ProjectReference Include="packages\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\instanced.vert" />
+    <None Include="res\shaders\texture.frag" />
+    <None Include="res\shaders\texture.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

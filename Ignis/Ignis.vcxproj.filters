@@ -24,6 +24,7 @@
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Buffer.cpp">
@@ -39,5 +40,11 @@
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Renderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\texture.frag" />
+    <None Include="res\shaders\texture.vert" />
+    <None Include="res\shaders\instanced.vert" />
   </ItemGroup>
 </Project>

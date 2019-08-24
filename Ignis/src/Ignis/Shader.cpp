@@ -70,7 +70,7 @@ unsigned int Shader::CompileShader(uint type, const char* source)
 		PrintLog(shader);
 		glDeleteShader(shader);
 
-		DEBUG_MESSAGE("Compiling Error: {0}", std::to_string(type));
+		DEBUG_MESSAGE("Compiling Error: " << std::to_string(type));
 
 		return 0;
 	}

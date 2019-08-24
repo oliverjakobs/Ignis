@@ -9,7 +9,7 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severi
 	// ignore non-significant error/warning codes
 	if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-	DEBUG_MESSAGE("OpenGL debug output ({0}): {1}", id, message);
+	DEBUG_MESSAGE("OpenGL debug output (" <<  id << "): " << message);
 
 	switch (source)
 	{

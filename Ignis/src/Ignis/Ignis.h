@@ -1,6 +1,7 @@
 #pragma once 
 
-#include "Types.h"
+#include "Buffer.h"
+#include "Renderer.h"
 
 class Ignis
 {

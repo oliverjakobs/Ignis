@@ -20,10 +20,3 @@ using std::make_unique;
 using std::shared_ptr;
 using std::make_shared;
 using std::weak_ptr;
-
-enum RenderFlip
-{
-	FLIP_NONE = 0,
-	FLIP_HORIZONTAL = 1,
-	FLIP_VERTICAL = 2
-};
