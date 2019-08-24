@@ -6,18 +6,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Buffer.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Shader.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Texture.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Types.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Utility.h">
       <Filter>Ignis</Filter>
     </ClInclude>
@@ -25,22 +13,34 @@
       <Filter>Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Renderer.h" />
+    <ClInclude Include="src\Ignis\Core\Buffer.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Shader.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Texture.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Types.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ignis\Buffer.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Shader.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Texture.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Renderer.cpp" />
+    <ClCompile Include="src\Ignis\Core\Buffer.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Shader.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Texture.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\texture.frag" />

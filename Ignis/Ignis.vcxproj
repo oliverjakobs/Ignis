@@ -91,20 +91,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Buffer.h" />
+    <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Renderer.h" />
-    <ClInclude Include="src\Ignis\Shader.h" />
-    <ClInclude Include="src\Ignis\Texture.h" />
-    <ClInclude Include="src\Ignis\Types.h" />
+    <ClInclude Include="src\Ignis\Core\Shader.h" />
+    <ClInclude Include="src\Ignis\Core\Texture.h" />
+    <ClInclude Include="src\Ignis\Core\Types.h" />
     <ClInclude Include="src\Ignis\Utility.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ignis\Buffer.cpp" />
+    <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
     <ClCompile Include="src\Ignis\Renderer.cpp" />
-    <ClCompile Include="src\Ignis\Shader.cpp" />
-    <ClCompile Include="src\Ignis\Texture.cpp" />
+    <ClCompile Include="src\Ignis\Core\Shader.cpp" />
+    <ClCompile Include="src\Ignis\Core\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

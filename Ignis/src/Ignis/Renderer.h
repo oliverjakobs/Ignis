@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Texture.h"
-#include "Shader.h"
+#include "Core/Texture.h"
+#include "Core/Shader.h"
 
 class Renderer
 {

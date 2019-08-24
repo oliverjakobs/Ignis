@@ -67,7 +67,7 @@ int main()
 		0.0f, 1.0f, 0.0f, 1.0f
 	};
 
-	std::vector<glm::vec2> offsets;
+	vertices2 offsets;
 
 	for (float y = 0.0f; y < 6.0f; y++)
 	{
