@@ -4,47 +4,52 @@
     <Filter Include="Ignis">
       <UniqueIdentifier>{DF59620D-4B6E-8ABE-14F0-2D1E80C386EF}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ignis\Core">
+      <UniqueIdentifier>{97816961-8339-ABAE-EC40-840AD817469F}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Utility.h">
-      <Filter>Ignis</Filter>
+    <ClInclude Include="src\Ignis\Core\Buffer.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Debugger.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Shader.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Texture.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Types.h">
+      <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer.h" />
-    <ClInclude Include="src\Ignis\Core\Buffer.h">
+    <ClInclude Include="src\Ignis\Renderer.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Shader.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Texture.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Types.h">
+    <ClInclude Include="src\Ignis\Core\Utility.h">
       <Filter>Ignis</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Core\Buffer.cpp">
+      <Filter>Ignis\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Shader.cpp">
+      <Filter>Ignis\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Texture.cpp">
+      <Filter>Ignis\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer.cpp" />
-    <ClCompile Include="src\Ignis\Core\Buffer.cpp">
+    <ClCompile Include="src\Ignis\Renderer.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Shader.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Texture.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\texture.frag" />
-    <None Include="res\shaders\texture.vert" />
-    <None Include="res\shaders\instanced.vert" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
 </Project>

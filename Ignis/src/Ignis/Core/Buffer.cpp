@@ -63,7 +63,7 @@ void VAO::SetVertexAttribIPointer(uint index, int size, size_t stride, int offse
 	glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), (void*)(offset * sizeof(GLuint)));
 }
 
-void VAO::SetVertexAttribDivisor(uint index, unsigned int divisor)
+void VAO::SetVertexAttribDivisor(uint index, uint divisor)
 {
 	glVertexAttribDivisor(index, divisor);
 }

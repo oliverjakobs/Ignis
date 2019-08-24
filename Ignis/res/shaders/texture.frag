@@ -8,6 +8,5 @@ in vec2 texCoord;
 
 void main()
 {
-	vec4 texColor = texture(uTexture, texCoord);
-	fColor = texColor;
+	fColor = texture(uTexture, texCoord);
 }

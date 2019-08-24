@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include "../Utility.h"
+#include "Utility.h"
 
 unsigned int Shader::CreateShader(const std::string& vertSrc, const std::string& fragSrc)
 {
@@ -12,7 +12,7 @@ unsigned int Shader::CreateShader(const std::string& vertSrc, const std::string&
 
 	if (vert == 0 || frag == 0)
 	{
-		DEBUG_MESSAGE("Shader Missing");
+		DEBUG_ERROR("Shader Missing");
 		return 0;
 	}
 
@@ -28,7 +28,7 @@ unsigned int Shader::CreateShader(const std::string& vertSrc, const std::string&
 		PrintLog(program);
 		glDeleteProgram(program);
 
-		DEBUG_MESSAGE("Linking Error");
+		DEBUG_ERROR("Linking Error");
 		return 0;
 	}
 
@@ -41,7 +41,7 @@ unsigned int Shader::CreateShader(const std::string& vertSrc, const std::string&
 		PrintLog(program);
 		glDeleteProgram(program);
 
-		DEBUG_MESSAGE("Validating Error");
+		DEBUG_ERROR("Validating Error");
 		return 0;
 	}
 
@@ -68,7 +68,7 @@ unsigned int Shader::CompileShader(uint type, const char* source)
 		PrintLog(shader);
 		glDeleteShader(shader);
 
-		DEBUG_MESSAGE("Compiling Error: " << std::to_string(type));
+		DEBUG_ERROR("Compiling Error: {0}", std::to_string(type));
 
 		return 0;
 	}
@@ -85,7 +85,7 @@ void Shader::PrintLog(uint object)
 		glGetProgramiv(object, GL_INFO_LOG_LENGTH, &log_length);
 	else
 	{
-		DEBUG_MESSAGE("Shader Log: Not a shader or a program");
+		DEBUG_ERROR("Shader Log: Not a shader or a program");
 		return;
 	}
 
@@ -96,7 +96,7 @@ void Shader::PrintLog(uint object)
 	else if (glIsProgram(object))
 		glGetProgramInfoLog(object, log_length, NULL, log);
 
-	DEBUG_MESSAGE(log);
+	DEBUG_INFO("{0}", log);
 	free(log);
 }
 

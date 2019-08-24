@@ -1,21 +1,29 @@
 #include "Ignis/Ignis.h"
-#include "Ignis/Utility.h"
 
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
+enum DemoProgram
+{
+	DEMO_TEXTURE,
+	DEMO_INSTANCED,
+	DEMO_ALPHA
+};
+
 int main()
 {
+	Ignis ignis;
+
 	// GLFW initialization
 	if (glfwInit() == GLFW_FALSE)
 	{
-		DEBUG_MESSAGE("[GLFW] Failed to initialize GLFW");
+		DEBUG_ERROR("[GLFW] Failed to initialize GLFW");
 		glfwTerminate();
 		return -1;
 	}
 
-	DEBUG_MESSAGE("[GLFW] Initialized GLFW " <<  glfwGetVersionString());
+	DEBUG_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -29,27 +37,26 @@ int main()
 	GLFWwindow* window = glfwCreateWindow(800, 600, "Ignis", nullptr, nullptr);
 	if (window == nullptr)
 	{
-		DEBUG_MESSAGE("[GLFW] Failed to create GLFW window");
+		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
 		glfwTerminate();
 		return -1;
 	}
 
 	glfwMakeContextCurrent(window);
 
-	DEBUG_MESSAGE("[GLFW] Window created.");
+	DEBUG_INFO("[GLFW] Window created.");
 
 	// Set GLFW callbacks
 	glfwSetErrorCallback([](int error, const char* desc)
 	{
-		DEBUG_MESSAGE("[GLFW] (" << error << ") " << desc);
+		DEBUG_ERROR("[GLFW] ({0}) {1}", error, desc);
 	});
 
 	bool debug = true;
 
-	Ignis ignis;
 	if (!ignis.LoadGL(glfwGetProcAddress, debug))
 	{
-		DEBUG_MESSAGE("[IGNIS] Failed to init renderer");
+		DEBUG_ERROR("[IGNIS] Failed to init renderer");
 		glfwTerminate();
 		return -1;
 	}
@@ -92,20 +99,40 @@ int main()
 
 	vao.UnbindVertexBuffer();
 
-	Shader* shader = new Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
+	Shader* shader = new Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
+	Shader* instanced = new Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
 	Texture* texture = new Texture("res/textures/texture.png");
 
 	Renderer renderer;
 
-	glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+	DemoProgram prog = DEMO_TEXTURE;
 	
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glm::mat4 projection = glm::mat4(1.0f);
+		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 model = glm::mat4(1.0f);
+
 		vao.Bind();
 
-		renderer.RenderTextureInstanced(texture, 8 * 6, glm::mat4(1.0f), view, glm::mat4(1.0f), shader);
+		switch (prog)
+		{
+		case DEMO_TEXTURE:
+			model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
+			model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
+
+			renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+			break;
+		case DEMO_INSTANCED:
+			renderer.RenderTextureInstanced(texture, 48, projection, view, model, instanced, { 0, 1, 2, 2, 3, 0 });
+			break;
+		case DEMO_ALPHA:
+			break;
+		default:
+			break;
+		}
 
 		vao.Unbind();
 
