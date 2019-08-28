@@ -33,6 +33,7 @@
     <ClInclude Include="src\Ignis\Core\Utility.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Framebuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp">
@@ -51,5 +52,6 @@
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Framebuffer.cpp" />
   </ItemGroup>
 </Project>

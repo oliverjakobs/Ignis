@@ -1,4 +1,5 @@
 #include "Ignis/Ignis.h"
+#include "Ignis/Framebuffer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -8,7 +9,8 @@ enum DemoProgram
 {
 	DEMO_TEXTURE,
 	DEMO_INSTANCED,
-	DEMO_ALPHA
+	DEMO_ALPHA,
+	DEMO_FRAMEBUFFER
 };
 
 int main()
@@ -105,7 +107,10 @@ int main()
 
 	Renderer renderer;
 
-	DemoProgram prog = DEMO_TEXTURE;
+	DemoProgram prog = DEMO_FRAMEBUFFER;
+
+	// --------------------------------------------------------------------
+	FrameBuffer framebuffer = FrameBuffer(800, 600);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -129,6 +134,26 @@ int main()
 			renderer.RenderTextureInstanced(texture, 48, projection, view, model, instanced, { 0, 1, 2, 2, 3, 0 });
 			break;
 		case DEMO_ALPHA:
+			break;
+		case DEMO_FRAMEBUFFER:
+			framebuffer.Bind();
+			//glEnable(GL_DEPTH_TEST);
+
+			// make sure we clear the framebuffer's content
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
+			model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
+			model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
+
+			renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+
+			framebuffer.Unbind();
+			//glDisable(GL_DEPTH_TEST); 
+
+			framebuffer.VAO().Bind();
+			renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), shader, { 0, 1, 2, 2, 3, 0 });
 			break;
 		default:
 			break;
