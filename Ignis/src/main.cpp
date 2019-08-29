@@ -103,6 +103,10 @@ int main()
 
 	Shader* shader = new Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
 	Shader* instanced = new Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
+	Shader* inverted = new Shader("res/shaders/texture.vert", "res/shaders/inverted.frag");
+	Shader* grayscale = new Shader("res/shaders/texture.vert", "res/shaders/grayscale.frag");
+	Shader* kernel = new Shader("res/shaders/texture.vert", "res/shaders/kernel.frag");
+
 	Texture* texture = new Texture("res/textures/texture.png");
 
 	Renderer renderer;
@@ -153,7 +157,7 @@ int main()
 			//glDisable(GL_DEPTH_TEST); 
 
 			framebuffer.VAO().Bind();
-			renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), shader, { 0, 1, 2, 2, 3, 0 });
+			renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
 			break;
 		default:
 			break;

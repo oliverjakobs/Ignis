@@ -54,4 +54,9 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\inverted.frag" />
+    <None Include="res\shaders\grayscale.frag" />
+    <None Include="res\shaders\kernel.frag" />
+  </ItemGroup>
 </Project>
