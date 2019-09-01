@@ -10,7 +10,8 @@ enum DemoProgram
 	DEMO_TEXTURE,
 	DEMO_INSTANCED,
 	DEMO_ALPHA,
-	DEMO_FRAMEBUFFER
+	DEMO_FRAMEBUFFER,
+	DEMO_MODEL
 };
 
 int main()
@@ -107,11 +108,13 @@ int main()
 	Shader* grayscale = new Shader("res/shaders/texture.vert", "res/shaders/grayscale.frag");
 	Shader* kernel = new Shader("res/shaders/texture.vert", "res/shaders/kernel.frag");
 
+	Shader* test = new Shader("res/shaders/test.vert", "res/shaders/test.frag");
+
 	Texture* texture = new Texture("res/textures/texture.png");
 
 	Renderer renderer;
 
-	DemoProgram prog = DEMO_FRAMEBUFFER;
+	DemoProgram prog = DEMO_MODEL;
 
 	// --------------------------------------------------------------------
 	FrameBuffer framebuffer = FrameBuffer(800, 600);
@@ -132,7 +135,7 @@ int main()
 			model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
 			model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
 
-			renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+			renderer.RenderTexture(texture, projection, view, model, test, { 0, 1, 2, 2, 3, 0 });
 			break;
 		case DEMO_INSTANCED:
 			renderer.RenderTextureInstanced(texture, 48, projection, view, model, instanced, { 0, 1, 2, 2, 3, 0 });
@@ -158,6 +161,9 @@ int main()
 
 			framebuffer.VAO().Bind();
 			renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
+			break;
+		case DEMO_MODEL:
+
 			break;
 		default:
 			break;

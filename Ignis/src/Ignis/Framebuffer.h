@@ -11,7 +11,7 @@ private:
 	VAO m_vao;
 	Texture* m_texture;
 
-	float m_width, m_height;
+	int m_width, m_height;
 public:
 	FrameBuffer(int w, int h);
 	~FrameBuffer();

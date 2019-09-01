@@ -4,26 +4,27 @@
 
 #include "Types.h"
 
+std::string GetShaderType(uint shaderType);
+
 class Shader
 {
 private:
 	uint m_program;
 public:
-	Shader(const std::string& vertexPath, const std::string& fragmentPath);
+	Shader(const std::string& vert, const std::string& frag);
 	~Shader();
 
-	static unsigned int CreateShader(const std::string& vertSrc, const std::string& fragSrc);
-	static unsigned int CompileShader(uint type, const char* source);
-	static void PrintLog(uint object);
+	static uint CreateShader(const std::string& vertSrc, const std::string& geomSrc, const std::string& fragSrc);
+	static uint CompileShader(uint type, const std::string& source);
 
-	void use();
+	void Use();
 
-	void setUniform1i(const std::string& name, int value) const;
-	void setUniform1f(const std::string& name, float value) const;
-	void setUniform2f(const std::string& name, const glm::vec2& vector) const;
-	void setUniform3f(const std::string& name, const glm::vec3& vector) const;
-	void setUniform4f(const std::string& name, const glm::vec4& vector) const;
-	void setUniformMat2(const std::string& name, const glm::mat4& matrix) const;
-	void setUniformMat3(const std::string& name, const glm::mat4& matrix) const;
-	void setUniformMat4(const std::string& name, const glm::mat4& matrix) const;
+	void SetUniform1i(const std::string& name, int value) const;
+	void SetUniform1f(const std::string& name, float value) const;
+	void SetUniform2f(const std::string& name, const glm::vec2& vector) const;
+	void SetUniform3f(const std::string& name, const glm::vec3& vector) const;
+	void SetUniform4f(const std::string& name, const glm::vec4& vector) const;
+	void SetUniformMat2(const std::string& name, const glm::mat4& matrix) const;
+	void SetUniformMat3(const std::string& name, const glm::mat4& matrix) const;
+	void SetUniformMat4(const std::string& name, const glm::mat4& matrix) const;
 };

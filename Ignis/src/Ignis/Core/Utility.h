@@ -11,9 +11,9 @@
 
 #define SAFE_DELETE(ptr) if( (ptr) != nullptr ) delete (ptr); (ptr) = nullptr;
 
-inline std::string ReadFile(const char* path)
+inline std::string ReadFile(const std::string& path)
 {
-	if (path == nullptr || *path == 0)
+	if (path.empty())
 		return "";
 
 	std::ifstream ifs(path);

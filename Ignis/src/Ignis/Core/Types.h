@@ -5,6 +5,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+using std::vector;
+
 typedef glm::vec4 color;
 
 typedef unsigned char byte;

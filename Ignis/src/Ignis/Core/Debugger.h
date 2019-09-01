@@ -47,6 +47,12 @@ struct Logger
 	{
 		spdlog::error(fmt, args...);
 	}
+
+	template<typename... Args>
+	inline static void Critical(const char* fmt, const Args& ... args)
+	{
+		spdlog::critical(fmt, args...);
+	}
 };
 
 #ifdef _DEBUG
@@ -55,8 +61,9 @@ struct Logger
 #define DEBUG_TRACE(s, ...) Logger::Trace(s, __VA_ARGS__)
 #define DEBUG_WARN(s, ...) Logger::Warn(s, __VA_ARGS__)
 #define DEBUG_ERROR(s, ...) Logger::Error(s, __VA_ARGS__)
+#define DEBUG_CRITICAL(s, ...) Logger::Critical(s, __VA_ARGS__)
 
-#define DEBUG_ASSERT(x, ...) { if(!(x)) { DEBUG_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
+#define DEBUG_ASSERT(x, ...) { if(!(x)) { DEBUG_CRITICAL("Assertion Failed: {0}", __VA_ARGS__); __debugbreak(); } }
 
 #else
 
@@ -64,6 +71,7 @@ struct Logger
 #define DEBUG_TRACE(s, ...)
 #define DEBUG_WARN(s, ...)
 #define DEBUG_ERROR(s, ...)
+#define DEBUG_CRITICAL(s, ...)
 
 #define DEBUG_ASSERT(x, ...)
 
