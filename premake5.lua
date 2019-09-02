@@ -40,6 +40,7 @@ project "Ignis"
 	includedirs
 	{
 		"%{prj.name}/src",
+		"%{prj.name}/packages",
 		"%{prj.name}/packages/glm",
 		"%{prj.name}/packages/stb",
 		"%{prj.name}/packages/glfw/include",

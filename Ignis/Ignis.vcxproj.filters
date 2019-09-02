@@ -24,16 +24,22 @@
     <ClInclude Include="src\Ignis\Core\Types.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Utility.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Framebuffer.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Ignis.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Mesh.h">
       <Filter>Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Renderer.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Utility.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Framebuffer.h" />
+    <ClInclude Include="src\Ignis\obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp">
@@ -45,18 +51,19 @@
     <ClCompile Include="src\Ignis\Core\Texture.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Framebuffer.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Ignis.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Mesh.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Renderer.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Ignis\Framebuffer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\inverted.frag" />
-    <None Include="res\shaders\grayscale.frag" />
-    <None Include="res\shaders\kernel.frag" />
+    <ClCompile Include="src\Ignis\obj_loader.cpp" />
   </ItemGroup>
 </Project>

@@ -58,7 +58,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -74,7 +74,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -96,10 +96,12 @@
     <ClInclude Include="src\Ignis\Core\Shader.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
+    <ClInclude Include="src\Ignis\Core\Utility.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
+    <ClInclude Include="src\Ignis\Mesh.h" />
+    <ClInclude Include="src\Ignis\obj_loader.h" />
     <ClInclude Include="src\Ignis\Renderer.h" />
-    <ClInclude Include="src\Ignis\Core\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
@@ -107,6 +109,8 @@
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
+    <ClCompile Include="src\Ignis\Mesh.cpp" />
+    <ClCompile Include="src\Ignis\obj_loader.cpp" />
     <ClCompile Include="src\Ignis\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -117,11 +121,6 @@
     <ProjectReference Include="packages\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\grayscale.frag" />
-    <None Include="res\shaders\inverted.frag" />
-    <None Include="res\shaders\kernel.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
