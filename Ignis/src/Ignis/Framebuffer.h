@@ -9,7 +9,7 @@ private:
 	uint m_fbo;
 
 	VAO m_vao;
-	Texture* m_texture;
+	Texture m_texture;
 
 	int m_width, m_height;
 public:
@@ -19,6 +19,8 @@ public:
 	void Bind();
 	void Unbind();
 
+	void BindVAO();
+
 	VAO& VAO();
-	Texture* Texture();
+	Texture& Texture();
 };

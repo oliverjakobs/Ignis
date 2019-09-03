@@ -66,5 +66,6 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\obj_loader.cpp" />
+    <ClCompile Include="src\Ignis\Camera.cpp" />
   </ItemGroup>
 </Project>

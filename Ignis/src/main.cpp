@@ -1,24 +1,23 @@
 #include "Ignis/Ignis.h"
+
 #include "Ignis/Framebuffer.h"
-
-#include <GLFW/glfw3.h>
-
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <glm/gtx/transform.hpp>
-
-
 #include "Ignis/Mesh.h"
 #include "Ignis/Camera.h"
+
+#include <GLFW/glfw3.h>
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera;
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
+
+float mouseOffsetX = 0.0f;
+float mouseOffsetY = 0.0f;
+
 bool firstMouse = true;
 
 void DemoTexture(GLFWwindow* window)
@@ -43,9 +42,9 @@ void DemoTexture(GLFWwindow* window)
 
 	vao.UnbindVertexBuffer();
 
-	Shader* shader = new Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
+	Shader shader = Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
 
-	Texture* texture = new Texture("res/textures/texture.png");
+	Texture texture = Texture("res/textures/texture.png");
 
 	Renderer renderer;
 
@@ -106,9 +105,9 @@ void DemoInstanced(GLFWwindow* window)
 
 	vao.UnbindVertexBuffer();
 
-	Shader* instanced = new Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
+	Shader instanced = Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
 
-	Texture* texture = new Texture("res/textures/texture.png");
+	Texture texture = Texture("res/textures/texture.png");
 
 	Renderer renderer;
 
@@ -153,12 +152,12 @@ void DemoFramebuffer(GLFWwindow* window)
 
 	vao.UnbindVertexBuffer();
 
-	Shader* shader = new Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
-	Shader* inverted = new Shader("res/shaders/texture.vert", "res/shaders/inverted.frag");
-	Shader* grayscale = new Shader("res/shaders/texture.vert", "res/shaders/grayscale.frag");
-	Shader* kernel = new Shader("res/shaders/texture.vert", "res/shaders/kernel.frag");
+	Shader shader = Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
+	Shader inverted = Shader("res/shaders/texture.vert", "res/shaders/inverted.frag");
+	Shader grayscale = Shader("res/shaders/texture.vert", "res/shaders/grayscale.frag");
+	Shader kernel = Shader("res/shaders/texture.vert", "res/shaders/kernel.frag");
 
-	Texture* texture = new Texture("res/textures/texture.png");
+	Texture texture = Texture("res/textures/texture.png");
 
 	Renderer renderer;
 
@@ -185,7 +184,7 @@ void DemoFramebuffer(GLFWwindow* window)
 
 		framebuffer.Unbind();
 
-		framebuffer.VAO().Bind();
+		framebuffer.BindVAO();
 		renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
 
 		vao.Unbind();
@@ -197,6 +196,9 @@ void DemoFramebuffer(GLFWwindow* window)
 
 void DemoModel(GLFWwindow* window)
 {
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
+
 	glEnable(GL_DEPTH_TEST);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -209,13 +211,11 @@ void DemoModel(GLFWwindow* window)
 			firstMouse = false;
 		}
 
-		float xoffset = xPos - lastX;
-		float yoffset = lastY - yPos; // reversed since y-coordinates go from bottom to top
+		mouseOffsetX = xPos - lastX;
+		mouseOffsetY = lastY - yPos; // reversed since y-coordinates go from bottom to top
 
 		lastX = xPos;
 		lastY = yPos;
-
-		camera.ProcessMouseMovement(xoffset, yoffset);
 	});
 
 	Renderer renderer;
@@ -239,30 +239,27 @@ void DemoModel(GLFWwindow* window)
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
+		float velocity = cameraSpeed * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.ProcessKeyboard(FORWARD, deltaTime);
+			camera.Move(camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.ProcessKeyboard(BACKWARD, deltaTime);
+			camera.Move(-camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.ProcessKeyboard(LEFT, deltaTime);
+			camera.Move(-camera.Right * velocity);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.ProcessKeyboard(RIGHT, deltaTime);
+			camera.Move(camera.Right * velocity);
+
+		camera.YawPitch(mouseOffsetX * cameraSensitivity, mouseOffsetY * cameraSensitivity);
+		mouseOffsetX = 0.0f;
+		mouseOffsetY = 0.0f;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glm::mat4 projection = glm::mat4(1.0f);
-		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		
+		glm::mat4 projection = glm::perspective(70.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
 		shader.Use();
-
-		glm::vec3 pos = glm::vec3(0.0f, 0.0f, -5.0f);
-		glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
-		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-
-		projection = glm::perspective(70.0f, 800.0f / 600.0f, 0.1f, 100.0f);
-		view = camera.GetViewMatrix();
-		model = glm::mat4(1.0f);
 
 		shader.SetUniformMat4("projection", projection);
 		shader.SetUniformMat4("view", view);

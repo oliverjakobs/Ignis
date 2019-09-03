@@ -105,6 +105,7 @@
     <ClInclude Include="src\Ignis\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ignis\Camera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />

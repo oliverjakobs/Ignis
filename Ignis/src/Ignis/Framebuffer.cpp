@@ -3,7 +3,7 @@
 #include "Core/Utility.h"
 
 FrameBuffer::FrameBuffer(int w, int h)
-	: m_width(w), m_height(h)
+	: m_texture(w, h), m_width(w), m_height(h) 
 {
 	float vertices[] = {
 		// positions   // texCoords
@@ -25,9 +25,7 @@ FrameBuffer::FrameBuffer(int w, int h)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
 	// create a color attachment texture
-	m_texture = new ::Texture(w, h);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->id, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.id, 0);
 
 	// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
 	unsigned int rbo;
@@ -46,7 +44,7 @@ FrameBuffer::FrameBuffer(int w, int h)
 
 FrameBuffer::~FrameBuffer()
 {
-	SAFE_DELETE(m_texture);
+
 }
 
 void FrameBuffer::Bind()
@@ -59,12 +57,17 @@ void FrameBuffer::Unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void FrameBuffer::BindVAO()
+{
+	m_vao.Bind();
+}
+
 VAO& FrameBuffer::VAO()
 {
 	return m_vao;
 }
 
-Texture* FrameBuffer::Texture()
+Texture& FrameBuffer::Texture()
 {
 	return m_texture;
 }
