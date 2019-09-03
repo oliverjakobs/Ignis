@@ -9,74 +9,76 @@
 
 
 #include "Ignis/Mesh.h"
+#include "Ignis/Camera.h"
 
-#define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
-#include "stb_truetype.h"
-
-unsigned char ttf_buffer[1 << 20];
-unsigned char temp_bitmap[512 * 512];
-
-stbtt_bakedchar cdata[96]; // ASCII 32..126 is 95 glyphs
-GLuint ftex;
-
-GLuint fVAO, fVBO;
-
-void my_stbtt_initfont(void)
+void DemoTexture(GLFWwindow* window)
 {
-	fread(ttf_buffer, 1, 1 << 20, fopen("c:/windows/fonts/times.ttf", "rb"));
-	stbtt_BakeFontBitmap(ttf_buffer, 0, 32.0, temp_bitmap, 512, 512, 32, 96, cdata); // no guarantee this fits!
-	// can free ttf_buffer at this point
-	glGenTextures(1, &ftex);
-	glBindTexture(GL_TEXTURE_2D, ftex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, temp_bitmap);
-	// can free temp_bitmap at this point
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	VAO vao;
 
-	glGenVertexArrays(1, &fVAO);
-	glGenBuffers(1, &fVBO);
-	glBindVertexArray(fVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, fVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
-
-void my_stbtt_print(float x, float y, char* text, Shader* shader)
-{
-	// assume orthographic projection with units = screen pixels, origin at top left
-	glBindVertexArray(fVAO);
-	glActiveTexture(GL_TEXTURE0);
-
-	while (*text) 
+	GLfloat vertices[] =
 	{
-		if (*text >= 32 && *text < 128) 
-		{
-			stbtt_aligned_quad q;
-			stbtt_GetBakedQuad(cdata, 512, 512, *text - 32, &x, &y, &q, 1);//1=opengl & d3d10+,0=d3d9
+		0.0f, 0.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 1.0f, 0.0f,
+		1.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 1.0f, 0.0f, 1.0f
+	};
 
-			GLfloat vertices[6][4] = {
-			{ q.x0, q.y1, q.s0, q.t0 },
-			{ q.x0, q.y0, q.s0, q.t1 },
-			{ q.x1, q.y0, q.s1, q.t1 },
+	vao.Bind();
 
-			{ q.x0, q.y1, q.s0, q.t0 },
-			{ q.x1, q.y0, q.s1, q.t1 },
-			{ q.x1, q.y1, q.s1, q.t0 }
-			};
+	vao.GenVertexBuffer();
 
-			glBindTexture(GL_TEXTURE_2D, ftex);
-			// Update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, fVBO);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			// Render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-		}
-		++text;
+	vao.SetVertexBufferData(sizeof(vertices), vertices);
+	vao.SetVertexAttribPointer(0, 2, 4, 0);
+	vao.SetVertexAttribPointer(1, 2, 4, 2);
+
+	vao.UnbindVertexBuffer();
+
+	Shader* shader = new Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
+
+	Texture* texture = new Texture("res/textures/texture.png");
+
+	Renderer renderer;
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glm::mat4 projection = glm::mat4(1.0f);
+		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 model = glm::mat4(1.0f);
+
+		vao.Bind();
+
+		model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
+
+		renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+
+		vao.Unbind();
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 }
+
+void DemoInstanced();
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void processInput(GLFWwindow* window);
+
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+// camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
+
+// timing
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
 
 enum DemoProgram
 {
@@ -84,7 +86,6 @@ enum DemoProgram
 	DEMO_INSTANCED,
 	DEMO_ALPHA,
 	DEMO_FRAMEBUFFER,
-	DEMO_FONT,
 	DEMO_MODEL
 };
 
@@ -111,7 +112,7 @@ int main()
 #endif
 
 	// creating the window
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Ignis", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Ignis", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
@@ -120,6 +121,9 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSetCursorPosCallback(window, mouse_callback);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	DEBUG_INFO("[GLFW] Window created.");
 
@@ -133,13 +137,15 @@ int main()
 
 	if (!ignis.LoadGL(glfwGetProcAddress, debug))
 	{
-		DEBUG_ERROR("[IGNIS] Failed to init renderer");
+		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();
 		return -1;
 	}
 
 	ignis.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	ignis.SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	glEnable(GL_DEPTH_TEST);
 
 	VAO vao;
 
@@ -181,9 +187,7 @@ int main()
 	Shader* inverted = new Shader("res/shaders/texture.vert", "res/shaders/inverted.frag");
 	Shader* grayscale = new Shader("res/shaders/texture.vert", "res/shaders/grayscale.frag");
 	Shader* kernel = new Shader("res/shaders/texture.vert", "res/shaders/kernel.frag");
-
-	Shader* font = new Shader("res/shaders/font.vert", "res/shaders/font.frag");
-
+	
 	Shader* test = new Shader("res/shaders/test.vert", "res/shaders/test.frag");
 
 	Texture* texture = new Texture("res/textures/texture.png");
@@ -191,8 +195,6 @@ int main()
 	Renderer renderer;
 
 	DemoProgram prog = DEMO_MODEL;
-
-	my_stbtt_initfont();
 
 	Mesh box = Mesh("res/models/barrel.obj");
 	Texture* boxTex = new Texture("res/models/barrel.png");
@@ -203,7 +205,16 @@ int main()
 	
 	while (!glfwWindowShouldClose(window))
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		// per-frame time logic
+	   // --------------------
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		// input
+		processInput(window);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::mat4 projection = glm::mat4(1.0f);
 		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
@@ -226,12 +237,8 @@ int main()
 			break;
 		case DEMO_FRAMEBUFFER:
 			framebuffer.Bind();
-			//glEnable(GL_DEPTH_TEST);
-
-			// make sure we clear the framebuffer's content
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
 			model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
@@ -239,17 +246,9 @@ int main()
 			renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
 
 			framebuffer.Unbind();
-			//glDisable(GL_DEPTH_TEST); 
 
 			framebuffer.VAO().Bind();
 			renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
-			break;
-		case DEMO_FONT:
-			font->Use();
-
-			font->SetUniformMat4("projection", projection);
-
-			my_stbtt_print(0.0f, 0.0f, "Hello Font", font);
 			break;
 		case DEMO_MODEL:
 			modelShader->Use();
@@ -258,11 +257,14 @@ int main()
 			glm::vec3 forward = glm::vec3(0.0f, 0.0f, 1.0f);
 			glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-			glm::mat4 persp = glm::perspective(70.0f, 800.0f/600.0f, 0.1f, 100.0f);
+			projection = glm::perspective(70.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+			view = camera.GetViewMatrix();
+			model = glm::mat4(1.0f);
 
-			modelShader->SetUniformMat4("MVP", persp* glm::lookAt(pos, pos + forward, up));
-			modelShader->SetUniformMat4("Normal", glm::mat4(1.0f));
-			modelShader->SetUniform3f("lightDirection", glm::vec3(0.0f, 0.0f, 1.0f));
+			modelShader->SetUniformMat4("projection", projection);
+			modelShader->SetUniformMat4("view", view);
+			modelShader->SetUniformMat4("model", model);
+
 			boxTex->Bind();
 			box.Draw();
 			break;
@@ -283,4 +285,46 @@ int main()
 	glfwTerminate();
 
 	return 0;
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
 }

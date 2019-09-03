@@ -1,13 +1,15 @@
-#version 120
+#version 330 core
 
-varying vec2 texCoord0;
-varying vec3 normal0;
+out vec4 fColor;
 
-uniform sampler2D sampler;
+uniform sampler2D uTexture;
+
 uniform vec3 lightDirection;
+
+in vec2 texCoord;
+in vec3 normal;
 
 void main()
 {
-	//gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0f);
-	gl_FragColor = texture2D(sampler, texCoord0) * clamp(dot(-lightDirection, normal0), 0.0, 1.0);
+	fColor = texture2D(uTexture, texCoord);
 }

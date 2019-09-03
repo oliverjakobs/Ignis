@@ -40,6 +40,7 @@
       <Filter>Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\obj_loader.h" />
+    <ClInclude Include="src\Ignis\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp">
