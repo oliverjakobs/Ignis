@@ -33,14 +33,14 @@
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Mesh.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Renderer.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\obj_loader.h" />
     <ClInclude Include="src\Ignis\Camera.h" />
+    <ClInclude Include="src\Ignis\Mesh.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\obj_loader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp">
@@ -58,14 +58,14 @@
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Mesh.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ignis\Renderer.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Ignis\obj_loader.cpp" />
     <ClCompile Include="src\Ignis\Camera.cpp" />
+    <ClCompile Include="src\Ignis\Mesh.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\obj_loader.cpp" />
   </ItemGroup>
 </Project>

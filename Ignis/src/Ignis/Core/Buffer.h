@@ -4,11 +4,16 @@
 
 #include "Types.h"
 
+struct Buffer
+{
+	uint ID;
+	uint Type;
+};
+
 struct VAO
 {
-	unsigned int id;
-
-	std::vector<uint> buffers;
+	uint ID;
+	std::vector<Buffer> Buffers;
 
 	VAO();
 	~VAO();
@@ -16,15 +21,21 @@ struct VAO
 	void Bind() const;
 	void Unbind() const;
 
-	// vertex buffers
-	unsigned int GenVertexBuffer();
-	void BindVertexBuffer(uint index);
+	void BindBuffer(uint index);
 	void UnbindVertexBuffer();
+	void UnbindIndexBuffer();
 
-	void SetVertexBufferData(size_t size, const void* data, int usage = GL_STATIC_DRAW);
-	void SetVertexAttribPointer(uint index, int size, size_t stride, int offset);
-	void SetVertexAttribIPointer(uint index, int size, size_t stride, int offset);
+	// vertex buffers
+	uint GenVertexBuffer();
+
+	void SetVertexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
+	void SetVertexAttribPointer(uint index, int size, uint stride, int offset);
+	void SetVertexAttribIPointer(uint index, int size, uint stride, int offset);
 	void SetVertexAttribDivisor(uint index, uint divisor);
+
+	// index buffer
+	uint GenIndexBuffer();
+	void SetIndexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
 
 	void MapBufferData(uint index, const void* data, size_t size);
 };

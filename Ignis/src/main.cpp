@@ -10,8 +10,7 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-// camera
-Camera camera;
+// mouse input
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 
@@ -196,6 +195,7 @@ void DemoFramebuffer(GLFWwindow* window)
 
 void DemoModel(GLFWwindow* window)
 {
+	Camera camera;
 	float cameraSpeed = 2.5f;
 	float cameraSensitivity = 0.1f;
 
@@ -259,14 +259,7 @@ void DemoModel(GLFWwindow* window)
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		shader.Use();
-
-		shader.SetUniformMat4("projection", projection);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
-
-		texture.Bind();
-		mesh.Draw();
+		renderer.RenderMesh(mesh, texture, projection, view, model, shader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -1,44 +1,11 @@
-#include "mesh.h"
+#include "Mesh.h"
 
-#include <map>
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <stdlib.h>
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
 
 Mesh::Mesh(const std::string& fileName)
 {
-    InitMesh(OBJModel(fileName).ToIndexedModel());
-}
-
-void Mesh::InitMesh(const IndexedModel& model)
-{
-    m_numIndices = model.indices.size();
-
-    glGenVertexArrays(1, &m_vertexArrayObject);
-	glBindVertexArray(m_vertexArrayObject);
-
-	glGenBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[POSITION_VB]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(model.positions[0]) * model.positions.size(), &model.positions[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[TEXCOORD_VB]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(model.texCoords[0]) * model.texCoords.size(), &model.texCoords[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexArrayBuffers[NORMAL_VB]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(model.normals[0]) * model.normals.size(), &model.normals[0], GL_STATIC_DRAW);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vertexArrayBuffers[INDEX_VB]);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(model.indices[0]) * model.indices.size(), &model.indices[0], GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
+	Load(OBJModel(fileName).ToIndexedModel());
 }
 
 Mesh::Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices)
@@ -47,29 +14,52 @@ Mesh::Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, un
 
 	for(unsigned int i = 0; i < numVertices; i++)
 	{
-		model.positions.push_back(*vertices[i].GetPos());
-		model.texCoords.push_back(*vertices[i].GetTexCoord());
-		model.normals.push_back(*vertices[i].GetNormal());
+		model.Positions.push_back(vertices[i].Position);
+		model.TexCoords.push_back(vertices[i].TexCoord);
+		model.Normals.push_back(vertices[i].Normal);
 	}
 	
 	for(unsigned int i = 0; i < numIndices; i++)
-        model.indices.push_back(indices[i]);
+        model.Indices.push_back(indices[i]);
 
-    InitMesh(model);
+	Load(model);
 }
 
 Mesh::~Mesh()
 {
-	glDeleteBuffers(NUM_BUFFERS, m_vertexArrayBuffers);
-	glDeleteVertexArrays(1, &m_vertexArrayObject);
+
 }
 
-void Mesh::Draw()
+void Mesh::Load(const IndexedModel& model)
 {
-	glBindVertexArray(m_vertexArrayObject);
+	m_numIndices = model.Indices.size();
 
-	//glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
-	glDrawElementsBaseVertex(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0, 0);
+	m_vao.Bind();
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(model.Positions[0]) * model.Positions.size(), &model.Positions[0]);
+	m_vao.SetVertexAttribPointer(0, 3, 0, 0);
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(model.TexCoords[0]) * model.TexCoords.size(), &model.TexCoords[0]);
+	m_vao.SetVertexAttribPointer(1, 2, 0, 0);
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(model.Normals[0]) * model.Normals.size(), &model.Normals[0]);
+	m_vao.SetVertexAttribPointer(2, 3, 0, 0);
+
+	m_vao.GenIndexBuffer();
+	m_vao.SetIndexBufferData(sizeof(model.Indices[0]) * model.Indices.size(), &model.Indices[0]);
 
 	glBindVertexArray(0);
+}
+
+VAO& Mesh::VAO()
+{
+	return m_vao;
+}
+
+uint Mesh::NumIndices()
+{
+	return m_numIndices;
 }
