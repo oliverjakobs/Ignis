@@ -21,8 +21,10 @@ private:
 	uint m_numIndices;
 
 public:
+	static Mesh LoadFromFile(const std::string& filename);
+
     Mesh(const std::string& fileName);
-	Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices);
+	Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
 	virtual ~Mesh();
 
     void Load(const IndexedModel& model);

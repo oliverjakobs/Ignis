@@ -3,24 +3,72 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-Mesh::Mesh(const std::string& fileName)
+#include "Core/Debugger.h"
+
+Mesh::Mesh(const std::string& filename)
 {
-	Load(OBJModel(fileName).ToIndexedModel());
+	//Load(OBJModel(filename).ToIndexedModel());
+
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+
+	std::string warn;
+	std::string err;
+
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str()))
+	{
+		DEBUG_ERROR("Failed to load obj: {0}", filename);
+		return;
+	}
+
+	if (!warn.empty())
+		DEBUG_WARN("{0}", warn);
+
+	if (!err.empty())
+		DEBUG_ERROR("{0}", err);
+
+
+	IndexedModel model;
+
+	for (const auto& shape : shapes) 
+	{
+		for (const auto& index : shape.mesh.indices) 
+		{
+			float vx = attrib.vertices[3 * index.vertex_index + 0];
+			float vy = attrib.vertices[3 * index.vertex_index + 1];
+			float vz = attrib.vertices[3 * index.vertex_index + 2];
+
+			float nx = attrib.normals[3 * index.normal_index + 0];
+			float ny = attrib.normals[3 * index.normal_index + 1];
+			float nz = attrib.normals[3 * index.normal_index + 2];
+
+			float tx = attrib.texcoords[2 * index.texcoord_index + 0];
+			float ty = attrib.texcoords[2 * index.texcoord_index + 1];
+
+			model.Positions.push_back(glm::vec3(vx, vy, vz));
+			model.Normals.push_back(glm::vec3(nx, ny, nz));
+			model.TexCoords.push_back(glm::vec2(tx, ty));
+
+			model.Indices.push_back(model.Indices.size());
+		}
+	}
+
+	Load(model);
 }
 
-Mesh::Mesh(Vertex* vertices, unsigned int numVertices, unsigned int* indices, unsigned int numIndices)
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint> indices)
 {
-    IndexedModel model;
+	IndexedModel model;
 
-	for(unsigned int i = 0; i < numVertices; i++)
+	for(auto& vertex : vertices)
 	{
-		model.Positions.push_back(vertices[i].Position);
-		model.TexCoords.push_back(vertices[i].TexCoord);
-		model.Normals.push_back(vertices[i].Normal);
+		model.Positions.push_back(vertex.Position);
+		model.TexCoords.push_back(vertex.TexCoord);
+		model.Normals.push_back(vertex.Normal);
 	}
 	
-	for(unsigned int i = 0; i < numIndices; i++)
-        model.Indices.push_back(indices[i]);
+	model.Indices = indices;
 
 	Load(model);
 }
