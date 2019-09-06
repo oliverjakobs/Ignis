@@ -1,17 +1,21 @@
 #pragma once 
 
 #include "Core/Buffer.h"
+#include "Core/Texture.h"
+#include "Core/Shader.h"
+
 #include "Core/Utility.h"
 
-#include "Renderer.h"
+#include "Mesh.h"
 
-class Ignis
+namespace ignis
 {
-public:
-	Ignis();
-	~Ignis();
-
+	bool InitIgnis();
 	bool LoadGL(void* loadProc, bool debug = false);
-	void EnableBlend(uint sfactor, uint dfactor);
-	void SetClearColor(float r, float g, float b, float a);
-};
+
+	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count);
+	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+	void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+
+	void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
+}

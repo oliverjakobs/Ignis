@@ -101,7 +101,6 @@
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Mesh.h" />
-    <ClInclude Include="src\Ignis\Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp" />
@@ -111,7 +110,6 @@
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
     <ClCompile Include="src\Ignis\Mesh.cpp" />
-    <ClCompile Include="src\Ignis\Renderer.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

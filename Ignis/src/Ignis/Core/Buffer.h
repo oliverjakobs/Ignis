@@ -4,38 +4,44 @@
 
 #include "Types.h"
 
-struct Buffer
+namespace ignis
 {
-	uint ID;
-	uint Type;
-};
+	struct Buffer
+	{
+		uint ID;
+		uint Type;
+	};
 
-struct VAO
-{
-	uint ID;
-	std::vector<Buffer> Buffers;
+	struct VAO
+	{
+		uint ID;
+		std::vector<Buffer> Buffers;
 
-	VAO();
-	~VAO();
+		VAO();
+		~VAO();
 
-	void Bind() const;
-	void Unbind() const;
+		void Bind() const;
+		void Unbind() const;
 
-	void BindBuffer(uint index);
-	void UnbindVertexBuffer();
-	void UnbindIndexBuffer();
+		uint GetBufferType(uint index) const;
 
-	// vertex buffers
-	uint GenVertexBuffer();
+		void BindBuffer(uint index);
+		void UnbindBuffer(uint type);
+		void UnbindVertexBuffer();
+		void UnbindIndexBuffer();
 
-	void SetVertexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
-	void SetVertexAttribPointer(uint index, int size, uint stride, int offset);
-	void SetVertexAttribIPointer(uint index, int size, uint stride, int offset);
-	void SetVertexAttribDivisor(uint index, uint divisor);
+		// vertex buffers
+		uint GenVertexBuffer();
 
-	// index buffer
-	uint GenIndexBuffer();
-	void SetIndexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
+		void SetVertexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
+		void SetVertexAttribPointer(uint index, int size, uint stride, int offset);
+		void SetVertexAttribIPointer(uint index, int size, uint stride, int offset);
+		void SetVertexAttribDivisor(uint index, uint divisor);
 
-	void MapBufferData(uint index, const void* data, size_t size);
-};
+		// index buffer
+		uint GenIndexBuffer();
+		void SetIndexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
+
+		void MapBufferData(uint index, const void* data, size_t size);
+	};
+}

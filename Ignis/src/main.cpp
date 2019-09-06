@@ -1,18 +1,19 @@
 #include "Ignis/Ignis.h"
 
 #include "Ignis/Framebuffer.h"
-#include "Ignis/Mesh.h"
 #include "Ignis/Camera.h"
 
 #include <GLFW/glfw3.h>
 
+using namespace ignis;
+
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int WIDTH = 800;
+const unsigned int HEIGHT = 600;
 
 // mouse input
-float lastX = SCR_WIDTH / 2.0f;
-float lastY = SCR_HEIGHT / 2.0f;
+float lastX = WIDTH / 2.0f;
+float lastY = HEIGHT / 2.0f;
 
 float mouseOffsetX = 0.0f;
 float mouseOffsetY = 0.0f;
@@ -45,10 +46,12 @@ void DemoTexture(GLFWwindow* window)
 
 	Texture texture = Texture("res/textures/texture.png");
 
-	Renderer renderer;
-
 	while (!glfwWindowShouldClose(window))
 	{
+		// input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -58,7 +61,7 @@ void DemoTexture(GLFWwindow* window)
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
 
 		vao.Bind();
-		renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+		RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
 
 		vao.Unbind();
 
@@ -108,10 +111,12 @@ void DemoInstanced(GLFWwindow* window)
 
 	Texture texture = Texture("res/textures/texture.png");
 
-	Renderer renderer;
-
 	while (!glfwWindowShouldClose(window))
 	{
+		// input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -120,7 +125,7 @@ void DemoInstanced(GLFWwindow* window)
 
 		vao.Bind();
 
-		renderer.RenderTextureInstanced(texture, 48, projection, view, model, instanced, { 0, 1, 2, 2, 3, 0 });
+		RenderTextureInstanced(texture, 48, projection, view, model, instanced, { 0, 1, 2, 2, 3, 0 });
 
 		vao.Unbind();
 
@@ -158,12 +163,14 @@ void DemoFramebuffer(GLFWwindow* window)
 
 	Texture texture = Texture("res/textures/texture.png");
 
-	Renderer renderer;
-
 	FrameBuffer framebuffer = FrameBuffer(800, 600);
 
 	while (!glfwWindowShouldClose(window))
 	{
+		// input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -179,12 +186,12 @@ void DemoFramebuffer(GLFWwindow* window)
 		model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
 
-		renderer.RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
+		RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
 
 		framebuffer.Unbind();
 
 		framebuffer.BindVAO();
-		renderer.RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
+		RenderTexture(framebuffer.Texture(), glm::mat4(1.0f), glm::mat4(1.0f), glm::mat4(1.0f), kernel, { 0, 1, 2, 2, 3, 0 });
 
 		vao.Unbind();
 
@@ -218,8 +225,6 @@ void DemoModel(GLFWwindow* window)
 		lastY = yPos;
 	});
 
-	Renderer renderer;
-
 	// timing
 	float deltaTime = 0.0f;	// time between current frame and last frame
 	float lastFrame = 0.0f;
@@ -248,6 +253,10 @@ void DemoModel(GLFWwindow* window)
 			camera.Move(-camera.Right * velocity);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 			camera.Move(camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.Move(camera.WorldUp * velocity);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			camera.Move(-camera.WorldUp * velocity);
 
 		camera.YawPitch(mouseOffsetX * cameraSensitivity, mouseOffsetY * cameraSensitivity);
 		mouseOffsetX = 0.0f;
@@ -259,7 +268,26 @@ void DemoModel(GLFWwindow* window)
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		renderer.RenderMesh(mesh, texture, projection, view, model, shader);
+		RenderMesh(mesh, texture, projection, view, model, shader);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+}
+
+void DemoFont(GLFWwindow* window)
+{
+	glEnable(GL_DEPTH_TEST);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		// input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -278,7 +306,12 @@ enum DemoProgram
 
 int main()
 {
-	Ignis ignis;
+	// ingis initialization
+	if (!InitIgnis())
+	{
+		DEBUG_ERROR("[Ignis] Failed to initialize Ignis");
+		return -1;
+	}
 
 	// GLFW initialization
 	if (glfwInit() == GLFW_FALSE)
@@ -299,7 +332,7 @@ int main()
 #endif
 
 	// creating the window
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Ignis", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ignis", nullptr, nullptr);
 	if (window == nullptr)
 	{
 		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
@@ -319,17 +352,19 @@ int main()
 
 	bool debug = true;
 
-	if (!ignis.LoadGL(glfwGetProcAddress, debug))
+	if (!LoadGL(glfwGetProcAddress, debug))
 	{
 		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();
 		return -1;
 	}
 
-	ignis.EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	ignis.SetClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	DemoProgram prog = DEMO_MODEL;
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	DemoProgram prog = DEMO_FONT;
 
 	switch (prog)
 	{
@@ -345,7 +380,8 @@ int main()
 	case DEMO_MODEL:
 		DemoModel(window);
 		break;
-	default:
+	case DEMO_FONT:
+		DemoFont(window);
 		break;
 	}
 	

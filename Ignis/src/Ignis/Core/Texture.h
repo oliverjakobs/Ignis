@@ -4,37 +4,40 @@
 
 #include "Types.h"
 
-struct TextureConfig
+namespace ignis
 {
-	int INTERAL_FORMAT;
-	uint FORMAT;
+	struct TextureConfig
+	{
+		int INTERAL_FORMAT;
+		uint FORMAT;
 
-	uint TYPE;
+		uint TYPE;
 
-	int MIN_FILTER;
-	int MAG_FILTER;
+		int MIN_FILTER;
+		int MAG_FILTER;
 
-	int WRAP_S;
-	int WRAP_T;
-};
+		int WRAP_S;
+		int WRAP_T;
+	};
 
-constexpr TextureConfig DEFAULT_CONFIG{ GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT };
+	constexpr TextureConfig DEFAULT_CONFIG{ GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT };
 
-struct Texture
-{
-	uint id;
+	struct Texture
+	{
+		uint id;
 
-	int width;
-	int height;
-	int bpp;
+		int width;
+		int height;
+		int bpp;
 
-	// functions
-	Texture(std::string path, TextureConfig config = DEFAULT_CONFIG);
-	Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
-	~Texture();
+		// functions
+		Texture(std::string path, TextureConfig config = DEFAULT_CONFIG);
+		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
+		~Texture();
 
-	static unsigned int CreateTexture(byte* pixels, int width, int height, TextureConfig config);
+		static unsigned int CreateTexture(byte* pixels, int width, int height, TextureConfig config);
 
-	void Bind(uint slot = 0);
-	void Unbind();
-};
+		void Bind(uint slot = 0);
+		void Unbind();
+	};
+}

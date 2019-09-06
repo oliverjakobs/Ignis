@@ -39,9 +39,6 @@
     <ClInclude Include="src\Ignis\Mesh.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp">
@@ -63,9 +60,6 @@
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Mesh.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />

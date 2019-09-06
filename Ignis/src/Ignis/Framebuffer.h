@@ -3,24 +3,27 @@
 #include "Core/Texture.h"
 #include "Core/Buffer.h"
 
-class FrameBuffer
+namespace ignis
 {
-private:
-	uint m_fbo;
+	class FrameBuffer
+	{
+	private:
+		uint m_fbo;
 
-	VAO m_vao;
-	Texture m_texture;
+		VAO m_vao;
+		Texture m_texture;
 
-	int m_width, m_height;
-public:
-	FrameBuffer(int w, int h);
-	~FrameBuffer();
+		int m_width, m_height;
+	public:
+		FrameBuffer(int w, int h);
+		~FrameBuffer();
 
-	void Bind();
-	void Unbind();
+		void Bind();
+		void Unbind();
 
-	void BindVAO();
+		void BindVAO();
 
-	VAO& VAO();
-	Texture& Texture();
-};
+		VAO& VAO();
+		Texture& Texture();
+	};
+}

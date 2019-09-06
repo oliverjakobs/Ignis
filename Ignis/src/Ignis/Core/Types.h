@@ -5,7 +5,10 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-typedef glm::vec4 color;
+namespace ignis
+{
+	typedef glm::vec4 color;
 
-typedef unsigned char byte;
-typedef unsigned int uint;
+	typedef unsigned char byte;
+	typedef unsigned int uint;
+}
