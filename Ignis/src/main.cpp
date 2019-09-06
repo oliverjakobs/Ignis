@@ -226,7 +226,7 @@ void DemoModel(GLFWwindow* window)
 
 	Shader shader = Shader("res/shaders/model.vert", "res/shaders/model.frag");
 
-	Mesh mesh = Mesh("res/models/barrel.obj");
+	Mesh mesh = Mesh::LoadFromFile("res/models/barrel.obj", "res/models/");
 	Texture texture = Texture("res/models/barrel.png");
 	
 	while (!glfwWindowShouldClose(window))

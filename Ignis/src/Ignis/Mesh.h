@@ -2,8 +2,6 @@
 
 #include "Core/Buffer.h"
 
-#include "obj_loader.h"
-
 struct Vertex
 {
 	glm::vec3 Position;
@@ -21,13 +19,10 @@ private:
 	uint m_numIndices;
 
 public:
-	static Mesh LoadFromFile(const std::string& filename);
+	static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir = "");
 
-    Mesh(const std::string& fileName);
 	Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
 	virtual ~Mesh();
-
-    void Load(const IndexedModel& model);
 
 	// disable copying
 	Mesh(const Mesh& mesh) = delete;

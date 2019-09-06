@@ -5,10 +5,8 @@
 
 #include "Core/Debugger.h"
 
-Mesh::Mesh(const std::string& filename)
+Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir)
 {
-	//Load(OBJModel(filename).ToIndexedModel());
-
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
@@ -16,10 +14,10 @@ Mesh::Mesh(const std::string& filename)
 	std::string warn;
 	std::string err;
 
-	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str()))
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), mtldir.c_str()))
 	{
 		DEBUG_ERROR("Failed to load obj: {0}", filename);
-		return;
+		return Mesh({}, {});
 	}
 
 	if (!warn.empty())
@@ -28,12 +26,12 @@ Mesh::Mesh(const std::string& filename)
 	if (!err.empty())
 		DEBUG_ERROR("{0}", err);
 
+	std::vector<Vertex> vertices;
+	std::vector<uint> indices;
 
-	IndexedModel model;
-
-	for (const auto& shape : shapes) 
+	for (const auto& shape : shapes)
 	{
-		for (const auto& index : shape.mesh.indices) 
+		for (const auto& index : shape.mesh.indices)
 		{
 			float vx = attrib.vertices[3 * index.vertex_index + 0];
 			float vy = attrib.vertices[3 * index.vertex_index + 1];
@@ -46,60 +44,52 @@ Mesh::Mesh(const std::string& filename)
 			float tx = attrib.texcoords[2 * index.texcoord_index + 0];
 			float ty = attrib.texcoords[2 * index.texcoord_index + 1];
 
-			model.Positions.push_back(glm::vec3(vx, vy, vz));
-			model.Normals.push_back(glm::vec3(nx, ny, nz));
-			model.TexCoords.push_back(glm::vec2(tx, ty));
-
-			model.Indices.push_back(model.Indices.size());
+			vertices.push_back({ glm::vec3(vx, vy, vz), glm::vec2(tx, ty), glm::vec3(nx, ny, nz) });
+			indices.push_back(indices.size());
 		}
 	}
 
-	Load(model);
+	return Mesh(vertices, indices);
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint> indices)
 {
-	IndexedModel model;
+	std::vector<glm::vec3> positions;
+	std::vector<glm::vec2> texcoords;
+	std::vector<glm::vec3> normals;
 
 	for(auto& vertex : vertices)
 	{
-		model.Positions.push_back(vertex.Position);
-		model.TexCoords.push_back(vertex.TexCoord);
-		model.Normals.push_back(vertex.Normal);
+		positions.push_back(vertex.Position);
+		texcoords.push_back(vertex.TexCoord);
+		normals.push_back(vertex.Normal);
 	}
-	
-	model.Indices = indices;
 
-	Load(model);
+	m_numIndices = indices.size();
+
+	m_vao.Bind();
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(positions[0]) * positions.size(), &positions[0]);
+	m_vao.SetVertexAttribPointer(0, 3, 0, 0);
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(texcoords[0]) * texcoords.size(), &texcoords[0]);
+	m_vao.SetVertexAttribPointer(1, 2, 0, 0);
+
+	m_vao.GenVertexBuffer();
+	m_vao.SetVertexBufferData(sizeof(normals[0]) * normals.size(), &normals[0]);
+	m_vao.SetVertexAttribPointer(2, 3, 0, 0);
+
+	m_vao.GenIndexBuffer();
+	m_vao.SetIndexBufferData(sizeof(indices[0]) * indices.size(), &indices[0]);
+
+	m_vao.Unbind();
 }
 
 Mesh::~Mesh()
 {
 
-}
-
-void Mesh::Load(const IndexedModel& model)
-{
-	m_numIndices = model.Indices.size();
-
-	m_vao.Bind();
-
-	m_vao.GenVertexBuffer();
-	m_vao.SetVertexBufferData(sizeof(model.Positions[0]) * model.Positions.size(), &model.Positions[0]);
-	m_vao.SetVertexAttribPointer(0, 3, 0, 0);
-
-	m_vao.GenVertexBuffer();
-	m_vao.SetVertexBufferData(sizeof(model.TexCoords[0]) * model.TexCoords.size(), &model.TexCoords[0]);
-	m_vao.SetVertexAttribPointer(1, 2, 0, 0);
-
-	m_vao.GenVertexBuffer();
-	m_vao.SetVertexBufferData(sizeof(model.Normals[0]) * model.Normals.size(), &model.Normals[0]);
-	m_vao.SetVertexAttribPointer(2, 3, 0, 0);
-
-	m_vao.GenIndexBuffer();
-	m_vao.SetIndexBufferData(sizeof(model.Indices[0]) * model.Indices.size(), &model.Indices[0]);
-
-	glBindVertexArray(0);
 }
 
 VAO& Mesh::VAO()
