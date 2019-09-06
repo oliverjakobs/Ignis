@@ -79,7 +79,7 @@ void DemoInstanced(GLFWwindow* window)
 		0.0f, 1.0f, 0.0f, 1.0f
 	};
 
-	vertices2 offsets;
+	std::vector<glm::vec2> offsets;
 
 	for (float y = 0.0f; y < 6.0f; y++)
 	{

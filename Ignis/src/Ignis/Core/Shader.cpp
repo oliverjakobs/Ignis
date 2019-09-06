@@ -160,7 +160,7 @@ std::string GetShaderLog(uint object)
 
 	glGetShaderiv(object, GL_INFO_LOG_LENGTH, &logLength);
 
-	vector<GLchar> log(logLength);
+	std::vector<GLchar> log(logLength);
 
 	glGetShaderInfoLog(object, logLength, &logLength, &log[0]);
 
@@ -176,7 +176,7 @@ std::string GetProgramLog(uint object)
 
 	glGetProgramiv(object, GL_INFO_LOG_LENGTH, &logLength);
 
-	vector<GLchar> log(logLength);
+	std::vector<GLchar> log(logLength);
 
 	glGetProgramInfoLog(object, logLength, &logLength, &log[0]);
 
