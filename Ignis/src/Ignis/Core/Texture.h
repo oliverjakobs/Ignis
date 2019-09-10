@@ -31,8 +31,9 @@ namespace ignis
 		int bpp;
 
 		// functions
-		Texture(std::string path, TextureConfig config = DEFAULT_CONFIG);
+		Texture(const std::string& path, TextureConfig config = DEFAULT_CONFIG);
 		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
+		Texture(byte* bitmap, int width, int height, TextureConfig config = DEFAULT_CONFIG);
 		~Texture();
 
 		static unsigned int CreateTexture(byte* pixels, int width, int height, TextureConfig config);

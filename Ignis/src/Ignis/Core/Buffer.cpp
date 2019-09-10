@@ -48,41 +48,36 @@ namespace ignis
 		glBindBuffer(type, 0);
 	}
 
-	void VAO::UnbindVertexBuffer()
+	uint VAO::GenBuffer(uint type)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+		uint buffer;
 
-	void VAO::UnbindIndexBuffer()
-	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
+		glGenBuffers(1, &buffer);
 
-	uint VAO::GenVertexBuffer()
-	{
-		uint vbo;
+		Buffers.push_back({ buffer, type });
 
-		glGenBuffers(1, &vbo);
-
-		Buffers.push_back({ vbo, GL_ARRAY_BUFFER });
-
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindBuffer(type, buffer);
 
 		return Buffers.size() - 1;
 	}
 
-	void VAO::SetVertexBufferData(uint size, const void* data, int usage)
+	void VAO::SetBufferData(uint type, uint size, const void* data, uint usage)
 	{
-		glBufferData(GL_ARRAY_BUFFER, size, data, (GLenum)usage);
+		glBufferData(type, size, data, (GLenum)usage);
 	}
 
-	void VAO::SetVertexAttribPointer(uint index, int size, uint stride, int offset)
+	void VAO::SetBufferSubData(uint target, uint offset, uint size, const void* data)
+	{
+		glBufferSubData(target, offset, size, data);
+	}
+
+	void VAO::SetVertexAttribPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
 		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
 	}
 
-	void VAO::SetVertexAttribIPointer(uint index, int size, uint stride, int offset)
+	void VAO::SetVertexAttribIPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
 		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), (void*)(offset * sizeof(GLuint)));
@@ -93,32 +88,18 @@ namespace ignis
 		glVertexAttribDivisor(index, divisor);
 	}
 
-	uint VAO::GenIndexBuffer()
+	void VAO::MapBufferData(uint index, const void* data, uint size)
 	{
-		uint ibo;
+		if (index < Buffers.size())
+		{
+			Buffer& buffer = Buffers.at(index);
+			glBindBuffer(buffer.Type, buffer.ID);
 
-		glGenBuffers(1, &ibo);
+			void* ptr = glMapBuffer(buffer.Type, GL_WRITE_ONLY);
 
-		Buffers.push_back({ ibo, GL_ELEMENT_ARRAY_BUFFER });
+			memcpy(ptr, data, size);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-
-		return Buffers.size() - 1;
-	}
-
-	void VAO::SetIndexBufferData(uint size, const void* data, int usage)
-	{
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, (GLenum)usage);
-	}
-
-	void VAO::MapBufferData(uint index, const void* data, size_t size)
-	{
-		BindBuffer(index);
-
-		void* ptr = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-		memcpy(ptr, data, size);
-
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+			glUnmapBuffer(buffer.Type);
+		}
 	}
 }

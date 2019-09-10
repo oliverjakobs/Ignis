@@ -17,9 +17,9 @@ namespace ignis
 
 		m_vao.Bind();
 
-		m_vao.GenVertexBuffer();
+		m_vao.GenBuffer(GL_ARRAY_BUFFER);
 
-		m_vao.SetVertexBufferData(sizeof(vertices), vertices);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
 		m_vao.SetVertexAttribPointer(0, 2, 4, 0);
 		m_vao.SetVertexAttribPointer(1, 2, 4, 2);
 
@@ -41,7 +41,7 @@ namespace ignis
 			DEBUG_WARN("Framebuffer is not complete!");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		m_vao.UnbindVertexBuffer();
+		m_vao.UnbindBuffer(GL_ARRAY_BUFFER);
 	}
 
 	FrameBuffer::~FrameBuffer()

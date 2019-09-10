@@ -2,14 +2,19 @@
 
 #include "Ignis/Framebuffer.h"
 #include "Ignis/Camera.h"
+#include "Ignis/Timer.h"
 
 #include <GLFW/glfw3.h>
+
+#include <spdlog/fmt/fmt.h>
 
 using namespace ignis;
 
 // settings
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
+
+glm::mat4 SCREEN_VIEW = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f);
 
 // mouse input
 float lastX = WIDTH / 2.0f;
@@ -34,13 +39,13 @@ void DemoTexture(GLFWwindow* window)
 
 	vao.Bind();
 
-	vao.GenVertexBuffer();
+	vao.GenBuffer(GL_ARRAY_BUFFER);
 
-	vao.SetVertexBufferData(sizeof(vertices), vertices);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
 	vao.SetVertexAttribPointer(0, 2, 4, 0);
 	vao.SetVertexAttribPointer(1, 2, 4, 2);
 
-	vao.UnbindVertexBuffer();
+	vao.Unbind();
 
 	Shader shader = Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
 
@@ -94,18 +99,18 @@ void DemoInstanced(GLFWwindow* window)
 
 	vao.Bind();
 
-	vao.GenVertexBuffer();
+	vao.GenBuffer(GL_ARRAY_BUFFER);
 
-	vao.SetVertexBufferData(sizeof(vertices), vertices);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
 	vao.SetVertexAttribPointer(0, 2, 4, 0);
 	vao.SetVertexAttribPointer(1, 2, 4, 2);
 
-	vao.GenVertexBuffer();
-	vao.SetVertexBufferData(sizeof(glm::vec2) * offsets.size(), &offsets[0]);
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * offsets.size(), &offsets[0]);
 	vao.SetVertexAttribPointer(2, 2, 2, 0);
 	vao.SetVertexAttribDivisor(2, 1);
 
-	vao.UnbindVertexBuffer();
+	vao.Unbind();
 
 	Shader instanced = Shader("res/shaders/instanced.vert", "res/shaders/texture.frag");
 
@@ -148,13 +153,13 @@ void DemoFramebuffer(GLFWwindow* window)
 
 	vao.Bind();
 
-	vao.GenVertexBuffer();
+	vao.GenBuffer(GL_ARRAY_BUFFER);
 
-	vao.SetVertexBufferData(sizeof(vertices), vertices);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
 	vao.SetVertexAttribPointer(0, 2, 4, 0);
 	vao.SetVertexAttribPointer(1, 2, 4, 2);
 
-	vao.UnbindVertexBuffer();
+	vao.Unbind();
 
 	Shader shader = Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
 	Shader inverted = Shader("res/shaders/texture.vert", "res/shaders/inverted.frag");
@@ -202,9 +207,10 @@ void DemoFramebuffer(GLFWwindow* window)
 
 void DemoModel(GLFWwindow* window)
 {
-	Camera camera;
-	float cameraSpeed = 2.5f;
-	float cameraSensitivity = 0.1f;
+	Timer timer;
+
+	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
+	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -213,21 +219,21 @@ void DemoModel(GLFWwindow* window)
 	{
 		if (firstMouse)
 		{
-			lastX = xPos;
-			lastY = yPos;
+			lastX = (float)xPos;
+			lastY = (float)yPos;
 			firstMouse = false;
 		}
 
-		mouseOffsetX = xPos - lastX;
-		mouseOffsetY = lastY - yPos; // reversed since y-coordinates go from bottom to top
+		mouseOffsetX = (float)xPos - lastX;
+		mouseOffsetY = lastY - (float)yPos; // reversed since y-coordinates go from bottom to top
 
-		lastX = xPos;
-		lastY = yPos;
+		lastX = (float)xPos;
+		lastY = (float)yPos;
 	});
 
-	// timing
-	float deltaTime = 0.0f;	// time between current frame and last frame
-	float lastFrame = 0.0f;
+	Camera camera;
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
 
 	Shader shader = Shader("res/shaders/model.vert", "res/shaders/model.frag");
 
@@ -236,15 +242,13 @@ void DemoModel(GLFWwindow* window)
 	
 	while (!glfwWindowShouldClose(window))
 	{
-		float currentFrame = glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+		timer.Start((float)glfwGetTime());
 
 		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		float velocity = cameraSpeed * deltaTime;
+		float velocity = cameraSpeed * timer.DeltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.Move(camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -270,27 +274,42 @@ void DemoModel(GLFWwindow* window)
 
 		RenderMesh(mesh, texture, projection, view, model, shader);
 
+
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_VIEW, fontShader);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		timer.End((float)glfwGetTime());
 	}
 }
 
 void DemoFont(GLFWwindow* window)
 {
+	Timer timer;
 	glEnable(GL_DEPTH_TEST);
+
+	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
+	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
 	while (!glfwWindowShouldClose(window))
 	{
+		timer.Start((float)glfwGetTime());
+
 		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// ----------------------------------------------------------------
+		
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_VIEW, fontShader);
 
-
-
+		// ----------------------------------------------------------------
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		timer.End((float)glfwGetTime());
 	}
 }
 
@@ -341,6 +360,7 @@ int main()
 	}
 
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(0);
 
 	DEBUG_INFO("[GLFW] Window created.");
 
@@ -364,7 +384,7 @@ int main()
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	DemoProgram prog = DEMO_FONT;
+	DemoProgram prog = DEMO_MODEL;
 
 	switch (prog)
 	{

@@ -13,6 +13,10 @@ namespace ignis
 
 		Vertex(const glm::vec3& pos, const glm::vec2& texCoord, const glm::vec3& normal)
 			: Position(pos), TexCoord(texCoord), Normal(normal) { }
+
+		bool operator==(const Vertex& other) const {
+			return Position == other.Position && TexCoord == other.TexCoord && Normal == other.Normal;
+		}
 	};
 
 	struct Mesh

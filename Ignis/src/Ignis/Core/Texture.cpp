@@ -7,7 +7,7 @@
 
 namespace ignis
 {
-	Texture::Texture(std::string path, TextureConfig config)
+	Texture::Texture(const std::string& path, TextureConfig config)
 	{
 		stbi_set_flip_vertically_on_load(true);
 
@@ -33,6 +33,11 @@ namespace ignis
 		: width(width), height(height)
 	{
 		id = CreateTexture(nullptr, width, height, config);
+	}
+
+	Texture::Texture(byte* bitmap, int width, int height, TextureConfig config)
+	{
+		id = CreateTexture(bitmap, width, height, config);
 	}
 
 	Texture::~Texture()

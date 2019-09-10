@@ -5,6 +5,24 @@
 
 #include "Core/Debugger.h"
 
+#include <unordered_map>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/hash.hpp>
+
+namespace std 
+{
+	template<> struct hash<ignis::Vertex> 
+	{
+		size_t operator()(ignis::Vertex const& vertex) const 
+		{
+			return ((hash<glm::vec3>()(vertex.Position) ^
+				(hash<glm::vec3>()(vertex.Normal) << 1)) >> 1) ^
+				(hash<glm::vec2>()(vertex.TexCoord) << 1);
+		}
+	};
+}
+
 namespace ignis
 {
 	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir)
@@ -31,6 +49,8 @@ namespace ignis
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
 
+		std::unordered_map<Vertex, uint> uniqueVertices = {};
+
 		for (const auto& shape : shapes)
 		{
 			for (const auto& index : shape.mesh.indices)
@@ -46,8 +66,15 @@ namespace ignis
 				float tx = attrib.texcoords[2 * index.texcoord_index + 0];
 				float ty = attrib.texcoords[2 * index.texcoord_index + 1];
 
-				vertices.push_back({ glm::vec3(vx, vy, vz), glm::vec2(tx, ty), glm::vec3(nx, ny, nz) });
-				indices.push_back(indices.size());
+				Vertex vertex = { glm::vec3(vx, vy, vz), glm::vec2(tx, ty), glm::vec3(nx, ny, nz) };
+
+				if (uniqueVertices.count(vertex) == 0)
+				{
+					uniqueVertices[vertex] = vertices.size();
+					vertices.push_back(vertex);
+				}
+
+				indices.push_back(uniqueVertices[vertex]);
 			}
 		}
 
@@ -71,20 +98,20 @@ namespace ignis
 
 		m_vao.Bind();
 
-		m_vao.GenVertexBuffer();
-		m_vao.SetVertexBufferData(sizeof(positions[0]) * positions.size(), &positions[0]);
+		m_vao.GenBuffer(GL_ARRAY_BUFFER);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), &positions[0]);
 		m_vao.SetVertexAttribPointer(0, 3, 0, 0);
 
-		m_vao.GenVertexBuffer();
-		m_vao.SetVertexBufferData(sizeof(texcoords[0]) * texcoords.size(), &texcoords[0]);
+		m_vao.GenBuffer(GL_ARRAY_BUFFER);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(texcoords[0]) * texcoords.size(), &texcoords[0]);
 		m_vao.SetVertexAttribPointer(1, 2, 0, 0);
 
-		m_vao.GenVertexBuffer();
-		m_vao.SetVertexBufferData(sizeof(normals[0]) * normals.size(), &normals[0]);
+		m_vao.GenBuffer(GL_ARRAY_BUFFER);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), &normals[0]);
 		m_vao.SetVertexAttribPointer(2, 3, 0, 0);
 
-		m_vao.GenIndexBuffer();
-		m_vao.SetIndexBufferData(sizeof(indices[0]) * indices.size(), &indices[0]);
+		m_vao.GenBuffer(GL_ELEMENT_ARRAY_BUFFER);
+		m_vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0]);
 
 		m_vao.Unbind();
 	}

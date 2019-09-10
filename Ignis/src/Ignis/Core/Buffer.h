@@ -27,21 +27,17 @@ namespace ignis
 
 		void BindBuffer(uint index);
 		void UnbindBuffer(uint type);
-		void UnbindVertexBuffer();
-		void UnbindIndexBuffer();
 
-		// vertex buffers
-		uint GenVertexBuffer();
+		// buffer
+		uint GenBuffer(uint type);
 
-		void SetVertexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
-		void SetVertexAttribPointer(uint index, int size, uint stride, int offset);
-		void SetVertexAttribIPointer(uint index, int size, uint stride, int offset);
+		void SetBufferData(uint type, uint size, const void* data, uint usage = GL_STATIC_DRAW);
+		void SetBufferSubData(uint type, uint offset, uint size, const void* data);
+
+		void SetVertexAttribPointer(uint index, uint size, uint stride, uint offset);
+		void SetVertexAttribIPointer(uint index, uint size, uint stride, uint offset);
 		void SetVertexAttribDivisor(uint index, uint divisor);
 
-		// index buffer
-		uint GenIndexBuffer();
-		void SetIndexBufferData(uint size, const void* data, int usage = GL_STATIC_DRAW);
-
-		void MapBufferData(uint index, const void* data, size_t size);
+		void MapBufferData(uint index, const void* data, uint size);
 	};
 }
