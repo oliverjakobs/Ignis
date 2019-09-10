@@ -53,10 +53,9 @@ namespace ignis
 		uint buffer;
 
 		glGenBuffers(1, &buffer);
+		glBindBuffer(type, buffer);
 
 		Buffers.push_back({ buffer, type });
-
-		glBindBuffer(type, buffer);
 
 		return Buffers.size() - 1;
 	}

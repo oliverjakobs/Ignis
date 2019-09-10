@@ -93,11 +93,11 @@ namespace ignis
 
 	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
 	{
+		glm::mat4 mvp = proj * view * model;
+
 		shader.Use();
 
-		shader.SetUniformMat4("projection", proj);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
+		shader.SetUniformMat4("mvp", mvp);
 
 		tex.Bind();
 		glDrawArrays(GL_TRIANGLES, first, count);
@@ -105,11 +105,11 @@ namespace ignis
 
 	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
 	{
+		glm::mat4 mvp = proj * view * model;
+
 		shader.Use();
 
-		shader.SetUniformMat4("projection", proj);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
+		shader.SetUniformMat4("mvp", mvp);
 
 		tex.Bind();
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
@@ -118,11 +118,11 @@ namespace ignis
 
 	void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
 	{
+		glm::mat4 mvp = proj * view * model;
+
 		shader.Use();
 
-		shader.SetUniformMat4("projection", proj);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
+		shader.SetUniformMat4("mvp", mvp);
 
 		tex.Bind();
 		glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data(), instances);
@@ -131,10 +131,11 @@ namespace ignis
 
 	void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
 	{
+		glm::mat4 mvp = proj * view * model;
+
 		shader.Use();
 
-		shader.SetUniformMat4("projection", proj);
-		shader.SetUniformMat4("view", view);
+		shader.SetUniformMat4("mvp", mvp);
 		shader.SetUniformMat4("model", model);
 
 		tex.Bind();
@@ -146,10 +147,10 @@ namespace ignis
 		tex.Unbind();
 	}
 	
-	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 view, Shader& shader)
+	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
 	{
 		shader.Use();
-		shader.SetUniformMat4("view", view);
+		shader.SetUniformMat4("projection", proj);
 
 		font.Bind();
 

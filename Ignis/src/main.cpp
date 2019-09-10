@@ -14,7 +14,7 @@ using namespace ignis;
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
-glm::mat4 SCREEN_VIEW = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f);
+glm::mat4 SCREEN_MAT = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f);
 
 // mouse input
 float lastX = WIDTH / 2.0f;
@@ -59,8 +59,8 @@ void DemoTexture(GLFWwindow* window)
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glm::mat4 projection = glm::mat4(1.0f);
-		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 projection = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
 		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
@@ -124,8 +124,8 @@ void DemoInstanced(GLFWwindow* window)
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glm::mat4 projection = glm::mat4(1.0f);
-		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 projection = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 model = glm::mat4(1.0f);
 
 		vao.Bind();
@@ -178,18 +178,17 @@ void DemoFramebuffer(GLFWwindow* window)
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glm::mat4 projection = glm::mat4(1.0f);
-		glm::mat4 view = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 projection = glm::ortho(0.0f, 8.0f, 0.0f, 6.0f);
+		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
 
 		vao.Bind();
 
 		framebuffer.Bind();
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		model = glm::translate(model, glm::vec3(2.0f, 1.0f, 1.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 1.0f));
 
 		RenderTexture(texture, projection, view, model, shader, { 0, 1, 2, 2, 3, 0 });
 
@@ -274,8 +273,7 @@ void DemoModel(GLFWwindow* window)
 
 		RenderMesh(mesh, texture, projection, view, model, shader);
 
-
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_VIEW, fontShader);
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -303,7 +301,7 @@ void DemoFont(GLFWwindow* window)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// ----------------------------------------------------------------
 		
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_VIEW, fontShader);
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		// ----------------------------------------------------------------
 		glfwSwapBuffers(window);

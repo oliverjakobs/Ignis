@@ -20,5 +20,5 @@ namespace ignis
 
 	void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
 
-	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 view, Shader& shader);
+	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader);
 }
