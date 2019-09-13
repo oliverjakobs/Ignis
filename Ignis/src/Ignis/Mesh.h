@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Material.h"
 #include "Core/Buffer.h"
-
 
 namespace ignis
 {
@@ -26,7 +26,7 @@ namespace ignis
 		uint m_numIndices;
 
 	public:
-		static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir = "");
+		static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl);
 
 		Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
 		virtual ~Mesh();

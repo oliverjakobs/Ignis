@@ -146,6 +146,26 @@ namespace ignis
 
 		tex.Unbind();
 	}
+
+	void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
+	{
+		glm::mat4 mvp = proj * view * model;
+
+		shader.Use();
+
+		shader.SetUniformMat4("mvp", mvp);
+		shader.SetUniformMat4("model", model);
+
+		if (mtl.Diffuse)
+			mtl.Diffuse->Bind();
+
+		mesh.VAO().Bind();
+		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
+		mesh.VAO().Unbind();
+
+		if (mtl.Diffuse)
+			mtl.Diffuse->Unbind();
+	}
 	
 	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
 	{

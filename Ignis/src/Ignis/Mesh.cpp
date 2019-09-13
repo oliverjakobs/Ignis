@@ -25,7 +25,7 @@ namespace std
 
 namespace ignis
 {
-	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir)
+	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl)
 	{
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -76,6 +76,15 @@ namespace ignis
 
 				indices.push_back(uniqueVertices[vertex]);
 			}
+		}
+
+		if (mtl)
+		{
+			if (!materials[0].diffuse_texname.empty())
+				mtl->Diffuse = new Texture(mtldir + materials[0].diffuse_texname);
+
+			if (!materials[0].normal_texname.empty())
+				mtl->Normal = new Texture(mtldir + materials[0].normal_texname);
 		}
 
 		return Mesh(vertices, indices);

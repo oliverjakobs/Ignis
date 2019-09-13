@@ -212,6 +212,7 @@ void DemoModel(GLFWwindow* window)
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
 	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
@@ -236,8 +237,8 @@ void DemoModel(GLFWwindow* window)
 
 	Shader shader = Shader("res/shaders/model.vert", "res/shaders/model.frag");
 
-	Mesh mesh = Mesh::LoadFromFile("res/models/barrel.obj", "res/models/");
-	Texture texture = Texture("res/models/barrel.png");
+	Material material;
+	Mesh mesh = Mesh::LoadFromFile("res/models/box.obj", "res/models/", &material);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -266,12 +267,15 @@ void DemoModel(GLFWwindow* window)
 		mouseOffsetY = 0.0f;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		glm::mat4 projection = glm::perspective(70.0f, 800.0f / 600.0f, 0.1f, 100.0f);
+
+		float fov = 70.0f;
+		float aspect = (float)WIDTH / (float)HEIGHT;
+
+		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		RenderMesh(mesh, texture, projection, view, model, shader);
+		RenderMesh(mesh, material, projection, view, model, shader);
 
 		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 

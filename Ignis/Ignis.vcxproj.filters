@@ -41,6 +41,7 @@
     </ClInclude>
     <ClInclude Include="src\Ignis\Timer.h" />
     <ClInclude Include="src\Ignis\Font.h" />
+    <ClInclude Include="src\Ignis\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp">
@@ -66,5 +67,6 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
+    <ClCompile Include="src\Ignis\Material.cpp" />
   </ItemGroup>
 </Project>
