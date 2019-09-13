@@ -238,7 +238,7 @@ void DemoModel(GLFWwindow* window)
 	Shader shader = Shader("res/shaders/model.vert", "res/shaders/model.frag");
 
 	Material material;
-	Mesh mesh = Mesh::LoadFromFile("res/models/box.obj", "res/models/", &material);
+	Mesh mesh = Mesh::LoadFromFile("res/models/shuttle/shuttle.obj", "res/models/shuttle", &material);
 	
 	while (!glfwWindowShouldClose(window))
 	{

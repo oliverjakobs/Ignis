@@ -78,7 +78,7 @@ namespace ignis
 			}
 		}
 
-		if (mtl)
+		if (mtl && materials.size() > 0)
 		{
 			if (!materials[0].diffuse_texname.empty())
 				mtl->Diffuse = new Texture(mtldir + materials[0].diffuse_texname);
