@@ -85,6 +85,11 @@ namespace ignis
 
 			if (!materials[0].normal_texname.empty())
 				mtl->Normal = new Texture(mtldir + materials[0].normal_texname);
+
+			if (!materials[0].specular_texname.empty())
+				mtl->Specular = new Texture(mtldir + materials[0].specular_texname);
+
+			mtl->Shininess = materials[0].shininess;
 		}
 
 		return Mesh(vertices, indices);

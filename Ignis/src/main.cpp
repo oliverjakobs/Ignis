@@ -238,7 +238,7 @@ void DemoModel(GLFWwindow* window)
 	Shader shader = Shader("res/shaders/model.vert", "res/shaders/model.frag");
 
 	Material material;
-	Mesh mesh = Mesh::LoadFromFile("res/models/shuttle/shuttle.obj", "res/models/shuttle", &material);
+	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -267,6 +267,109 @@ void DemoModel(GLFWwindow* window)
 		mouseOffsetY = 0.0f;
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		float fov = 70.0f;
+		float aspect = (float)WIDTH / (float)HEIGHT;
+
+		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+		glm::mat4 view = camera.View();
+		glm::mat4 model = glm::mat4(1.0f);
+
+		RenderMesh(mesh, material, projection, view, model, shader);
+
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+		timer.End((float)glfwGetTime());
+	}
+}
+
+void DemoMaterial(GLFWwindow* window)
+{
+	Timer timer;
+
+	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
+	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		if (firstMouse)
+		{
+			lastX = (float)xPos;
+			lastY = (float)yPos;
+			firstMouse = false;
+		}
+
+		mouseOffsetX = (float)xPos - lastX;
+		mouseOffsetY = lastY - (float)yPos; // reversed since y-coordinates go from bottom to top
+
+		lastX = (float)xPos;
+		lastY = (float)yPos;
+	});
+
+	Camera camera;
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
+
+	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+
+	Material material;
+	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
+
+	// load shader
+	shader.Use();
+	shader.SetUniform1i("material.diffuse", 0);
+	shader.SetUniform1i("material.specular", 1);
+	shader.SetUniform1i("material.specular", 2);
+
+	// lighting
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	shader.SetUniform3f("light.position", lightPos);
+
+	// light properties
+	shader.SetUniform3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	shader.SetUniform3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	shader.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+	// material properties
+	shader.SetUniform1f("material.shininess", material.Shininess);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		timer.Start((float)glfwGetTime());
+
+		// input
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
+		float velocity = cameraSpeed * timer.DeltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.Move(camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.Move(-camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.Move(-camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.Move(camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.Move(camera.WorldUp * velocity);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			camera.Move(-camera.WorldUp * velocity);
+
+		camera.YawPitch(mouseOffsetX * cameraSensitivity, mouseOffsetY * cameraSensitivity);
+		mouseOffsetX = 0.0f;
+		mouseOffsetY = 0.0f;
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		shader.Use();
+		shader.SetUniform3f("viewPos", camera.Position);
 
 		float fov = 70.0f;
 		float aspect = (float)WIDTH / (float)HEIGHT;
@@ -321,6 +424,7 @@ enum DemoProgram
 	DEMO_INSTANCED,
 	DEMO_FRAMEBUFFER,
 	DEMO_MODEL,
+	DEMO_MATERIAL,
 	DEMO_FONT,
 	DEMO_ALPHA
 };
@@ -386,7 +490,7 @@ int main()
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	DemoProgram prog = DEMO_MODEL;
+	DemoProgram prog = DEMO_MATERIAL;
 
 	switch (prog)
 	{
@@ -401,6 +505,9 @@ int main()
 		break;
 	case DEMO_MODEL:
 		DemoModel(window);
+		break;
+	case DEMO_MATERIAL:
+		DemoMaterial(window);
 		break;
 	case DEMO_FONT:
 		DemoFont(window);

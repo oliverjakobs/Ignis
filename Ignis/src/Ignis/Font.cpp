@@ -98,9 +98,9 @@ namespace ignis
 			float vertices[]
 			{
 				q.x0, q.y0, q.s0, q.t0,
-				q.x1, q.y0, q.s1, q.t0,
+				q.x0, q.y1, q.s0, q.t1,
 				q.x1, q.y1, q.s1, q.t1,
-				q.x0, q.y1, q.s0, q.t1
+				q.x1, q.y0, q.s1, q.t0
 			};
 
 			// Update content of VBO memory

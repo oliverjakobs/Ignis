@@ -157,7 +157,13 @@ namespace ignis
 		shader.SetUniformMat4("model", model);
 
 		if (mtl.Diffuse)
-			mtl.Diffuse->Bind();
+			mtl.Diffuse->Bind(0);
+
+		if (mtl.Specular)
+			mtl.Specular->Bind(1);
+
+		if (mtl.Normal)
+			mtl.Normal->Bind(2);
 
 		mesh.VAO().Bind();
 		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);

@@ -8,6 +8,9 @@ namespace ignis
 	{
 		Texture* Diffuse;
 		Texture* Normal;
+		Texture* Specular;
+
+		float Shininess;
 
 		Material();
 		~Material();
