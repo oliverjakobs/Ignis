@@ -294,7 +294,7 @@ void DemoMaterial(GLFWwindow* window)
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
@@ -318,27 +318,71 @@ void DemoMaterial(GLFWwindow* window)
 	float cameraSensitivity = 0.1f;
 
 	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
 
 	Material material;
 	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 
+	float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+	};
+
+	VAO lampVao;
+	lampVao.Bind();
+
+	lampVao.GenBuffer(GL_ARRAY_BUFFER);
+	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
+	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
+	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
+
 	// load shader
 	shader.Use();
-	shader.SetUniform1i("material.diffuse", 0);
-	shader.SetUniform1i("material.specular", 1);
-	shader.SetUniform1i("material.specular", 2);
+	shader.SetUniform1i("diffuseMap", 0);
+	shader.SetUniform1i("normalMap", 1);
 
 	// lighting
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	shader.SetUniform3f("light.position", lightPos);
-
-	// light properties
-	shader.SetUniform3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	shader.SetUniform3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	shader.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-	// material properties
-	shader.SetUniform1f("material.shininess", material.Shininess);
+	shader.SetUniform3f("lightPos", lightPos);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -378,7 +422,34 @@ void DemoMaterial(GLFWwindow* window)
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		RenderMesh(mesh, material, projection, view, model, shader);
+		// render mesh
+		glm::mat4 mvp = projection * view * model;
+
+		shader.Use();
+
+		shader.SetUniformMat4("mvp", mvp);
+		shader.SetUniformMat4("model", model);
+
+		if (material.Diffuse)
+			material.Diffuse->Bind(0);
+
+		if (material.Normal)
+			material.Normal->Bind(1);
+
+		mesh.VAO().Bind();
+		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
+
+		// also draw the lamp object
+		lampShader.Use();
+		lampShader.SetUniformMat4("projection", projection);
+		lampShader.SetUniformMat4("view", view);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lampShader.SetUniformMat4("model", model);
+
+		lampVao.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 

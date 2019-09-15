@@ -69,4 +69,8 @@
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Material.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\lamp.vert" />
+    <None Include="res\shaders\lamp.frag" />
+  </ItemGroup>
 </Project>

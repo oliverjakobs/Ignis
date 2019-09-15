@@ -1,49 +1,41 @@
 #version 330 core
+out vec4 FragColor;
 
-out vec4 fColor;
+in VS_OUT {
+    vec3 FragPos;
+    vec2 TexCoords;
+    vec3 TangentLightPos;
+    vec3 TangentViewPos;
+    vec3 TangentFragPos;
+} fs_in;
 
-uniform sampler2D uTexture;
+uniform sampler2D diffuseMap;
+uniform sampler2D normalMap;
 
-struct Light
-{
-	vec3 position;
-	vec3 ambient;
-	vec3 diffuse;
-	vec3 specular;
-};
-
-struct Material
-{
-	sampler2D diffuse;
-	sampler2D specular;
-	float shininess;
-};
-
-in vec3 position;
-in vec3 normal;
-in vec2 texCoord;
-
+uniform vec3 lightPos;
 uniform vec3 viewPos;
-uniform Material material;
-uniform Light light;
 
 void main()
-{
-	// ambient
-	vec3 ambient = light.ambient * texture(material.diffuse, texCoord).rgb;
+{           
+     // obtain normal from normal map in range [0,1]
+    vec3 normal = texture(normalMap, fs_in.TexCoords).rgb;
+    // transform normal vector to range [-1,1]
+    normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
+   
+    // get diffuse color
+    vec3 color = texture(diffuseMap, fs_in.TexCoords).rgb;
+    // ambient
+    vec3 ambient = 0.1 * color;
+    // diffuse
+    vec3 lightDir = normalize(fs_in.TangentLightPos - fs_in.TangentFragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * color;
+    // specular
+    vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 halfwayDir = normalize(lightDir + viewDir);  
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
 
-	// diffuse 
-	vec3 norm = normalize(normal);
-	vec3 lightDir = normalize(light.position - position);
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, texCoord).rgb;  
-	
-	// specular
-	vec3 viewDir = normalize(viewPos - position);
-	vec3 reflectDir = reflect(-lightDir, norm);  
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-	vec3 specular = light.specular * spec * texture(material.specular, texCoord).rgb;  
-	    
-	vec3 result = ambient + diffuse + specular;
-	fColor = vec4(result, 1.0);
+    vec3 specular = vec3(0.2) * spec;
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
 }
