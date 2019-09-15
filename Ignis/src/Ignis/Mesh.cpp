@@ -97,8 +97,11 @@ namespace ignis
 			glm::vec2 deltaT2 = t2 - t0;
 
 			float r = 1.0f / (deltaT1.x * deltaT2.y - deltaT1.y * deltaT2.x);
+
 			glm::vec3 tangent = (deltaP1 * deltaT2.y - deltaP2 * deltaT1.y) * r;
 			glm::vec3 bitangent = (deltaP2 * deltaT1.x - deltaP1 * deltaT2.x) * r;
+			tangent = glm::normalize(tangent);
+			bitangent = glm::normalize(bitangent);
 
 			vertices[i + 0].Tangent = tangent;
 			vertices[i + 1].Tangent = tangent;

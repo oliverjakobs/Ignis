@@ -8,6 +8,8 @@
 
 #include <spdlog/fmt/fmt.h>
 
+#include <glm/gtx/rotate_vector.hpp> 
+
 using namespace ignis;
 
 // settings
@@ -293,8 +295,11 @@ void DemoMaterial(GLFWwindow* window)
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
@@ -382,7 +387,6 @@ void DemoMaterial(GLFWwindow* window)
 
 	// lighting
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-	shader.SetUniform3f("lightPos", lightPos);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -412,8 +416,11 @@ void DemoMaterial(GLFWwindow* window)
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		lightPos = glm::rotate(lightPos, glm::radians(0.02f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 		shader.Use();
 		shader.SetUniform3f("viewPos", camera.Position);
+		shader.SetUniform3f("lightPos", lightPos);
 
 		float fov = 70.0f;
 		float aspect = (float)WIDTH / (float)HEIGHT;
@@ -422,13 +429,12 @@ void DemoMaterial(GLFWwindow* window)
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		// render mesh
-		glm::mat4 mvp = projection * view * model;
+		glm::mat4 mv = view * model;
+		glm::mat4 mvp = projection * mv;
 
-		shader.Use();
-
-		shader.SetUniformMat4("mvp", mvp);
-		shader.SetUniformMat4("model", model);
+		shader.SetUniformMat4("MVP", mvp);
+		shader.SetUniformMat4("MV", mv);
+		shader.SetUniformMat4("M", model);
 
 		if (material.Diffuse)
 			material.Diffuse->Bind(0);
@@ -446,6 +452,264 @@ void DemoMaterial(GLFWwindow* window)
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lampShader.SetUniformMat4("model", model);
+
+		lampVao.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
+		timer.End((float)glfwGetTime());
+	}
+}
+
+void DemoNormal(GLFWwindow* window)
+{
+	Timer timer;
+
+	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
+	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		if (firstMouse)
+		{
+			lastX = (float)xPos;
+			lastY = (float)yPos;
+			firstMouse = false;
+		}
+
+		mouseOffsetX = (float)xPos - lastX;
+		mouseOffsetY = lastY - (float)yPos; // reversed since y-coordinates go from bottom to top
+
+		lastX = (float)xPos;
+		lastY = (float)yPos;
+	});
+
+	Camera camera;
+	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
+
+	// configure global opengl state
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	// textures
+	Texture diffuseMap = Texture("res/textures/brickwall.jpg");
+	Texture normalMap = Texture("res/textures/brickwall_normal.jpg");
+
+	// shader
+	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+	Shader shader("res/shaders/normal.vert", "res/shaders/normal.frag");
+	shader.Use();
+	shader.SetUniform1i("diffuseMap", 0);
+	shader.SetUniform1i("normalMap", 1);
+
+	// quad
+
+	// positions
+	glm::vec3 pos1(-1.0f, 1.0f, 0.0f);
+	glm::vec3 pos2(-1.0f, -1.0f, 0.0f);
+	glm::vec3 pos3(1.0f, -1.0f, 0.0f);
+	glm::vec3 pos4(1.0f, 1.0f, 0.0f);
+	// texture coordinates
+	glm::vec2 uv1(0.0f, 1.0f);
+	glm::vec2 uv2(0.0f, 0.0f);
+	glm::vec2 uv3(1.0f, 0.0f);
+	glm::vec2 uv4(1.0f, 1.0f);
+	// normal vector
+	glm::vec3 nm(0.0f, 0.0f, 1.0f);
+
+	// calculate tangent/bitangent vectors of both triangles
+	glm::vec3 tangent1, bitangent1;
+	glm::vec3 tangent2, bitangent2;
+
+	// triangle 1
+	glm::vec3 edge1 = pos2 - pos1;
+	glm::vec3 edge2 = pos3 - pos1;
+	glm::vec2 deltaUV1 = uv2 - uv1;
+	glm::vec2 deltaUV2 = uv3 - uv1;
+
+	GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+	tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+	tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+	tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+	tangent1 = glm::normalize(tangent1);
+
+	bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+	bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+	bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+	bitangent1 = glm::normalize(bitangent1);
+
+	// triangle 2
+	edge1 = pos3 - pos1;
+	edge2 = pos4 - pos1;
+	deltaUV1 = uv3 - uv1;
+	deltaUV2 = uv4 - uv1;
+
+	f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+	tangent2.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+	tangent2.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+	tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+	tangent2 = glm::normalize(tangent2);
+
+
+	bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+	bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+	bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+	bitangent2 = glm::normalize(bitangent2);
+
+	float quadVertices[] = {
+		// positions            // normal         // texcoords  // tangent                          // bitangent
+		pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
+		pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
+		pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
+
+		pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
+		pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
+		pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z
+	};
+
+	// configure plane VAO
+	VAO quadVAO;
+	quadVAO.Bind();
+
+	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices);
+	quadVAO.SetVertexAttribPointer(0, 3, 14, 0);
+	quadVAO.SetVertexAttribPointer(1, 3, 14, 3);
+	quadVAO.SetVertexAttribPointer(2, 2, 14, 6);
+	quadVAO.SetVertexAttribPointer(3, 3, 14, 8);
+	quadVAO.SetVertexAttribPointer(4, 3, 14, 11);
+
+	// lighting info
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
+	// lamp
+	float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+	};
+
+	VAO lampVao;
+	lampVao.Bind();
+
+	lampVao.GenBuffer(GL_ARRAY_BUFFER);
+	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices);
+	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
+	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		timer.Start((float)glfwGetTime());
+
+		// logic
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+
+		float velocity = cameraSpeed * timer.DeltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.Move(camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.Move(-camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.Move(-camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.Move(camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.Move(camera.WorldUp * velocity);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			camera.Move(-camera.WorldUp * velocity);
+
+		camera.YawPitch(mouseOffsetX * cameraSensitivity, mouseOffsetY * cameraSensitivity);
+		mouseOffsetX = 0.0f;
+		mouseOffsetY = 0.0f;
+
+		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// render
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// configure view/projection matrices
+		float fov = 70.0f;
+		float aspect = (float)WIDTH / (float)HEIGHT;
+
+		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+		glm::mat4 view = camera.View();
+		glm::mat4 model = glm::mat4(1.0f);
+
+		shader.Use();
+		shader.SetUniformMat4("projection", projection);
+		shader.SetUniformMat4("view", view);
+		shader.SetUniformMat4("model", model);
+
+		// render normal-mapped quad
+		shader.SetUniform3f("viewPos", camera.Position);
+		shader.SetUniform3f("lightPos", lightPos);
+
+		diffuseMap.Bind(0);
+		normalMap.Bind(1);
+
+		quadVAO.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		// render lamp
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+
+		lampShader.Use();
+		lampShader.SetUniformMat4("projection", projection);
+		lampShader.SetUniformMat4("view", view);
+
 		lampShader.SetUniformMat4("model", model);
 
 		lampVao.Bind();
@@ -496,10 +760,12 @@ enum DemoProgram
 	DEMO_FRAMEBUFFER,
 	DEMO_MODEL,
 	DEMO_MATERIAL,
+	DEMO_NORMAL,
 	DEMO_FONT,
 	DEMO_ALPHA
 };
 
+#if 1
 int main()
 {
 	// ingis initialization
@@ -556,12 +822,9 @@ int main()
 		return -1;
 	}
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	DemoProgram prog = DEMO_MATERIAL;
+	DemoProgram prog = DEMO_NORMAL;
 
 	switch (prog)
 	{
@@ -580,6 +843,9 @@ int main()
 	case DEMO_MATERIAL:
 		DemoMaterial(window);
 		break;
+	case DEMO_NORMAL:
+		DemoNormal(window);
+		break;
 	case DEMO_FONT:
 		DemoFont(window);
 		break;
@@ -590,3 +856,4 @@ int main()
 
 	return 0;
 }
+#endif
