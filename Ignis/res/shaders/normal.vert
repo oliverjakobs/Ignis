@@ -1,8 +1,8 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPosition;
-layout (location = 1) in vec3 aNormal;
-layout (location = 2) in vec2 aTexCoord;
+layout (location = 1) in vec2 aTexCoord;
+layout (location = 2) in vec3 aNormal;
 layout (location = 3) in vec3 aTangent;
 layout (location = 4) in vec3 aBitangent;
 
@@ -24,14 +24,18 @@ void main()
 	fragPos = vec3(model * vec4(aPosition, 1.0));   
 	texCoord = aTexCoord;
 
-	vec3 T = normalize(vec3(model * vec4(aTangent, 0.0)));
-	vec3 N = normalize(vec3(model * vec4(aNormal, 0.0)));
-	// re-orthogonalize T with respect to N
-	T = normalize(T - dot(T, N) * N);
-	// then retrieve perpendicular vector B with the cross product of T and N
-	vec3 B = cross(N, T);
+	float w = (dot(cross(aTangent, aBitangent), aNormal) > 0.0F) ? 1.0F : -1.0F;
 
-	mat3 TBN = mat3(T, B, N);
+	vec3 n = normalize((model * vec4(aNormal, 0.0)).xyz);
+	vec3 t = normalize((model * vec4(aTangent.xyz, 0.0)).xyz);
+	vec3 b = normalize((model * vec4((cross(aNormal, aTangent.xyz) * w), 0.0)).xyz);
+	mat3 TBN = mat3( t, b, n );
+
+	vec3 T = normalize(vec3(model * vec4(aTangent,   0.0)));
+	vec3 B = normalize(vec3(model * vec4(aBitangent, 0.0)));
+	vec3 N = normalize(vec3(model * vec4(aNormal,    0.0)));
+	//mat3 TBN = mat3(T, B, N);
+
 	tangentLightPos = TBN * lightPos;
 	tangentViewPos  = TBN * viewPos;
 	tangentFragPos  = TBN * fragPos;

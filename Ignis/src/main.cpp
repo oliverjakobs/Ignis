@@ -1,4 +1,4 @@
-#include "Ignis/Ignis.h"
+﻿#include "Ignis/Ignis.h"
 
 #include "Ignis/Framebuffer.h"
 #include "Ignis/Camera.h"
@@ -500,11 +500,11 @@ void DemoNormal(GLFWwindow* window)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	// textures
-	Texture diffuseMap = Texture("res/textures/brickwall.jpg");
-	Texture normalMap = Texture("res/textures/brickwall_normal.jpg");
+	Texture diffuseMap = Texture("res/textures/brickwall.png");
+	Texture normalMap = Texture("res/textures/brickwall_normal.png");
 
 	// shader
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
@@ -516,128 +516,244 @@ void DemoNormal(GLFWwindow* window)
 	// quad
 
 	// positions
-	glm::vec3 pos1(-1.0f, 1.0f, 0.0f);
-	glm::vec3 pos2(-1.0f, -1.0f, 0.0f);
-	glm::vec3 pos3(1.0f, -1.0f, 0.0f);
-	glm::vec3 pos4(1.0f, 1.0f, 0.0f);
-	// texture coordinates
-	glm::vec2 uv1(0.0f, 1.0f);
-	glm::vec2 uv2(0.0f, 0.0f);
-	glm::vec2 uv3(1.0f, 0.0f);
-	glm::vec2 uv4(1.0f, 1.0f);
-	// normal vector
-	glm::vec3 nm(0.0f, 0.0f, 1.0f);
-
-	// calculate tangent/bitangent vectors of both triangles
-	glm::vec3 tangent1, bitangent1;
-	glm::vec3 tangent2, bitangent2;
-
-	// triangle 1
-	glm::vec3 edge1 = pos2 - pos1;
-	glm::vec3 edge2 = pos3 - pos1;
-	glm::vec2 deltaUV1 = uv2 - uv1;
-	glm::vec2 deltaUV2 = uv3 - uv1;
-
-	GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-
-	tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-	tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-	tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
-	tangent1 = glm::normalize(tangent1);
-
-	bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-	bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-	bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-	bitangent1 = glm::normalize(bitangent1);
-
-	// triangle 2
-	edge1 = pos3 - pos1;
-	edge2 = pos4 - pos1;
-	deltaUV1 = uv3 - uv1;
-	deltaUV2 = uv4 - uv1;
-
-	f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
-
-	tangent2.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-	tangent2.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-	tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
-	tangent2 = glm::normalize(tangent2);
-
-
-	bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-	bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-	bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-	bitangent2 = glm::normalize(bitangent2);
-
-	float quadVertices[] = {
-		// positions            // normal         // texcoords  // tangent                          // bitangent
-		pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-		pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-		pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-
-		pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-		pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-		pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z
+	std::vector<glm::vec3> positions =
+	{
+		// front
+		glm::vec3(-1.0f, -1.0f,  1.0f),
+		glm::vec3( 1.0f, -1.0f,  1.0f),
+		glm::vec3( 1.0f,  1.0f,  1.0f),
+		glm::vec3( 1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f, -1.0f,  1.0f),
+		// back
+		glm::vec3( 1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3( 1.0f,  1.0f, -1.0f),
+		glm::vec3( 1.0f, -1.0f, -1.0f),
+		// left
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		// right
+		glm::vec3( 1.0f, -1.0f,  1.0f),
+		glm::vec3( 1.0f, -1.0f, -1.0f),
+		glm::vec3( 1.0f,  1.0f, -1.0f),
+		glm::vec3( 1.0f,  1.0f, -1.0f),
+		glm::vec3( 1.0f,  1.0f,  1.0f),
+		glm::vec3( 1.0f, -1.0f,  1.0f),
+		// top
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		glm::vec3( 1.0f,  1.0f,  1.0f),
+		glm::vec3( 1.0f,  1.0f, -1.0f),
+		glm::vec3( 1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f, -1.0f),
+		glm::vec3(-1.0f,  1.0f,  1.0f),
+		// bottom
+		glm::vec3(-1.0f, -1.0f, -1.0f),
+		glm::vec3( 1.0f, -1.0f, -1.0f),
+		glm::vec3( 1.0f, -1.0f,  1.0f),
+		glm::vec3( 1.0f, -1.0f,  1.0f),
+		glm::vec3(-1.0f, -1.0f,  1.0f),
+		glm::vec3(-1.0f, -1.0f, -1.0f)
 	};
+
+	// texture coordinates
+	std::vector<glm::vec2> texcoords =
+	{
+		// front
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+		// back
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+		// left
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+		// right
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+		// top
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+		// bottom
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.0f, 1.0f),
+		glm::vec2(0.0f, 0.0f),
+	};
+
+	// normal vector
+	std::vector<glm::vec3> normals =
+	{
+		// front
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		glm::vec3( 0.0f,  0.0f,  1.0f),
+		// back
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		glm::vec3( 0.0f,  0.0f, -1.0f),
+		// left
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		glm::vec3(-1.0f,  0.0f,  0.0f),
+		// right
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		glm::vec3( 1.0f,  0.0f,  0.0f),
+		// top
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		glm::vec3( 0.0f,  1.0f,  0.0f),
+		// bottom
+		glm::vec3( 0.0f, -1.0f,  0.0f),
+		glm::vec3( 0.0f, -1.0f,  0.0f),
+		glm::vec3( 0.0f, -1.0f,  0.0f),
+		glm::vec3( 0.0f, -1.0f,  0.0f),
+		glm::vec3( 0.0f, -1.0f,  0.0f),
+		glm::vec3( 0.0f, -1.0f,  0.0f)
+	};
+
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+
+	for (uint i = 0; i < positions.size(); i += 3)
+	{
+		glm::vec3 edge1 = positions[i + 1] - positions[i];
+		glm::vec3 edge2 = positions[i + 2] - positions[i];
+		glm::vec2 deltaUV1 = texcoords[i + 1] - texcoords[i];
+		glm::vec2 deltaUV2 = texcoords[i + 2] - texcoords[i];
+
+		GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		glm::vec3 tangent = (edge1 * deltaUV2.y - edge2 * deltaUV1.y) * f;
+		glm::vec3 bitangent = (edge2 * deltaUV1.x - edge1 * deltaUV2.x) * f;
+		tangent = glm::normalize(tangent);
+		bitangent = glm::normalize(bitangent);
+
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+	}
 
 	// configure plane VAO
 	VAO quadVAO;
 	quadVAO.Bind();
 
 	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
-	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices);
-	quadVAO.SetVertexAttribPointer(0, 3, 14, 0);
-	quadVAO.SetVertexAttribPointer(1, 3, 14, 3);
-	quadVAO.SetVertexAttribPointer(2, 2, 14, 6);
-	quadVAO.SetVertexAttribPointer(3, 3, 14, 8);
-	quadVAO.SetVertexAttribPointer(4, 3, 14, 11);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(positions[0])* positions.size(), &positions[0]);
+	quadVAO.SetVertexAttribPointer(0, 3, 0, 0);
+
+	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(texcoords[0])* texcoords.size(), &texcoords[0]);
+	quadVAO.SetVertexAttribPointer(1, 2, 0, 0);
+
+	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(normals[0])* normals.size(), &normals[0]);
+	quadVAO.SetVertexAttribPointer(2, 3, 0, 0);
+
+	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(tangents[0])* tangents.size(), &tangents[0]);
+	quadVAO.SetVertexAttribPointer(3, 3, 0, 0);
+
+	quadVAO.GenBuffer(GL_ARRAY_BUFFER);
+	quadVAO.SetBufferData(GL_ARRAY_BUFFER, sizeof(bitangents[0])* bitangents.size(), &bitangents[0]);
+	quadVAO.SetVertexAttribPointer(4, 3, 0, 0);
 
 	// lighting info
-	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	glm::vec3 lightPos(1.2f, 2.0f, 2.0f);
 
 	// lamp
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
+	float vertices[] = 
+	{
+		// front
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		// back
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		// left
 		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
 		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		// right
 		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
 		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 // bot
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		// top
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f
 	};
 
 	VAO lampVao;
@@ -700,7 +816,7 @@ void DemoNormal(GLFWwindow* window)
 		normalMap.Bind(1);
 
 		quadVAO.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// render lamp
 		model = glm::translate(model, lightPos);
