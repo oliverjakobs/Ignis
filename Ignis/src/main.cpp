@@ -12,6 +12,20 @@
 
 using namespace ignis;
 
+enum DemoProgram
+{
+	DEMO_TEXTURE,
+	DEMO_INSTANCED,
+	DEMO_FRAMEBUFFER,
+	DEMO_MODEL,
+	DEMO_MATERIAL,
+	DEMO_NORMAL,
+	DEMO_FONT,
+	DEMO_ALPHA
+};
+
+DemoProgram PROG = DEMO_MATERIAL;
+
 // settings
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
@@ -319,57 +333,70 @@ void DemoMaterial(GLFWwindow* window)
 	});
 
 	Camera camera;
+	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
 	float cameraSpeed = 2.5f;
 	float cameraSensitivity = 0.1f;
 
-	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+	shader.Use();
+	shader.SetUniform1i("material.diffuse", 0);
+	shader.SetUniform1i("material.normal", 1);
+	shader.SetUniform1f("material.shininess", 32.0f);
+
+	shader.SetUniform3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+	shader.SetUniform3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
+	shader.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
 	Material material;
 	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
+	// lamp
+	float vertices[] =
+	{
+		// front
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+		// back
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 // left
+		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 // right
+		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  // bot
+		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 // top
+		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f
 	};
 
 	VAO lampVao;
@@ -379,12 +406,7 @@ void DemoMaterial(GLFWwindow* window)
 	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
 	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
 	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
-
-	// load shader
-	shader.Use();
-	shader.SetUniform1i("diffuseMap", 0);
-	shader.SetUniform1i("normalMap", 1);
-
+	
 	// lighting
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
@@ -414,13 +436,9 @@ void DemoMaterial(GLFWwindow* window)
 		mouseOffsetX = 0.0f;
 		mouseOffsetY = 0.0f;
 
+		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		lightPos = glm::rotate(lightPos, glm::radians(0.02f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		shader.Use();
-		shader.SetUniform3f("viewPos", camera.Position);
-		shader.SetUniform3f("lightPos", lightPos);
 
 		float fov = 70.0f;
 		float aspect = (float)WIDTH / (float)HEIGHT;
@@ -429,12 +447,14 @@ void DemoMaterial(GLFWwindow* window)
 		glm::mat4 view = camera.View();
 		glm::mat4 model = glm::mat4(1.0f);
 
-		glm::mat4 mv = view * model;
-		glm::mat4 mvp = projection * mv;
+		shader.Use();
+		shader.SetUniformMat4("projection", projection);
+		shader.SetUniformMat4("view", view);
+		shader.SetUniformMat4("model", model);
 
-		shader.SetUniformMat4("MVP", mvp);
-		shader.SetUniformMat4("MV", mv);
-		shader.SetUniformMat4("M", model);
+		// render normal-mapped quad
+		shader.SetUniform3f("viewPos", camera.Position);
+		shader.SetUniform3f("lightPos", lightPos);
 
 		if (material.Diffuse)
 			material.Diffuse->Bind(0);
@@ -446,12 +466,12 @@ void DemoMaterial(GLFWwindow* window)
 		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
 
 		// also draw the lamp object
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+
 		lampShader.Use();
 		lampShader.SetUniformMat4("projection", projection);
 		lampShader.SetUniformMat4("view", view);
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 		lampShader.SetUniformMat4("model", model);
 
 		lampVao.Bind();
@@ -500,7 +520,7 @@ void DemoNormal(GLFWwindow* window)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 	// textures
 	Texture diffuseMap = Texture("res/textures/brickwall.png");
@@ -825,7 +845,6 @@ void DemoNormal(GLFWwindow* window)
 		lampShader.Use();
 		lampShader.SetUniformMat4("projection", projection);
 		lampShader.SetUniformMat4("view", view);
-
 		lampShader.SetUniformMat4("model", model);
 
 		lampVao.Bind();
@@ -868,18 +887,6 @@ void DemoFont(GLFWwindow* window)
 		timer.End((float)glfwGetTime());
 	}
 }
-
-enum DemoProgram
-{
-	DEMO_TEXTURE,
-	DEMO_INSTANCED,
-	DEMO_FRAMEBUFFER,
-	DEMO_MODEL,
-	DEMO_MATERIAL,
-	DEMO_NORMAL,
-	DEMO_FONT,
-	DEMO_ALPHA
-};
 
 #if 1
 int main()
@@ -940,9 +947,7 @@ int main()
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	DemoProgram prog = DEMO_NORMAL;
-
-	switch (prog)
+	switch (PROG)
 	{
 	case DEMO_TEXTURE:
 		DemoTexture(window);

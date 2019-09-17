@@ -2,41 +2,50 @@
 
 out vec4 fColor;
 
-in vec3 fragPos;
+struct Light
+{
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
+};
+
+struct Material
+{
+	sampler2D diffuse;
+	sampler2D normal;
+	sampler2D specular;
+	float shininess;
+};
+
+in vec3 lightDir;
+in vec3 viewDir;
 in vec2 texCoord;
-in vec3 tangentLightPos;
-in vec3 tangentViewPos;
-in vec3 tangentFragPos;
+in mat3 TBN;
 
-uniform sampler2D diffuseMap;
-uniform sampler2D normalMap;
-
-uniform vec3 lightPos;
 uniform vec3 viewPos;
+uniform Material material;
+uniform Light light;
 
-void main()
-{           
-     // obtain normal from normal map in range [0,1]
-    vec3 normal = texture(normalMap, texCoord).rgb;
-    // transform normal vector to range [-1,1]
-    normal = normalize(normal * 2.0 - 1.0);  // this normal is in tangent space
-   
-    // get diffuse color
-    vec3 color = texture(diffuseMap, texCoord).rgb;
-    // ambient
-    vec3 ambient = 0.1 * color;
 
-    // diffuse
-    vec3 lightDir = normalize(tangentLightPos - tangentFragPos);
-    float diff = max(dot(lightDir, normal), 0.0);
-    vec3 diffuse = diff * color;
+void main (void)
+{
+	//texture color 
+    vec3 color = texture(material.diffuse, texCoord).rgb;
 
-    // specular
-    vec3 viewDir = normalize(tangentViewPos - tangentFragPos);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+	// normal
+	vec3 normal = TBN * normalize(texture2D(material.normal, texCoord).xyz * 2.0 - 1.0);
+	float lambert = max(0.0, dot(normal, lightDir));
 
-    vec3 specular = vec3(0.2) * spec;
-    fColor = vec4(ambient + diffuse + specular, 1.0);
+	// ambient
+    vec3 ambient = light.ambient * color;
+  	
+    // diffuse 
+	vec3 diffuse = light.diffuse * (lambert * color);
+
+	// specular
+	vec3 reflectDir = reflect(-lightDir, normal);  
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+	vec3 specular = light.specular * (spec * vec3(0.5, 0.5, 0.5));  
+
+	fColor = vec4(ambient + diffuse + specular, 1.0);
 }

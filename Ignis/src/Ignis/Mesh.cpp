@@ -7,22 +7,6 @@
 
 #include <unordered_map>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/hash.hpp>
-
-namespace std 
-{
-	template<> struct hash<ignis::Vertex> 
-	{
-		size_t operator()(ignis::Vertex const& vertex) const 
-		{
-			return ((hash<glm::vec3>()(vertex.Position) ^
-				(hash<glm::vec3>()(vertex.Normal) << 1)) >> 1) ^
-				(hash<glm::vec2>()(vertex.TexCoord) << 1);
-		}
-	};
-}
-
 namespace ignis
 {
 	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl)
@@ -48,8 +32,6 @@ namespace ignis
 
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
-
-		std::unordered_map<Vertex, uint> uniqueVertices = {};
 
 		for (const auto& index : shapes[0].mesh.indices)
 		{
