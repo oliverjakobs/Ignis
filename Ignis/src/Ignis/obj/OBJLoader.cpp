@@ -5,110 +5,49 @@
 #include <sstream>      // std::istringstream
 
 #include "Ignis/Core/Debugger.h"
+#include <tiny_obj_loader.h>
 
 bool loadOBJ(const char* path, std::vector<glm::vec3>& out_vertices, std::vector<glm::vec2>& out_uvs, std::vector<glm::vec3>& out_normals)
 {
-	printf("Loading OBJ file %s...\n", path);
+	// ----------------
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
 
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> normals;
+	std::string warn;
+	std::string err;
 
-	std::ifstream in(path, std::ios::in);
-	if (!in)
+	if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path))
 	{
-		std::cerr << "Cannot open " << path << std::endl;
+		DEBUG_ERROR("Failed to load obj: {0}", path);
 		return false;
 	}
-	std::string line;
-	while (std::getline(in, line))
+
+	if (!warn.empty())
+		DEBUG_WARN("{0}", warn);
+
+	if (!err.empty())
+		DEBUG_ERROR("{0}", err);
+
+	for (const auto& shape : shapes)
 	{
-		//check v for vertices
-		if (line.substr(0, 2) == "v ") 
+		for (const auto& index : shape.mesh.indices)
 		{
-			std::istringstream v(line.substr(2));
-			glm::vec3 vert;
-			float x, y, z;
-			v >> x; v >> y; v >> z;
-			vert = glm::vec3(x, y, z);
-			vertices.push_back(vert);
+			float vx = attrib.vertices[3 * index.vertex_index + 0];
+			float vy = attrib.vertices[3 * index.vertex_index + 1];
+			float vz = attrib.vertices[3 * index.vertex_index + 2];
+
+			float nx = attrib.normals[3 * index.normal_index + 0];
+			float ny = attrib.normals[3 * index.normal_index + 1];
+			float nz = attrib.normals[3 * index.normal_index + 2];
+
+			float tx = attrib.texcoords[2 * index.texcoord_index + 0];
+			float ty = attrib.texcoords[2 * index.texcoord_index + 1];
+
+			out_vertices.push_back(glm::vec3(vx, vy, vz));
+			out_normals.push_back(glm::vec3(nx, ny, nz));
+			out_uvs.push_back(glm::vec2(tx, ty));
 		}
-		//check for texture co-ordinate
-		else if (line.substr(0, 2) == "vt")
-		{
-			std::istringstream v(line.substr(3));
-			glm::vec2 tex;
-			float U, V;
-			v >> U; v >> V;
-			tex = glm::vec2(U, V);
-			uvs.push_back(tex);
-		}
-		//check for normal co-ordinate
-		else if (line.substr(0, 2) == "vn")
-		{
-			std::istringstream v(line.substr(3));
-			glm::vec3 normal;
-			float x, y, z;
-			v >> x; v >> y; v >> z;
-			normal = glm::vec3(x, y, z);
-			normals.push_back(normal);
-		}
-		//check for faces
-		else if (line.substr(0, 2) == "f ") 
-		{
-			unsigned int v[4];	//to store mesh index
-			unsigned int uv[4];	//to store texture index
-			unsigned int nv[4];	//to store normal index
-
-			const char* chh = line.c_str();
-			//int matches = sscanf(chh, "f %i/%i/%i %i/%i/%i %i/%i/%i", &v[0], &uv[0], &nv[0], &v[1], &uv[1], &nv[1], &v[2], &uv[2], &nv[2]);
-			int matches = sscanf(chh, "f %i/%i/%i %i/%i/%i %i/%i/%i %i/%i/%i", &v[0], &uv[0], &nv[0], &v[1], &uv[1], &nv[1], &v[2], &uv[2], &nv[2], &v[3], &uv[3], &nv[3]);
-			//DEBUG_INFO("Matches {0}", matches);
-
-			vertexIndices.push_back(v[0]);
-			vertexIndices.push_back(v[1]);
-			vertexIndices.push_back(v[2]);
-
-			vertexIndices.push_back(v[2]);
-			vertexIndices.push_back(v[3]);
-			vertexIndices.push_back(v[0]);
-
-			uvIndices.push_back(uv[0]);
-			uvIndices.push_back(uv[1]);
-			uvIndices.push_back(uv[2]);
-
-			uvIndices.push_back(uv[2]);
-			uvIndices.push_back(uv[3]);
-			uvIndices.push_back(uv[0]);
-
-			normalIndices.push_back(nv[0]);
-			normalIndices.push_back(nv[1]);
-			normalIndices.push_back(nv[2]);
-
-			normalIndices.push_back(nv[2]);
-			normalIndices.push_back(nv[3]);
-			normalIndices.push_back(nv[0]);
-		}
-
-	}
-	//the mesh data is finally calculated here
-	for (unsigned int i = 0; i < vertexIndices.size(); i++)
-	{
-		// Get the indices of its attributes
-		unsigned int vertexIndex = vertexIndices[i];
-		unsigned int uvIndex = uvIndices[i];
-		unsigned int normalIndex = normalIndices[i];
-
-		// Get the attributes thanks to the index
-		glm::vec3 vertex = vertices[vertexIndex - 1];
-		glm::vec2 uv = uvs[uvIndex - 1];
-		glm::vec3 normal = normals[normalIndex - 1];
-
-		// Put the attributes in buffers
-		out_vertices.push_back(vertex);
-		out_uvs.push_back(uv);
-		out_normals.push_back(normal);
 	}
 
 	return true;
@@ -150,23 +89,6 @@ void computeTangentBasis(std::vector<glm::vec3>& vertices, std::vector<glm::vec2
 		bitangents.push_back(bitangent);
 		bitangents.push_back(bitangent);
 		bitangents.push_back(bitangent);
-
-	}
-
-	// See "Going Further"
-	for (unsigned int i = 0; i < vertices.size(); i += 1)
-	{
-		glm::vec3& n = normals[i];
-		glm::vec3& t = tangents[i];
-		glm::vec3& b = bitangents[i];
-
-		// Gram-Schmidt orthogonalize
-		t = glm::normalize(t - n * glm::dot(n, t));
-
-		// Calculate handedness
-		if (glm::dot(glm::cross(n, t), b) < 0.0f) {
-			t = t * -1.0f;
-		}
 	}
 }
 
