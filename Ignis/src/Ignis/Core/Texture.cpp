@@ -7,9 +7,9 @@
 
 namespace ignis
 {
-	Texture::Texture(const std::string& path, TextureConfig config)
+	Texture::Texture(const std::string& path, bool flipOnLoad, TextureConfig config)
 	{
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load(flipOnLoad);
 
 		width = 0;
 		height = 0;

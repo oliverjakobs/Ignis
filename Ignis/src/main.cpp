@@ -10,6 +10,8 @@
 
 #include <glm/gtx/rotate_vector.hpp> 
 
+#include "Ignis/obj/OBJLoader.h"
+
 using namespace ignis;
 
 enum DemoProgram
@@ -313,7 +315,7 @@ void DemoMaterial(GLFWwindow* window)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
@@ -336,24 +338,73 @@ void DemoMaterial(GLFWwindow* window)
 	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
 	float cameraSpeed = 2.5f;
 	float cameraSensitivity = 0.1f;
+		
+	// textures
+	Texture diffuse = Texture("res/models/barrel2/textures/barrel_1_diffuse.png");
+	Texture normal = Texture("res/models/barrel2/textures/barrel_1_normal.png");
+	Texture specular = Texture("res/models/barrel2/textures/barrel_1_specular.png");
 
+	// Read our .obj file
+	std::vector<glm::vec3> vertices;
+	std::vector<glm::vec2> uvs;
+	std::vector<glm::vec3> normals;
+	bool res = loadOBJ("res/models/barrel2/barrel.obj", vertices, uvs, normals);
+
+	std::vector<glm::vec3> tangents;
+	std::vector<glm::vec3> bitangents;
+	computeTangentBasis(
+		vertices, uvs, normals, // input
+		tangents, bitangents    // output
+	);
+
+	std::vector<unsigned short> indices;
+	std::vector<glm::vec3> indexed_vertices;
+	std::vector<glm::vec2> indexed_uvs;
+	std::vector<glm::vec3> indexed_normals;
+	std::vector<glm::vec3> indexed_tangents;
+	std::vector<glm::vec3> indexed_bitangents;
+	indexVBO_TBN(
+		vertices, uvs, normals, tangents, bitangents,
+		indices, indexed_vertices, indexed_uvs, indexed_normals, indexed_tangents, indexed_bitangents
+	);
+
+	// configure plane VAO
+	VAO vao;
+	vao.Bind();
+
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexed_vertices[0]) * indexed_vertices.size(), &indexed_vertices[0]);
+	vao.SetVertexAttribPointer(0, 3, 0, 0);
+
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexed_uvs[0]) * indexed_uvs.size(), &indexed_uvs[0]);
+	vao.SetVertexAttribPointer(1, 2, 0, 0);
+
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexed_normals[0]) * indexed_normals.size(), &indexed_normals[0]);
+	vao.SetVertexAttribPointer(2, 3, 0, 0);
+
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexed_tangents[0]) * indexed_tangents.size(), &indexed_tangents[0]);
+	vao.SetVertexAttribPointer(3, 3, 0, 0);
+
+	vao.GenBuffer(GL_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexed_bitangents[0]) * indexed_bitangents.size(), &indexed_bitangents[0]);
+	vao.SetVertexAttribPointer(4, 3, 0, 0);
+
+	vao.GenBuffer(GL_ELEMENT_ARRAY_BUFFER);
+	vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * indices.size(), &indices[0]);
+
+	Shader shader = Shader("res/shaders/normal.vert", "res/shaders/normal.frag");
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
-	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+
 	shader.Use();
-	shader.SetUniform1i("material.diffuse", 0);
-	shader.SetUniform1i("material.normal", 1);
-	shader.SetUniform1f("material.shininess", 32.0f);
-
-	shader.SetUniform3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	shader.SetUniform3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	shader.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-	Material material;
-	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
-
+	shader.SetUniform1i("diffuseMap", 0);
+	shader.SetUniform1i("normalMap", 1);
+	shader.SetUniform1i("SpecularTextureSampler", 2);
 
 	// lamp
-	float vertices[] =
+	float lampVertices[] =
 	{
 		// front
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
@@ -403,7 +454,7 @@ void DemoMaterial(GLFWwindow* window)
 	lampVao.Bind();
 
 	lampVao.GenBuffer(GL_ARRAY_BUFFER);
-	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
+	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(lampVertices), lampVertices);
 	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
 	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
 	
@@ -443,36 +494,37 @@ void DemoMaterial(GLFWwindow* window)
 		float fov = 70.0f;
 		float aspect = (float)WIDTH / (float)HEIGHT;
 
-		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
-		glm::mat4 view = camera.View();
-		glm::mat4 model = glm::mat4(1.0f);
-
+		glm::mat4 ProjectionMatrix = glm::perspective(fov, aspect, 0.1f, 100.0f);
+		glm::mat4 ViewMatrix = camera.View();
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
+		glm::mat4 ModelViewMatrix = ViewMatrix * ModelMatrix;
+		glm::mat3 ModelView3x3Matrix = glm::mat3(ModelViewMatrix);
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		
 		shader.Use();
-		shader.SetUniformMat4("projection", projection);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
+		shader.SetUniformMat4("projection", ProjectionMatrix);
+		shader.SetUniformMat4("view", ViewMatrix);
+		shader.SetUniformMat4("model", ModelMatrix);
 
-		// render normal-mapped quad
-		shader.SetUniform3f("viewPos", camera.Position);
 		shader.SetUniform3f("lightPos", lightPos);
 
-		if (material.Diffuse)
-			material.Diffuse->Bind(0);
+		// Bind our textures 
+		diffuse.Bind(0);
+		normal.Bind(1);
 
-		if (material.Normal)
-			material.Normal->Bind(1);
+		vao.Bind();
 
-		mesh.VAO().Bind();
-		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
-
+		// Draw the triangles !
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, (void*)0);
+		
 		// also draw the lamp object
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		ModelMatrix = glm::translate(ModelMatrix, lightPos);
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.2f)); // a smaller cube
 
 		lampShader.Use();
-		lampShader.SetUniformMat4("projection", projection);
-		lampShader.SetUniformMat4("view", view);
-		lampShader.SetUniformMat4("model", model);
+		lampShader.SetUniformMat4("projection", ProjectionMatrix);
+		lampShader.SetUniformMat4("view", ViewMatrix);
+		lampShader.SetUniformMat4("model", ModelMatrix);
 
 		lampVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -528,6 +580,7 @@ void DemoNormal(GLFWwindow* window)
 
 	// shader
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+
 	Shader shader("res/shaders/normal.vert", "res/shaders/normal.frag");
 	shader.Use();
 	shader.SetUniform1i("diffuseMap", 0);
