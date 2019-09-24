@@ -66,7 +66,7 @@ namespace ignis
 
 		m_vao.GenBuffer(GL_ARRAY_BUFFER);
 		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
-		m_vao.SetVertexAttribPointer(0, 4, 4, 0);
+		m_vao.SetVertexAttribPointer(0, 4, 4 * sizeof(float), 0);
 	}
 
 	Font::~Font()

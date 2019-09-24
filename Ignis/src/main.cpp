@@ -10,6 +10,8 @@
 
 #include <glm/gtx/rotate_vector.hpp> 
 
+#include "Ignis/obj/OBJLoader.h"
+
 using namespace ignis;
 
 enum DemoProgram
@@ -337,23 +339,20 @@ void DemoMaterial(GLFWwindow* window)
 	float cameraSpeed = 2.5f;
 	float cameraSensitivity = 0.1f;
 
-	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
-	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
-	shader.Use();
-	shader.SetUniform1i("material.diffuse", 0);
-	shader.SetUniform1i("material.normal", 1);
-	shader.SetUniform1f("material.shininess", 32.0f);
-
-	shader.SetUniform3f("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-	shader.SetUniform3f("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f));
-	shader.SetUniform3f("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
+	// Read our .obj file
 	Material material;
 	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 
+	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+
+	shader.Use();
+	shader.SetUniform1i("diffuseMap", 0);
+	shader.SetUniform1i("normalMap", 1);
+	shader.SetUniform1i("specularMap", 2);
 
 	// lamp
-	float vertices[] =
+	float lampVertices[] =
 	{
 		// front
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
@@ -403,9 +402,9 @@ void DemoMaterial(GLFWwindow* window)
 	lampVao.Bind();
 
 	lampVao.GenBuffer(GL_ARRAY_BUFFER);
-	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
-	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
-	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
+	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(lampVertices), lampVertices);
+	lampVao.SetVertexAttribPointer(0, 3, 6 * sizeof(float), 0);
+	lampVao.SetVertexAttribPointer(1, 3, 6 * sizeof(float), 3 * sizeof(float));
 	
 	// lighting
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
@@ -445,26 +444,14 @@ void DemoMaterial(GLFWwindow* window)
 
 		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
 		glm::mat4 view = camera.View();
-		glm::mat4 model = glm::mat4(1.0f);
-
+		glm::mat4 model = glm::mat4(1.0);
+		
 		shader.Use();
-		shader.SetUniformMat4("projection", projection);
-		shader.SetUniformMat4("view", view);
-		shader.SetUniformMat4("model", model);
-
-		// render normal-mapped quad
-		shader.SetUniform3f("viewPos", camera.Position);
 		shader.SetUniform3f("lightPos", lightPos);
 
-		if (material.Diffuse)
-			material.Diffuse->Bind(0);
-
-		if (material.Normal)
-			material.Normal->Bind(1);
-
-		mesh.VAO().Bind();
-		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
-
+		// render mesh 
+		RenderMesh(mesh, material, projection, view, model, shader);
+		
 		// also draw the lamp object
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
@@ -528,6 +515,7 @@ void DemoNormal(GLFWwindow* window)
 
 	// shader
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+
 	Shader shader("res/shaders/normal.vert", "res/shaders/normal.frag");
 	shader.Use();
 	shader.SetUniform1i("diffuseMap", 0);

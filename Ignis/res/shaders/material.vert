@@ -7,14 +7,11 @@ layout (location = 3) in vec3 aTangent;
 layout (location = 4) in vec3 aBitangent;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 mvp;
 
 uniform vec3 lightPos;
-uniform vec3 viewPos;
 
 out vec3 lightDir;
-out vec3 viewDir;
 out vec2 texCoord;
 out mat3 TBN;
 
@@ -25,14 +22,12 @@ void main()
 	float w = (dot(cross(aTangent, aBitangent), aNormal) > 0.0) ? 1.0 : -1.0;
 	
 	vec3 t = normalize((model * vec4(aTangent.xyz, 0.0)).xyz );
-	//vec3 b = normalize((model * vec4((cross(aNormal, aTangent) * w), 0.0)).xyz);
-	vec3 b = normalize((model * vec4((cross(aTangent, aNormal)), 0.0)).xyz);
+	vec3 b = normalize((model * vec4((cross(aNormal, aTangent.xyz) * w), 0.0)).xyz);
 	vec3 n = normalize((model * vec4(aNormal, 0.0)).xyz);
 	TBN = mat3(t, b, n);
 
-	lightDir = normalize(lightPos - position);
-	viewDir = normalize(viewPos - position);
+	lightDir = lightPos - position;
 	
 	texCoord = aTexCoord;
-	gl_Position = projection * view * model * vec4(aPosition, 1.0);
+	gl_Position = mvp * vec4(aPosition, 1.0);
 }

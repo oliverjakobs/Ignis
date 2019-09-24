@@ -103,6 +103,7 @@
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Material.h" />
     <ClInclude Include="src\Ignis\Mesh.h" />
+    <ClInclude Include="src\Ignis\obj\OBJLoader.h" />
     <ClInclude Include="src\Ignis\Timer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +116,7 @@
     <ClCompile Include="src\Ignis\Ignis.cpp" />
     <ClCompile Include="src\Ignis\Material.cpp" />
     <ClCompile Include="src\Ignis\Mesh.cpp" />
+    <ClCompile Include="src\Ignis\obj\OBJLoader.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

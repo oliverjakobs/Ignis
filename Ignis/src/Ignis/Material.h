@@ -14,5 +14,8 @@ namespace ignis
 
 		Material();
 		~Material();
+
+		void Bind();
+		void Unbind();
 	};
 }

@@ -27,7 +27,7 @@ namespace ignis
 	public:
 		static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl);
 
-		Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+		Mesh(std::vector<Vertex> vertices);
 		virtual ~Mesh();
 
 		// disable copying

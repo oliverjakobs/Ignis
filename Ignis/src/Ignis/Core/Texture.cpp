@@ -7,9 +7,10 @@
 
 namespace ignis
 {
-	Texture::Texture(const std::string& path, TextureConfig config)
+	Texture::Texture(const std::string& path, bool flipOnLoad, TextureConfig config)
+		: m_activeSlot(0)
 	{
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load(flipOnLoad);
 
 		width = 0;
 		height = 0;
@@ -30,12 +31,13 @@ namespace ignis
 	}
 
 	Texture::Texture(int width, int height, TextureConfig config)
-		: width(width), height(height)
+		: width(width), height(height), m_activeSlot(0)
 	{
 		id = CreateTexture(nullptr, width, height, config);
 	}
 
 	Texture::Texture(byte* bitmap, int width, int height, TextureConfig config)
+		: width(width), height(height), m_activeSlot(0)
 	{
 		id = CreateTexture(bitmap, width, height, config);
 	}
@@ -68,10 +70,13 @@ namespace ignis
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, id);
+		m_activeSlot = slot;
 	}
 
 	void Texture::Unbind()
 	{
+		glActiveTexture(GL_TEXTURE0 + m_activeSlot);
 		glBindTexture(GL_TEXTURE_2D, 0);
+		m_activeSlot = 0;
 	}
 }

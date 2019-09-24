@@ -42,6 +42,7 @@
     <ClInclude Include="src\Ignis\Timer.h" />
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Material.h" />
+    <ClInclude Include="src\Ignis\obj\OBJLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp">
@@ -68,6 +69,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Material.cpp" />
+    <ClCompile Include="src\Ignis\obj\OBJLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\lamp.vert" />

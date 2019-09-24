@@ -24,6 +24,9 @@ namespace ignis
 
 	struct Texture
 	{
+	private:
+		uint m_activeSlot;
+	public:
 		uint id;
 
 		int width;
@@ -31,7 +34,7 @@ namespace ignis
 		int bpp;
 
 		// functions
-		Texture(const std::string& path, TextureConfig config = DEFAULT_CONFIG);
+		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
 		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
 		Texture(byte* bitmap, int width, int height, TextureConfig config = DEFAULT_CONFIG);
 		~Texture();

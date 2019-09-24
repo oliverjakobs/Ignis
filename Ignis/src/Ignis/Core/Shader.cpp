@@ -114,42 +114,82 @@ namespace ignis
 
 	void Shader::SetUniform1i(const std::string& name, int value) const
 	{
-		glUniform1i(glGetUniformLocation(m_program, name.c_str()), value);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniform1i(location, value);
 	}
 
 	void Shader::SetUniform1f(const std::string& name, float value) const
 	{
-		glUniform1f(glGetUniformLocation(m_program, name.c_str()), value);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniform1f(location, value);
 	}
 
 	void Shader::SetUniform2f(const std::string& name, const glm::vec2& vector) const
 	{
-		glUniform2fv(glGetUniformLocation(m_program, name.c_str()), 1, &vector[0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniform2fv(location, 1, &vector[0]);
 	}
 
 	void Shader::SetUniform3f(const std::string& name, const glm::vec3& vector) const
 	{
-		glUniform3fv(glGetUniformLocation(m_program, name.c_str()), 1, &vector[0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniform3fv(location, 1, &vector[0]);
 	}
 
 	void Shader::SetUniform4f(const std::string& name, const glm::vec4& vector) const
 	{
-		glUniform4fv(glGetUniformLocation(m_program, name.c_str()), 1, &vector[0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniform4fv(location, 1, &vector[0]);
 	}
 
 	void Shader::SetUniformMat2(const std::string& name, const glm::mat4& matrix) const
 	{
-		glUniformMatrix2fv(glGetUniformLocation(m_program, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniformMatrix2fv(location, 1, GL_FALSE, &matrix[0][0]);
 	}
 
 	void Shader::SetUniformMat3(const std::string& name, const glm::mat4& matrix) const
 	{
-		glUniformMatrix3fv(glGetUniformLocation(m_program, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniformMatrix3fv(location, 1, GL_FALSE, &matrix[0][0]);
 	}
 
 	void Shader::SetUniformMat4(const std::string& name, const glm::mat4& matrix) const
 	{
-		glUniformMatrix4fv(glGetUniformLocation(m_program, name.c_str()), 1, GL_FALSE, &matrix[0][0]);
+		int location = GetUniformLocation(name);
+
+		if (location < 0)
+			DEBUG_WARN("[Ignis] Uniform {0} not found", name);
+		else
+			glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]);
 	}
 
 	int Shader::GetUniformLocation(const std::string& name) const
