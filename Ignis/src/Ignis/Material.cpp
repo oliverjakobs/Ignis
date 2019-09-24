@@ -19,5 +19,23 @@ namespace ignis
 		SAFE_DELETE(Normal);
 		SAFE_DELETE(Specular);
 	}
+
+	void Material::Bind()
+	{
+		if (Diffuse)
+			Diffuse->Bind(0);
+
+		if (Normal)
+			Normal->Bind(1);
+	}
+
+	void Material::Unbind()
+	{
+		if (Diffuse)
+			Diffuse->Unbind();
+
+		if (Normal)
+			Normal->Unbind();
+	}
 }
 

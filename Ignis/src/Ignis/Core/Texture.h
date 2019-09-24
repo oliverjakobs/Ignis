@@ -24,6 +24,9 @@ namespace ignis
 
 	struct Texture
 	{
+	private:
+		uint m_activeSlot;
+	public:
 		uint id;
 
 		int width;

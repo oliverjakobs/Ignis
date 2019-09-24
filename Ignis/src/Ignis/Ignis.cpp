@@ -156,18 +156,13 @@ namespace ignis
 		shader.SetUniformMat4("mvp", mvp);
 		shader.SetUniformMat4("model", model);
 
-		if (mtl.Diffuse)
-			mtl.Diffuse->Bind(0);
-
-		if (mtl.Normal)
-			mtl.Normal->Bind(1);
+		mtl.Bind();
 
 		mesh.VAO().Bind();
 		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
 		mesh.VAO().Unbind();
 
-		if (mtl.Diffuse)
-			mtl.Diffuse->Unbind();
+		mtl.Unbind();
 	}
 	
 	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
