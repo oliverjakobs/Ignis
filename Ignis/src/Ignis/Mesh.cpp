@@ -5,7 +5,7 @@
 
 #include "Core/Debugger.h"
 
-#include <unordered_map>
+#include <cstddef>
 
 namespace ignis
 {
@@ -145,45 +145,19 @@ namespace ignis
 				indices.push_back(indexedVert.size() - 1);
 			}
 		}
-		
-		std::vector<glm::vec3> positions;
-		std::vector<glm::vec2> texcoords;
-		std::vector<glm::vec3> normals;
-		std::vector<glm::vec3> tangents;
-		std::vector<glm::vec3> bitangents;
-
-		for (auto& vertex : indexedVert)
-		{
-			positions.push_back(vertex.Position);
-			texcoords.push_back(vertex.TexCoord);
-			normals.push_back(vertex.Normal);
-			tangents.push_back(vertex.Tangent);
-			bitangents.push_back(vertex.Bitangent);
-		}
 
 		m_numIndices = indices.size();
 
 		m_vao.Bind();
 
 		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(positions[0]) * positions.size(), &positions[0]);
-		m_vao.SetVertexAttribPointer(0, 3, 0, 0);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0]);
 
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(texcoords[0]) * texcoords.size(), &texcoords[0]);
-		m_vao.SetVertexAttribPointer(1, 2, 0, 0);
-
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(normals[0]) * normals.size(), &normals[0]);
-		m_vao.SetVertexAttribPointer(2, 3, 0, 0);
-
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(tangents[0]) * tangents.size(), &tangents[0]);
-		m_vao.SetVertexAttribPointer(3, 3, 0, 0);
-
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(bitangents[0]) * bitangents.size(), &bitangents[0]);
-		m_vao.SetVertexAttribPointer(4, 3, 0, 0);
+		m_vao.SetVertexAttribPointer(0, 3, sizeof(Vertex), 0);
+		m_vao.SetVertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
+		m_vao.SetVertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
+		m_vao.SetVertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
+		m_vao.SetVertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
 
 		m_vao.GenBuffer(GL_ELEMENT_ARRAY_BUFFER);
 		m_vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0]);

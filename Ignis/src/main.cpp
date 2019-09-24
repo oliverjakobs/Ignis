@@ -403,8 +403,8 @@ void DemoMaterial(GLFWwindow* window)
 
 	lampVao.GenBuffer(GL_ARRAY_BUFFER);
 	lampVao.SetBufferData(GL_ARRAY_BUFFER, sizeof(lampVertices), lampVertices);
-	lampVao.SetVertexAttribPointer(0, 3, 6, 0);
-	lampVao.SetVertexAttribPointer(1, 3, 6, 3);
+	lampVao.SetVertexAttribPointer(0, 3, 6 * sizeof(float), 0);
+	lampVao.SetVertexAttribPointer(1, 3, 6 * sizeof(float), 3 * sizeof(float));
 	
 	// lighting
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);

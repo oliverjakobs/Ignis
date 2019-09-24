@@ -73,13 +73,13 @@ namespace ignis
 	void VAO::SetVertexAttribPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(offset * sizeof(float)));
+		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 	}
 
 	void VAO::SetVertexAttribIPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), (void*)(offset * sizeof(GLuint)));
+		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride, (void*)offset);
 	}
 
 	void VAO::SetVertexAttribDivisor(uint index, uint divisor)
