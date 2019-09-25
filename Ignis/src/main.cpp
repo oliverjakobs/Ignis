@@ -2,15 +2,12 @@
 
 #include "Ignis/Framebuffer.h"
 #include "Ignis/Camera.h"
-#include "Ignis/Timer.h"
 
 #include <GLFW/glfw3.h>
 
 #include <spdlog/fmt/fmt.h>
 
 #include <glm/gtx/rotate_vector.hpp> 
-
-#include "Ignis/obj/OBJLoader.h"
 
 using namespace ignis;
 
@@ -224,7 +221,7 @@ void DemoFramebuffer(GLFWwindow* window)
 
 void DemoModel(GLFWwindow* window)
 {
-	Timer timer;
+	FrameCounter frames;
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
@@ -260,13 +257,13 @@ void DemoModel(GLFWwindow* window)
 	
 	while (!glfwWindowShouldClose(window))
 	{
-		timer.Start((float)glfwGetTime());
+		frames.Start((float)glfwGetTime());
 
 		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		float velocity = cameraSpeed * timer.DeltaTime;
+		float velocity = cameraSpeed * frames.DeltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.Move(camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -295,18 +292,24 @@ void DemoModel(GLFWwindow* window)
 
 		RenderMesh(mesh, material, projection, view, model, shader);
 
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		timer.End((float)glfwGetTime());
+		frames.End((float)glfwGetTime());
 	}
 }
 
 void DemoMaterial(GLFWwindow* window)
 {
+	FrameCounter frames;
 	Timer timer;
+
+	Camera camera;
+	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
@@ -334,16 +337,22 @@ void DemoMaterial(GLFWwindow* window)
 		lastY = (float)yPos;
 	});
 
-	Camera camera;
-	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
-	float cameraSpeed = 2.5f;
-	float cameraSensitivity = 0.1f;
+	timer.Start();
 
-	// Read our .obj file
+	// load .obj file
+	// current load time: 1717.34ms 
 	Material material;
 	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 
+	timer.End();
+	DEBUG_INFO("Loaded mesh in {0}ms", timer.GetDurationMS());
+
+	// load shader
+	timer.Start();
 	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+	timer.End();
+	DEBUG_INFO("Loaded shader in {0}ms", timer.GetDurationMS());
+
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
 
 	shader.Use();
@@ -411,13 +420,13 @@ void DemoMaterial(GLFWwindow* window)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		timer.Start((float)glfwGetTime());
+		frames.Start((float)glfwGetTime());
 
 		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		float velocity = cameraSpeed * timer.DeltaTime;
+		float velocity = cameraSpeed * frames.DeltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.Move(camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -435,7 +444,7 @@ void DemoMaterial(GLFWwindow* window)
 		mouseOffsetX = 0.0f;
 		mouseOffsetY = 0.0f;
 
-		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
+		lightPos = glm::rotate(lightPos, glm::radians(60.0f * frames.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -456,26 +465,26 @@ void DemoMaterial(GLFWwindow* window)
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 
+		glm::mat4 mvp = projection * view * model;
+
 		lampShader.Use();
-		lampShader.SetUniformMat4("projection", projection);
-		lampShader.SetUniformMat4("view", view);
-		lampShader.SetUniformMat4("model", model);
+		lampShader.SetUniformMat4("mvp", mvp);
 
 		lampVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		timer.End((float)glfwGetTime());
+		frames.End((float)glfwGetTime());
 	}
 }
 
 void DemoNormal(GLFWwindow* window)
 {
-	Timer timer;
+	FrameCounter frames;
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
@@ -522,7 +531,6 @@ void DemoNormal(GLFWwindow* window)
 	shader.SetUniform1i("normalMap", 1);
 
 	// quad
-
 	// positions
 	std::vector<glm::vec3> positions =
 	{
@@ -774,13 +782,13 @@ void DemoNormal(GLFWwindow* window)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		timer.Start((float)glfwGetTime());
+		frames.Start((float)glfwGetTime());
 
 		// logic
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		float velocity = cameraSpeed * timer.DeltaTime;
+		float velocity = cameraSpeed * frames.DeltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 			camera.Move(camera.Front * velocity);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -798,7 +806,7 @@ void DemoNormal(GLFWwindow* window)
 		mouseOffsetX = 0.0f;
 		mouseOffsetY = 0.0f;
 
-		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
+		lightPos = glm::rotate(lightPos, glm::radians(60.0f * frames.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// render
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -838,18 +846,18 @@ void DemoNormal(GLFWwindow* window)
 		lampVao.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		timer.End((float)glfwGetTime());
+		frames.End((float)glfwGetTime());
 	}
 }
 
 void DemoFont(GLFWwindow* window)
 {
-	Timer timer;
+	FrameCounter frames;
 	glEnable(GL_DEPTH_TEST);
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
@@ -857,7 +865,7 @@ void DemoFont(GLFWwindow* window)
 
 	while (!glfwWindowShouldClose(window))
 	{
-		timer.Start((float)glfwGetTime());
+		frames.Start((float)glfwGetTime());
 
 		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -866,13 +874,13 @@ void DemoFont(GLFWwindow* window)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// ----------------------------------------------------------------
 		
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 
 		// ----------------------------------------------------------------
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		timer.End((float)glfwGetTime());
+		frames.End((float)glfwGetTime());
 	}
 }
 

@@ -27,7 +27,7 @@ namespace ignis
 		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
 		// create a color attachment texture
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.id, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.ID, 0);
 
 		// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
 		unsigned int rbo;

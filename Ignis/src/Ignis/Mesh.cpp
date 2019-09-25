@@ -1,16 +1,19 @@
 #include "Mesh.h"
-
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
 #include "Core/Debugger.h"
 
-#include <cstddef>
-
 namespace ignis
 {
 	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl)
 	{
+		DEBUG_TRACE("[Obj] ------------------------------------------------");
+		DEBUG_TRACE("[Obj] Reading obj file {0}", filename);
+
+		Timer timer;
+		timer.Start();
+
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
 		std::vector<tinyobj::material_t> materials;
@@ -18,18 +21,30 @@ namespace ignis
 		std::string warn;
 		std::string err;
 
-		if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), mtldir.c_str()))
-		{
-			DEBUG_ERROR("Failed to load obj: {0}", filename);
-			return Mesh({});
-		}
+		bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), mtldir.c_str());
 
 		if (!warn.empty())
 			DEBUG_WARN("{0}", warn);
 
 		if (!err.empty())
 			DEBUG_ERROR("{0}", err);
-		
+
+		if (!success)
+		{
+			DEBUG_ERROR("[Obj] Failed to load obj: {0}", filename);
+			return Mesh({});
+		}
+
+		DEBUG_TRACE("[Obj] Detected:");
+		DEBUG_TRACE("[Obj] {0} vertices", (attrib.vertices.size() / 3));
+		DEBUG_TRACE("[Obj] {0} normals", (attrib.normals.size() / 3));
+		DEBUG_TRACE("[Obj] {0} texture coords", (attrib.texcoords.size() / 2));
+
+		timer.End();
+		DEBUG_TRACE("[Obj] Parsed obj file in {0}ms", timer.GetDurationMS());
+
+		timer.Start();
+
 		std::vector<Vertex> vertices;
 		std::vector<uint> indices;
 
@@ -57,6 +72,11 @@ namespace ignis
 			vertices.push_back(vertex);
 		}
 
+		timer.End();
+		DEBUG_TRACE("[Obj] Converted to vertices in {0}ms", timer.GetDurationMS());
+
+		timer.Start();
+
 		if (mtl && materials.size() > 0)
 		{
 			if (!materials[0].diffuse_texname.empty())
@@ -71,21 +91,19 @@ namespace ignis
 			mtl->Shininess = materials[0].shininess;
 		}
 
+		timer.End();
+		DEBUG_TRACE("[Obj] Materials loaded in {0}ms", timer.GetDurationMS());
+		DEBUG_TRACE("[Obj] ------------------------------------------------");
 		return Mesh(vertices);
-	}
-
-	int GetSimilarVertexIndex(Vertex& v, std::vector<Vertex> vertices)
-	{
-		for (unsigned int i = 0; i < vertices.size(); i++)
-		{
-			if (v == vertices[i])
-				return i;
-		}
-		return -1;
 	}
 
 	Mesh::Mesh(std::vector<Vertex> vertices)
 	{
+		DEBUG_TRACE("[Mesh] Loading mesh with {0} vertices", vertices.size());
+
+		Timer timer;
+		timer.Start();
+
 		for (unsigned int i = 0; i < vertices.size(); i += 3) 
 		{
 			// Shortcuts for vertices
@@ -110,38 +128,43 @@ namespace ignis
 			glm::vec3 tangent = (deltaP1 * deltaT2.y - deltaP2 * deltaT1.y) * r;
 			glm::vec3 bitangent = (deltaP2 * deltaT1.x - deltaP1 * deltaT2.x) * r;
 
-			// Set the same tangent for all three vertices of the triangle.
-			// They will be merged later, in vboindexer.cpp
 			vertices[i + 0].Tangent = tangent;
 			vertices[i + 1].Tangent = tangent;
 			vertices[i + 2].Tangent = tangent;
 
-			// Same thing for binormals
 			vertices[i + 0].Bitangent = bitangent;
 			vertices[i + 1].Bitangent = bitangent;
 			vertices[i + 2].Bitangent = bitangent;
 		}
 
-		// For each input vertex
+		// create indicies and eliminate duplicates
 		std::vector<Vertex> indexedVert;
 		std::vector<uint> indices;
 
 		for (auto& v : vertices) 
 		{
-			// Try to find a similar vertex in out_XXXX
-			int index = GetSimilarVertexIndex(v, indexedVert);
+			int index = -1;
+			for (unsigned int i = 0; i < indexedVert.size(); i++)
+			{
+				if (v == indexedVert[i])
+				{
+					index = i;
+					break;
+				}
+			}
 
-			if (index > 0) // A similar vertex is already in the VBO, use it instead !
-			{ 
-				indices.push_back((uint)index);
-
+			if (index > 0)	// A similar vertex is already in the VBO, use it instead !
+			{
 				// Average the tangents and the bitangents
 				indexedVert[index].Tangent += v.Tangent;
 				indexedVert[index].Bitangent += v.Bitangent;
+				// set index
+				indices.push_back((uint)index);
 			}
 			else // If not, it needs to be added in the output data.
-			{ 
+			{
 				indexedVert.push_back(v);
+				// set index
 				indices.push_back(indexedVert.size() - 1);
 			}
 		}
@@ -151,7 +174,7 @@ namespace ignis
 		m_vao.Bind();
 
 		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0]);
+		m_vao.SetBufferData(GL_ARRAY_BUFFER, indexedVert);
 
 		m_vao.SetVertexAttribPointer(0, 3, sizeof(Vertex), 0);
 		m_vao.SetVertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
@@ -163,6 +186,10 @@ namespace ignis
 		m_vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0]);
 
 		m_vao.Unbind();
+
+		timer.End();
+
+		DEBUG_TRACE("[Mesh] Done in {0}ms", timer.GetDurationMS());
 	}
 
 	Mesh::~Mesh()

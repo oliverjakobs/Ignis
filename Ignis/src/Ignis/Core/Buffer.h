@@ -32,6 +32,10 @@ namespace ignis
 		uint GenBuffer(uint type);
 
 		void SetBufferData(uint type, uint size, const void* data, uint usage = GL_STATIC_DRAW);
+
+		template <typename Type>
+		void SetBufferData(uint type, std::vector<Type> v, uint usage = GL_STATIC_DRAW);
+
 		void SetBufferSubData(uint type, uint offset, uint size, const void* data);
 
 		void SetVertexAttribPointer(uint index, uint size, uint stride, uint offset);
@@ -39,5 +43,12 @@ namespace ignis
 		void SetVertexAttribDivisor(uint index, uint divisor);
 
 		void MapBufferData(uint index, const void* data, uint size);
+
 	};
+
+	template<typename Type>
+	inline void VAO::SetBufferData(uint type, std::vector<Type> v, uint usage)
+	{
+		SetBufferData(type, sizeof(v[0]) * v.size(), &v[0]);
+	}
 }

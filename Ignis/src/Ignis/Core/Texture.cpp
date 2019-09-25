@@ -10,42 +10,56 @@ namespace ignis
 	Texture::Texture(const std::string& path, bool flipOnLoad, TextureConfig config)
 		: m_activeSlot(0)
 	{
+		DEBUG_TRACE("[Tex] ------------------------------------------------");
+		DEBUG_TRACE("[Tex] Loading {0}", path);
+
+		Timer timer;
+		timer.Start();
+
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
-		width = 0;
-		height = 0;
-		bpp = 0;
+		Width = 0;
+		Height = 0;
+		BPP = 0;
 
-		byte* pixels = stbi_load(path.c_str(), &width, &height, &bpp, 4);
+		byte* pixels = stbi_load(path.c_str(), &Width, &Height, &BPP, 4);
+
+		timer.End();
+		DEBUG_TRACE("[Tex] Parsed file in {0}ms", timer.GetDurationMS());
 
 		if (pixels)
 		{
-			id = CreateTexture(pixels, width, height, config);
+			ID = CreateTexture(pixels, Width, Height, config);
 			stbi_image_free(pixels);
 		}
 		else
 		{
-			DEBUG_ERROR("Failed to load texture: {0}", path);
-			id = 0;
+			DEBUG_ERROR("[Tex] Failed to load texture: {0}", path);
+			ID = 0;
 		}
+
+		timer.End();
+
+		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, timer.GetDurationMS());
+		DEBUG_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
 	}
 
 	Texture::Texture(int width, int height, TextureConfig config)
-		: width(width), height(height), m_activeSlot(0)
+		: Width(width), Height(height), m_activeSlot(0)
 	{
-		id = CreateTexture(nullptr, width, height, config);
+		ID = CreateTexture(nullptr, width, height, config);
 	}
 
 	Texture::Texture(byte* bitmap, int width, int height, TextureConfig config)
-		: width(width), height(height), m_activeSlot(0)
+		: Width(width), Height(height), m_activeSlot(0)
 	{
-		id = CreateTexture(bitmap, width, height, config);
+		ID = CreateTexture(bitmap, width, height, config);
 	}
 
 	Texture::~Texture()
 	{
-		glDeleteTextures(1, &id);
-		id = 0;
+		glDeleteTextures(1, &ID);
+		ID = 0;
 	}
 
 	unsigned int Texture::CreateTexture(byte* pixels, int width, int height, TextureConfig config)
@@ -69,7 +83,7 @@ namespace ignis
 	void Texture::Bind(uint slot)
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, id);
+		glBindTexture(GL_TEXTURE_2D, ID);
 		m_activeSlot = slot;
 	}
 

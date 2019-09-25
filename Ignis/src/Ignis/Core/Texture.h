@@ -27,11 +27,11 @@ namespace ignis
 	private:
 		uint m_activeSlot;
 	public:
-		uint id;
+		uint ID;
 
-		int width;
-		int height;
-		int bpp;
+		int Width;
+		int Height;
+		int BPP;
 
 		// functions
 		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
