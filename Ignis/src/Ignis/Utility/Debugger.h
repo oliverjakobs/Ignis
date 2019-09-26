@@ -1,7 +1,6 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include "Timer.h"
 
 enum class LogLevel
 {

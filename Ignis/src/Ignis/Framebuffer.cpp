@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "Core/Utility.h"
+#include "Ignis/Utility/Utility.h"
 
 namespace ignis
 {

@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include "Utility.h"
+#include "Ignis/Utility/Utility.h"
 
 namespace ignis
 {

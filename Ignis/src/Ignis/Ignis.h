@@ -4,7 +4,7 @@
 #include "Core/Texture.h"
 #include "Core/Shader.h"
 
-#include "Core/Utility.h"
+#include "Utility/Utility.h"
 
 #include "Mesh.h"
 #include "Font.h"

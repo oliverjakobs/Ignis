@@ -15,9 +15,6 @@
     <ClInclude Include="src\Ignis\Core\Buffer.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Debugger.h">
-      <Filter>Ignis\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Core\Shader.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
@@ -25,9 +22,6 @@
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Types.h">
-      <Filter>Ignis\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Utility.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Framebuffer.h">
@@ -41,7 +35,13 @@
     </ClInclude>
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Material.h" />
-    <ClInclude Include="src\Ignis\Core\Timer.h" />
+    <ClInclude Include="src\Ignis\Utility\Debugger.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Utility\Timer.h" />
+    <ClInclude Include="src\Ignis\Utility\Utility.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp">

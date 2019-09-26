@@ -93,17 +93,17 @@
   <ItemGroup>
     <ClInclude Include="src\Ignis\Camera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
-    <ClInclude Include="src\Ignis\Core\Debugger.h" />
+    <ClInclude Include="src\Ignis\Utility\Debugger.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
-    <ClInclude Include="src\Ignis\Core\Utility.h" />
+    <ClInclude Include="src\Ignis\Utility\Utility.h" />
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Material.h" />
     <ClInclude Include="src\Ignis\Mesh.h" />
-    <ClInclude Include="src\Ignis\Core\Timer.h" />
+    <ClInclude Include="src\Ignis\Utility\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp" />

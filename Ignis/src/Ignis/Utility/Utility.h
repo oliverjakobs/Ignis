@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "Debugger.h"
+#include "Timer.h"
 
 #define BIT(x) (1 << x)
 

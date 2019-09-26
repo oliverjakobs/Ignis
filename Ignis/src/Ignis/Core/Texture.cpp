@@ -1,9 +1,9 @@
 #include "Texture.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "Ignis/Packages/stb_image.h"
 
-#include "Utility.h"
+#include "Ignis/Utility/Utility.h"
 
 namespace ignis
 {

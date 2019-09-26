@@ -3,7 +3,7 @@
 #include "Core/Buffer.h"
 #include "Core/Texture.h"
 
-#include "stb_truetype.h"
+#include "Ignis/Packages/stb_truetype.h"
 
 namespace ignis
 {

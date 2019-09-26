@@ -1,8 +1,8 @@
 #include "Mesh.h"
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
+#include "Ignis/Packages/tiny_obj_loader.h"
 
-#include "Core/Debugger.h"
+#include "Ignis/Utility/Utility.h"
 
 namespace ignis
 {

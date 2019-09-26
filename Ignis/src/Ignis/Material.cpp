@@ -1,6 +1,6 @@
 #include "Material.h"
 
-#include "Core/Utility.h"
+#include "Ignis/Utility/Utility.h"
 
 namespace ignis
 {
