@@ -1,0 +1,1 @@
+start chrome.exe "vis\index.html"
