@@ -37,27 +37,26 @@ namespace ignis
 	{
 	private:
 		long long m_start;
-		long long m_end;
 		
 	public:
-		Timer() : m_start(0), m_end(0) { }
-
-		inline void Start()
+		Timer()
 		{
 			auto startPoint = std::chrono::high_resolution_clock::now();
 			m_start = std::chrono::time_point_cast<std::chrono::microseconds>(startPoint).time_since_epoch().count();
 		}
 
-		inline void End()
+		inline void Reset()
 		{
-			auto endPoint = std::chrono::high_resolution_clock::now();
-			m_end = std::chrono::time_point_cast<std::chrono::microseconds>(endPoint).time_since_epoch().count();
+			auto startPoint = std::chrono::high_resolution_clock::now();
+			m_start = std::chrono::time_point_cast<std::chrono::microseconds>(startPoint).time_since_epoch().count();
 		}
 
-		inline float GetDurationMS() const
+		inline float GetElapsedMS() const
 		{
-			auto duration = m_end - m_start;
-			return duration * 0.001f;
+			auto endPoint = std::chrono::high_resolution_clock::now();
+			auto elapsed = std::chrono::time_point_cast<std::chrono::microseconds>(endPoint).time_since_epoch().count() - m_start;
+
+			return elapsed * 0.001f;
 		}
 	};
 }

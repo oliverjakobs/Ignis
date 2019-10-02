@@ -304,7 +304,6 @@ void DemoModel(GLFWwindow* window)
 void DemoMaterial(GLFWwindow* window)
 {
 	FrameCounter frames;
-	Timer timer;
 
 	Camera camera;
 	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
@@ -337,21 +336,20 @@ void DemoMaterial(GLFWwindow* window)
 		lastY = (float)yPos;
 	});
 
-	timer.Start();
+	Timer timer;
 
 	// load .obj file
 	// current load time: 1717.34ms 
 	Material material;
 	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
 
-	timer.End();
-	DEBUG_INFO("Loaded mesh in {0}ms", timer.GetDurationMS());
+	DEBUG_INFO("Loaded mesh in {0}ms", timer.GetElapsedMS());
 
 	// load shader
-	timer.Start();
+	timer.Reset();
 	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
-	timer.End();
-	DEBUG_INFO("Loaded shader in {0}ms", timer.GetDurationMS());
+
+	DEBUG_INFO("Loaded shader in {0}ms", timer.GetElapsedMS());
 
 	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
 
@@ -458,6 +456,7 @@ void DemoMaterial(GLFWwindow* window)
 		shader.Use();
 		shader.SetUniform3f("lightPos", lightPos);
 
+		
 		// render mesh 
 		RenderMesh(mesh, material, projection, view, model, shader);
 		

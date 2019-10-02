@@ -14,7 +14,6 @@ namespace ignis
 		DEBUG_TRACE("[Tex] Loading {0}", path);
 
 		Timer timer;
-		timer.Start();
 
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
@@ -24,23 +23,22 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &Width, &Height, &BPP, 4);
 
-		timer.End();
-		DEBUG_TRACE("[Tex] Parsed file in {0}ms", timer.GetDurationMS());
+		DEBUG_TRACE("[Tex] Parsed file in {0}ms", timer.GetElapsedMS());
+		timer.Reset();
 
 		if (pixels)
 		{
+			DEBUG_TRACE("[Tex] Bytes:\n {0}", std::string(reinterpret_cast<char*>(pixels)));
 			ID = CreateTexture(pixels, Width, Height, config);
 			stbi_image_free(pixels);
 		}
 		else
 		{
-			DEBUG_ERROR("[Tex] Failed to load texture: {0}", path);
+			DEBUG_ERROR("[Tex] Failed to load texture({0}): {1}", path, stbi_failure_reason());
 			ID = 0;
 		}
 
-		timer.End();
-
-		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, timer.GetDurationMS());
+		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, timer.GetElapsedMS());
 		DEBUG_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
 	}
 

@@ -7,6 +7,12 @@
     <Filter Include="Ignis\Core">
       <UniqueIdentifier>{97816961-8339-ABAE-EC40-840AD817469F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ignis\Packages">
+      <UniqueIdentifier>{ED173DBE-D9E5-30C4-C279-A1EAAEE60C29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ignis\Utility">
+      <UniqueIdentifier>{22877D10-8E47-F946-5782-42C4C3013E23}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Ignis\Camera.h">
@@ -24,23 +30,41 @@
     <ClInclude Include="src\Ignis\Core\Types.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Font.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Framebuffer.h">
       <Filter>Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Material.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Mesh.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Font.h" />
-    <ClInclude Include="src\Ignis\Material.h" />
-    <ClInclude Include="src\Ignis\Utility\Debugger.h">
-      <Filter>Ignis\Core</Filter>
+    <ClInclude Include="src\Ignis\Packages\stb_image.h">
+      <Filter>Ignis\Packages</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Utility\Timer.h" />
+    <ClInclude Include="src\Ignis\Packages\stb_image_write.h">
+      <Filter>Ignis\Packages</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Packages\stb_truetype.h">
+      <Filter>Ignis\Packages</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h">
+      <Filter>Ignis\Packages</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Utility\Debugger.h">
+      <Filter>Ignis\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Utility\Timer.h">
+      <Filter>Ignis\Utility</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Utility\Utility.h">
-      <Filter>Ignis\Core</Filter>
+      <Filter>Ignis\Utility</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,21 +80,21 @@
     <ClCompile Include="src\Ignis\Core\Texture.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Font.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Framebuffer.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Material.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Mesh.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Ignis\Font.cpp" />
-    <ClCompile Include="src\Ignis\Material.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\lamp.vert" />
-    <None Include="res\shaders\lamp.frag" />
   </ItemGroup>
 </Project>
