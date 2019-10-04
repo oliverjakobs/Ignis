@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ignis/Packages/stb_image.h"
 
-#include "Ignis/Utility/Utility.h"
+#include "Utility/Debugger.h"
 
 namespace ignis
 {
@@ -13,7 +13,7 @@ namespace ignis
 		DEBUG_TRACE("[Tex] ------------------------------------------------");
 		DEBUG_TRACE("[Tex] Loading {0}", path);
 
-		Timer timer;
+		DEBUG_TIMER();
 
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
@@ -23,12 +23,11 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &Width, &Height, &BPP, 4);
 
-		DEBUG_TRACE("[Tex] Parsed file in {0}ms", timer.GetElapsedMS());
-		timer.Reset();
+		DEBUG_TIMER_TRACE("[Tex] Parsed file in {0}ms");
 
 		if (pixels)
 		{
-			DEBUG_TRACE("[Tex] Bytes:\n {0}", std::string(reinterpret_cast<char*>(pixels)));
+			//DEBUG_TRACE("[Tex] Bytes:\n {0}", std::string(reinterpret_cast<char*>(pixels)));
 			ID = CreateTexture(pixels, Width, Height, config);
 			stbi_image_free(pixels);
 		}
@@ -38,7 +37,7 @@ namespace ignis
 			ID = 0;
 		}
 
-		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, timer.GetElapsedMS());
+		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, DEBUG_TIMER_GET_ELAPSED());
 		DEBUG_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
 	}
 

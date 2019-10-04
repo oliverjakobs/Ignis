@@ -6,7 +6,7 @@
 
 #include "Utility/Utility.h"
 
-#include "Mesh.h"
+#include "Model/Mesh.h"
 #include "Font.h"
 
 namespace ignis

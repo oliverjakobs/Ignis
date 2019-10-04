@@ -99,15 +99,16 @@
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
-    <ClInclude Include="src\Ignis\Material.h" />
-    <ClInclude Include="src\Ignis\Mesh.h" />
+    <ClInclude Include="src\Ignis\Model\Material.h" />
+    <ClInclude Include="src\Ignis\Model\Mesh.h" />
     <ClInclude Include="src\Ignis\Packages\stb_image.h" />
     <ClInclude Include="src\Ignis\Packages\stb_image_write.h" />
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
-    <ClInclude Include="src\Ignis\Utility\Debugger.h" />
-    <ClInclude Include="src\Ignis\Utility\Timer.h" />
-    <ClInclude Include="src\Ignis\Utility\Utility.h" />
+    <ClInclude Include="src\Utility\Debugger.h" />
+    <ClInclude Include="src\Utility\Logger.h" />
+    <ClInclude Include="src\Utility\Timer.h" />
+    <ClInclude Include="src\Utility\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp" />
@@ -117,8 +118,8 @@
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
-    <ClCompile Include="src\Ignis\Material.cpp" />
-    <ClCompile Include="src\Ignis\Mesh.cpp" />
+    <ClCompile Include="src\Ignis\Model\Material.cpp" />
+    <ClCompile Include="src\Ignis\Model\Mesh.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

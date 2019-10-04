@@ -39,12 +39,6 @@
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Material.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Mesh.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Packages\stb_image.h">
       <Filter>Ignis\Packages</Filter>
     </ClInclude>
@@ -57,14 +51,21 @@
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h">
       <Filter>Ignis\Packages</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Utility\Debugger.h">
+    <ClInclude Include="src\Utility\Debugger.h">
       <Filter>Ignis\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Utility\Timer.h">
+    <ClInclude Include="src\Utility\Timer.h">
       <Filter>Ignis\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Utility\Utility.h">
+    <ClInclude Include="src\Utility\Utility.h">
       <Filter>Ignis\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\Logger.h" />
+    <ClInclude Include="src\Ignis\Model\Mesh.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Model\Material.h">
+      <Filter>Ignis</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -89,12 +90,12 @@
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Material.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Mesh.cpp">
-      <Filter>Ignis</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Model\Material.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Model\Mesh.cpp">
+      <Filter>Ignis</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
