@@ -98,4 +98,7 @@
       <Filter>Ignis</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\shader.comp" />
+  </ItemGroup>
 </Project>
