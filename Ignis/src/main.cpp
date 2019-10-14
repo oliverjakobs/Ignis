@@ -930,6 +930,15 @@ void DemoFont(GLFWwindow* window)
 	}
 }
 
+glm::vec2 mousePos = { WIDTH / 2.0f, HEIGHT / 2.0f };
+
+struct Particle
+{
+	glm::vec4 Position;
+	glm::vec3 Velocity;
+	float Lifetime;
+};
+
 void DemoComputeShader(GLFWwindow* window)
 {
 	FrameCounter frames;
@@ -940,6 +949,11 @@ void DemoComputeShader(GLFWwindow* window)
 	// configure global opengl state
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		mousePos = { (float)xPos, HEIGHT - (float)yPos };
+	});
 
 	// set up shaders and geometry for full-screen quad
 	GLuint quad_vao = 0, vbo = 0;
@@ -957,20 +971,19 @@ void DemoComputeShader(GLFWwindow* window)
 	glGenVertexArrays(1, &quad_vao);
 	glBindVertexArray(quad_vao);
 	glEnableVertexAttribArray(0);
-	GLintptr stride = 4 * sizeof(float);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, stride, NULL);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), NULL);
 	glEnableVertexAttribArray(1);
-	GLintptr offset = 2 * sizeof(float);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, stride, (GLvoid*)offset);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
 	Shader shader = Shader("res/shaders/texture.vert", "res/shaders/texture.frag");
 
-	GLuint ray_program = CreateComputeShader(ReadFile("res/shaders/shader.comp").c_str());
+	GLuint compShader = CreateComputeShader(ReadFile("res/shaders/trail.comp").c_str());
+	glUseProgram(compShader);
+
+	GLuint l_mousePos = glGetUniformLocation(compShader, "mousePos");
 
 	// texture handle and dimensions
 	GLuint tex_output = 0;
-	int tex_w = WIDTH, tex_h = HEIGHT;
-
 	// create the texture
 	glGenTextures(1, &tex_output);
 	glActiveTexture(GL_TEXTURE0);
@@ -981,25 +994,24 @@ void DemoComputeShader(GLFWwindow* window)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	// same internal format as compute shader input
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, tex_w, tex_h, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
 	// bind to image unit so can write to specific pixels from the shader
 	glBindImageTexture(0, tex_output, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
 
-	// query up the workgroups
-	int work_grp_size[3], work_grp_inv;
-	// maximum global work group (total work in a dispatch)
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_size[0]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_size[1]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_size[2]);
-	DEBUG_TRACE("max global (total) work group size x:{0} y:{1} z:{2}", work_grp_size[0], work_grp_size[1], work_grp_size[2]);
-	// maximum local work group (one shader's slice)
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
-	glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-	DEBUG_TRACE("max local (in one shader) work group sizes x:{0} y:{1} z:{2}", work_grp_size[0], work_grp_size[1], work_grp_size[2]);
-	// maximum compute shader invocations (x * y * z)
-	glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-	DEBUG_TRACE("max computer shader invocations {0}", work_grp_inv);
+	GLuint tex_particles = 0;
+	// create the texture
+	glGenTextures(1, &tex_particles);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex_particles);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	// linear allows us to scale the window up retaining reasonable quality
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	// same internal format as compute shader input
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, WIDTH, HEIGHT, 0, GL_RGBA, GL_FLOAT, NULL);
+	// bind to image unit so can write to specific pixels from the shader
+	glBindImageTexture(1, tex_particles, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 
 	while (!glfwWindowShouldClose(window)) 
 	{
@@ -1008,14 +1020,15 @@ void DemoComputeShader(GLFWwindow* window)
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		glUseProgram(ray_program);
-		glDispatchCompute((GLuint)tex_w, (GLuint)tex_h, 1);
+		glUseProgram(compShader);
+		glUniform2fv(l_mousePos, 1, &mousePos[0]);
+
+		glDispatchCompute((GLuint)WIDTH, (GLuint)HEIGHT, 1);
 
 		// prevent sampling befor all writes to image are done
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
-
 
 		glm::mat4 projection = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT);
 		glm::mat4 view = glm::mat4(1.0f);

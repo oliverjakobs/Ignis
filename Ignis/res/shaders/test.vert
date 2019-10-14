@@ -1,14 +1,13 @@
-#version 330 core
+#version 430 core
 
-layout (location = 0) in vec2 aPosition;
-layout (location = 1) in vec2 aTexCoord;
+in vec4 vert;
 
 uniform mat4 mvp;
 
-out vec2 texCoord;
+out float intensity;
 
-void main()
+void main(void)
 {
-	gl_Position = mvp * vec4(aPosition, 0.0f, 1.0f);
-	texCoord = aTexCoord;
+	intensity = vert.w;
+	gl_Position = mvp * vec4(vert.xyz, 1.0);
 }

@@ -1,12 +1,10 @@
-#version 330 core
+#version 430 core
 
-out vec4 fColor;
+layout (location = 0) out vec4 color;
 
-uniform sampler2D uTexture;
+in float intensity;
 
-in vec2 texCoord;
-
-void main()
+void main(void)
 {
-	fColor = texture(uTexture, texCoord);
+	color = mix(vec4(0.0f, 0.2f, 1.0f, 1.0f), vec4(0.2f, 0.05f, 0.0f, 1.0f), intensity);
 }
