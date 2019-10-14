@@ -99,7 +99,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\shader.comp" />
-    <None Include="res\shaders\trail.comp" />
+    <None Include="res\shaders\particles.comp" />
   </ItemGroup>
 </Project>

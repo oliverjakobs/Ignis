@@ -15,7 +15,7 @@ void main ()
 	particle.xy += velocity.xy * deltaTime;
 
 	vec2 dist = mousePos - particle.xy;
-	velocity.xy += deltaTime * normalize(dist) * 10.0;
+	velocity.xy += deltaTime * normalize(dist) * 10;
 
 	imageStore(buffer_particle, int(gl_GlobalInvocationID.x), particle);
 	imageStore(buffer_velocity, int(gl_GlobalInvocationID.x), velocity);
