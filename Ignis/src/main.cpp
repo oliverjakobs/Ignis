@@ -936,7 +936,7 @@ glm::vec2 mousePos = { WIDTH / 2.0f, HEIGHT / 2.0f };
 float mouseScroll = 0.0f;
 
 const int PARTICLE_GROUP_SIZE = 64;
-const int PARTICLE_GROUP_COUNT = 16;
+const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
 
 void DemoComputeShader(GLFWwindow* window)
@@ -965,21 +965,27 @@ void DemoComputeShader(GLFWwindow* window)
 	GLuint compShader = CreateComputeShader(ReadFile("res/shaders/trail.comp").c_str());
 	glUseProgram(compShader);
 
-	GLuint l_trailSize = glGetUniformLocation(compShader, "trailSize");
-	GLuint l_trailPattern = glGetUniformLocation(compShader, "trailPattern");
-
 	GLuint l_mousePos = glGetUniformLocation(compShader, "mousePos");
 	GLuint l_deltaTime = glGetUniformLocation(compShader, "deltaTime");
 
-	// position
 	uint vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	// position
 	uint bufferPosition;
 	glGenBuffers(1, &bufferPosition);
 	glBindBuffer(GL_ARRAY_BUFFER, bufferPosition);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+
+	glm::vec4* positions = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+	for (int i = 0; i < PARTICLE_COUNT; i++)
+	{
+		positions[i] = glm::vec4(glm::diskRand(100.0f) + mousePos, 0.0f, 1.0f);
+	}
+
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glEnableVertexAttribArray(0);
@@ -996,16 +1002,23 @@ void DemoComputeShader(GLFWwindow* window)
 	glBindBuffer(GL_ARRAY_BUFFER, bufferVelocity);
 	glBufferData(GL_ARRAY_BUFFER, PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
 
+	glm::vec4* velocities = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
+	for (int i = 0; i < PARTICLE_COUNT; i++)
+	{
+		velocities[i] = glm::vec4();
+	}
+
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+
 	uint textureVelocity;
 	glGenTextures(1, &textureVelocity);
 
 	glBindTexture(GL_TEXTURE_BUFFER, textureVelocity);
 	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, textureVelocity);
 
-
 	// config 
-	float trailSize = 10.0f;
-	float trailDensity = 16.0f;
+	float particleSize = 2.0f;
 
 	while (!glfwWindowShouldClose(window)) 
 	{
@@ -1014,14 +1027,13 @@ void DemoComputeShader(GLFWwindow* window)
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		// update trailsize
-		trailSize += mouseScroll;
+		// update particleSize
+		particleSize += mouseScroll;
 		mouseScroll = 0.0f;
-		if (trailSize < 1.0f)
-			trailSize = 1.0f;
+		if (particleSize < 1.0f)
+			particleSize = 1.0f;
 		
 		glUseProgram(compShader);
-		glUniform1f(l_trailSize, trailSize);
 		glUniform1f(l_deltaTime, frames.DeltaTime);
 		glUniform2fv(l_mousePos, 1, &mousePos[0]);
 
@@ -1043,12 +1055,12 @@ void DemoComputeShader(GLFWwindow* window)
 
 		glBindVertexArray(vao);
 		//glBlendFunc(GL_ONE, GL_ONE);
-		glPointSize(2.0f);
+		glPointSize(particleSize);
 		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
 
 		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
-		RenderText(fmt::format("Trail size: {0}", trailSize), 0.0f, 64.0f, font, SCREEN_MAT, fontShader);
-		RenderText(fmt::format("Trail density: {0}", trailDensity), 0.0f, 96.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("Particle density: {0}", particleSize), 0.0f, 96.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
