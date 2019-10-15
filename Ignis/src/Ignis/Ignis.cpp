@@ -141,7 +141,7 @@ namespace ignis
 		tex.Bind();
 
 		mesh.VAO().Bind();
-		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
+		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.ElementCount(), GL_UNSIGNED_INT, 0, 0);
 		mesh.VAO().Unbind();
 
 		tex.Unbind();
@@ -159,7 +159,7 @@ namespace ignis
 		mtl.Bind();
 
 		mesh.VAO().Bind();
-		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.NumIndices(), GL_UNSIGNED_INT, 0, 0);
+		glDrawElementsBaseVertex(GL_TRIANGLES, mesh.ElementCount(), GL_UNSIGNED_INT, 0, 0);
 		mesh.VAO().Unbind();
 
 		mtl.Unbind();

@@ -4,7 +4,7 @@ layout (local_size_x = 64) in;
 layout (rgba32f, binding = 0) uniform imageBuffer buffer_particle;
 layout (rgba32f, binding = 1) uniform imageBuffer buffer_velocity;
 
-uniform vec2 mousePos;
+uniform vec2 attractor;
 uniform float deltaTime;
 
 void main () 
@@ -14,7 +14,7 @@ void main ()
 
 	particle.xy += velocity.xy * deltaTime;
 
-	vec2 dist = mousePos - particle.xy;
+	vec2 dist = attractor - particle.xy;
 	velocity.xy += deltaTime * normalize(dist) * 10;
 
 	imageStore(buffer_particle, int(gl_GlobalInvocationID.x), particle);

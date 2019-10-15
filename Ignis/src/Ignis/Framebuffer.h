@@ -8,10 +8,11 @@ namespace ignis
 	class FrameBuffer
 	{
 	private:
-		uint m_fbo;
-
-		VAO m_vao;
+		uint m_id;
 		Texture m_texture;
+
+		VertexArray m_vao;
+		ArrayBuffer m_vbo;
 
 		int m_width, m_height;
 	public:
@@ -23,7 +24,7 @@ namespace ignis
 
 		void BindVAO();
 
-		VAO& VAO();
+		VertexArray& VAO();
 		Texture& Texture();
 	};
 }

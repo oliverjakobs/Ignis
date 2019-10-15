@@ -1,5 +1,7 @@
 ﻿#include "Ignis/Ignis.h"
 
+#include "Ignis/Advanced/ComputeShader.h"
+
 #include <GLFW/glfw3.h>
 
 #include <spdlog/fmt/fmt.h>
@@ -13,10 +15,12 @@ using namespace ignis;
 const unsigned int WIDTH = 800;
 const unsigned int HEIGHT = 600;
 
+const glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
+
 glm::mat4 SCREEN_MAT = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f);
 
 // mouse input
-glm::vec2 mousePos = { WIDTH / 2.0f, HEIGHT / 2.0f };
+glm::vec2 mousePos = SCREEN_CENTER;
 float mouseScroll = 0.0f;
 
 const int PARTICLE_GROUP_SIZE = 64;
@@ -105,39 +109,28 @@ int main()
 	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
 	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");
 
-	uint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	VertexArray vao;
 
 	// position
-	uint bufferPosition;
-	glGenBuffers(1, &bufferPosition);
-	glBindBuffer(GL_ARRAY_BUFFER, bufferPosition);
-	glBufferData(GL_ARRAY_BUFFER, PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+	ArrayBuffer bufferPosition;
+	bufferPosition.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
 
 	glm::vec4* positions = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
-		positions[i] = glm::vec4(glm::diskRand(100.0f) + mousePos, 0.0f, 1.0f);
+		positions[i] = glm::vec4(glm::diskRand(200.0f) + mousePos, 0.0f, 1.0f);
 	}
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
+	bufferPosition.VertexAttribPointer(0, 4, 0, NULL);
 
-	uint texturePosition;
-	glGenTextures(1, &texturePosition);
-
-	glBindTexture(GL_TEXTURE_BUFFER, texturePosition);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, bufferPosition);
+	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.Name);
 
 	// velocity
-	uint bufferVelocity;
-	glGenBuffers(1, &bufferVelocity);
-	glBindBuffer(GL_ARRAY_BUFFER, bufferVelocity);
-	glBufferData(GL_ARRAY_BUFFER, PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+	ArrayBuffer bufferVelocity;
+	bufferVelocity.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
 
 	glm::vec4* velocities = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
@@ -148,11 +141,7 @@ int main()
 
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	uint textureVelocity;
-	glGenTextures(1, &textureVelocity);
-
-	glBindTexture(GL_TEXTURE_BUFFER, textureVelocity);
-	glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, textureVelocity);
+	TextureBuffer textureVelocity(GL_RGBA32F, bufferVelocity.Name);
 
 	// config 
 	float particleSize = 2.0f;
@@ -170,14 +159,12 @@ int main()
 
 		compShader.Use();
 		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
-		compShader.SetUniform2f("mousePos", mousePos);
+		compShader.SetUniform2f("attractor", SCREEN_CENTER);
 
-		glBindImageTexture(0, texturePosition, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-		glBindImageTexture(1, textureVelocity, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-		glDispatchCompute(PARTICLE_GROUP_COUNT, 1, 1);
+		texturePosition.BindImageTexture(0, GL_READ_WRITE);
+		textureVelocity.BindImageTexture(1, GL_READ_WRITE);
 
-		// prevent sampling befor all writes to image are done
-		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		compShader.Dispatch(PARTICLE_GROUP_COUNT, 1, 1);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -188,8 +175,8 @@ int main()
 		shader.Use();
 		shader.SetUniformMat4("mvp", projection * view * model);
 
-		glBindVertexArray(vao);
-		//glBlendFunc(GL_ONE, GL_ONE);
+		vao.Bind();
+
 		glPointSize(particleSize);
 		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
 
@@ -202,14 +189,6 @@ int main()
 
 		timer.End((float)glfwGetTime());
 	}
-
-	glDeleteBuffers(1, &bufferPosition);
-	glDeleteBuffers(1, &bufferVelocity);
-
-	glDeleteTextures(1, &texturePosition);
-	glDeleteTextures(1, &textureVelocity);
-
-	glDeleteVertexArrays(1, &vao);
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();

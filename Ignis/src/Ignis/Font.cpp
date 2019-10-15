@@ -63,10 +63,8 @@ namespace ignis
 		free(bitmap);
 
 		m_vao.Bind();
-
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
-		m_vao.SetVertexAttribPointer(0, 4, 4 * sizeof(float), 0);
+		m_vbo.BufferData(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
+		m_vbo.VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
 	}
 
 	Font::~Font()
@@ -104,8 +102,7 @@ namespace ignis
 			};
 
 			// Update content of VBO memory
-			m_vao.BindBuffer(0);
-			m_vao.SetBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+			m_vbo.BufferSubData(0, sizeof(vertices), vertices);
 
 			return true;
 		}

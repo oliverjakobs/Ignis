@@ -8,47 +8,83 @@ namespace ignis
 {
 	struct Buffer
 	{
-		uint ID;
-		uint Type;
+		uint Target;
+		uint Name;
+
+		Buffer(uint target);
+		virtual ~Buffer();
+
+		void Bind() const;
+		void Unbind() const;
 	};
 
-	struct VAO
+	struct ArrayBuffer : public Buffer
 	{
-		uint ID;
-		std::vector<Buffer> Buffers;
+		ArrayBuffer();
 
-		VAO();
-		~VAO();
+		void BufferData(uint size, const void* data, uint usage = GL_STATIC_DRAW);
+
+		template <typename Type>
+		void BufferData(std::vector<Type> v, uint usage = GL_STATIC_DRAW);
+
+		void BufferSubData(uint offset, uint size, const void* data);
+
+		void MapBuffer(const void* data, uint size);
+
+		void VertexAttribPointer(uint index, uint size, uint stride, uint offset);
+		void VertexAttribIPointer(uint index, uint size, uint stride, uint offset);
+		void VertexAttribDivisor(uint index, uint divisor);
+	};
+
+	template<typename Type>
+	inline void ArrayBuffer::BufferData(std::vector<Type> v, uint usage)
+	{
+		BufferData(sizeof(v[0]) * v.size(), &v[0], usage);
+	}
+
+	struct ElementBuffer : public Buffer
+	{
+		uint Count;
+
+		ElementBuffer();
+
+		void BufferData(uint count, const uint* data, uint usage = GL_STATIC_DRAW);
+	};
+
+	// TODO: Handling buffers through here
+	struct VertexArray
+	{
+		uint Name;
+
+		VertexArray();
+		~VertexArray();
+
+		void Bind() const;
+		void Unbind() const;
+	};
+
+	// Advanced buffers
+	struct TextureBuffer
+	{
+		uint Texture;
+		uint Format;
+
+		TextureBuffer(uint format, uint buffer);
+		~TextureBuffer();
+
+		void BindImageTexture(uint unit, uint access);
+	};
+
+	struct RenderBuffer
+	{
+		uint Name;
+
+		RenderBuffer();
+		~RenderBuffer();
 
 		void Bind() const;
 		void Unbind() const;
 
-		uint GetBufferType(uint index) const;
-
-		void BindBuffer(uint index);
-		void UnbindBuffer(uint type);
-
-		// buffer
-		uint GenBuffer(uint type);
-
-		void SetBufferData(uint type, uint size, const void* data, uint usage = GL_STATIC_DRAW);
-
-		template <typename Type>
-		void SetBufferData(uint type, std::vector<Type> v, uint usage = GL_STATIC_DRAW);
-
-		void SetBufferSubData(uint type, uint offset, uint size, const void* data);
-
-		void SetVertexAttribPointer(uint index, uint size, uint stride, uint offset);
-		void SetVertexAttribIPointer(uint index, uint size, uint stride, uint offset);
-		void SetVertexAttribDivisor(uint index, uint divisor);
-
-		void MapBufferData(uint index, const void* data, uint size);
-
+		void RenderbufferStorage(uint format, int width, int height);
 	};
-
-	template<typename Type>
-	inline void VAO::SetBufferData(uint type, std::vector<Type> v, uint usage)
-	{
-		SetBufferData(type, sizeof(v[0]) * v.size(), &v[0]);
-	}
 }

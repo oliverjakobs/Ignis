@@ -156,21 +156,17 @@ namespace ignis
 			}
 		}
 
-		m_numIndices = indices.size();
-
 		m_vao.Bind();
 
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, indexedVert);
+		m_vbo.BufferData(indexedVert);
 
-		m_vao.SetVertexAttribPointer(0, 3, sizeof(Vertex), 0);
-		m_vao.SetVertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
-		m_vao.SetVertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
-		m_vao.SetVertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
-		m_vao.SetVertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
+		m_vbo.VertexAttribPointer(0, 3, sizeof(Vertex), 0);
+		m_vbo.VertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
+		m_vbo.VertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
+		m_vbo.VertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
+		m_vbo.VertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
 
-		m_vao.GenBuffer(GL_ELEMENT_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0]);
+		m_ibo.BufferData(indices.size(), &indices[0]);
 
 		m_vao.Unbind();
 
@@ -182,13 +178,13 @@ namespace ignis
 
 	}
 
-	VAO& Mesh::VAO()
+	VertexArray& Mesh::VAO()
 	{
 		return m_vao;
 	}
 
-	uint Mesh::NumIndices()
+	uint Mesh::ElementCount()
 	{
-		return m_numIndices;
+		return m_ibo.Count;
 	}
 }

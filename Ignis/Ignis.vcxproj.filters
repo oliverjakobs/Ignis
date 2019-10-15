@@ -78,6 +78,7 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp">
@@ -111,5 +112,6 @@
       <Filter>Ignis\Model</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
   </ItemGroup>
 </Project>

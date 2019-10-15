@@ -21,8 +21,9 @@ namespace ignis
 	struct Mesh
 	{
 	private:
-		VAO m_vao;
-		uint m_numIndices;
+		VertexArray m_vao;
+		ArrayBuffer m_vbo;
+		ElementBuffer m_ibo;
 
 	public:
 		static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl);
@@ -34,7 +35,7 @@ namespace ignis
 		Mesh(const Mesh& mesh) = delete;
 		void operator=(const Mesh& mesh) = delete;
 
-		VAO& VAO();
-		uint NumIndices();
+		VertexArray& VAO();
+		uint ElementCount();
 	};
 }

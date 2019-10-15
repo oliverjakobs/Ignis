@@ -147,42 +147,4 @@ namespace ignis
 	{
 		glUniformMatrix4fv(location, 1, GL_FALSE, &matrix[0][0]);
 	}
-
-	ComputeShader::ComputeShader(const std::string& path)
-	{
-		m_program = glCreateProgram();
-
-		uint shader = CompileShader(GL_COMPUTE_SHADER, obelisk::ReadFile(path));
-
-		glAttachShader(m_program, shader);
-		glLinkProgram(m_program);
-
-		GLint result = GL_FALSE;
-		glGetProgramiv(m_program, GL_LINK_STATUS, &result);
-		if (result == GL_FALSE)
-		{
-			DEBUG_ERROR("[SHADER] Linking Error");
-			DEBUG_ERROR("[SHADER] {0}", GetProgramLog(m_program));
-			glDeleteShader(shader);
-			glDeleteProgram(m_program);
-
-			return;
-		}
-
-		glValidateProgram(m_program);
-
-		result = GL_FALSE;
-		glGetProgramiv(m_program, GL_VALIDATE_STATUS, &result);
-		if (result == GL_FALSE)
-		{
-			DEBUG_ERROR("[SHADER] Validating Error");
-			DEBUG_ERROR("[SHADER] {0}", GetProgramLog(m_program));
-			glDeleteShader(shader);
-			glDeleteProgram(m_program);
-
-			return;
-		}
-
-		glDeleteShader(shader);
-	}
 }

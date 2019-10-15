@@ -91,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
     <ClInclude Include="src\Ignis\Camera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="src\Obelisk\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
     <ClCompile Include="src\Ignis\Camera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
@@ -136,4 +138,4 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

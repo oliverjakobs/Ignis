@@ -37,10 +37,4 @@ namespace ignis
 		void SetUniformMat3(int location, const glm::mat4& matrix) const;
 		void SetUniformMat4(int location, const glm::mat4& matrix) const;
 	};
-
-	class ComputeShader : public Shader
-	{
-	public:
-		ComputeShader(const std::string& path);
-	};
 }

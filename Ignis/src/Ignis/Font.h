@@ -19,7 +19,10 @@ namespace ignis
 		stbtt_bakedchar* m_chardata;
 		
 		Texture* m_texture;
-		VAO m_vao;
+
+		// buffer
+		VertexArray m_vao;
+		ArrayBuffer m_vbo;
 	public:
 		Font(const std::string& path, float size);
 		~Font();
