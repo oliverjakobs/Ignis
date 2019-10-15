@@ -4,10 +4,10 @@ in vec4 vert;
 
 uniform mat4 mvp;
 
-out float intensity;
+out float value;
 
 void main(void)
 {
-	intensity = vert.w;
-	gl_Position = mvp * vec4(vert.xyz, 1.0);
+	value = vert.w;
+	gl_Position = mvp * vec4(vert.xy, 0.0f, 1.0);
 }

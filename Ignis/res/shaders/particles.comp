@@ -4,18 +4,39 @@ layout (local_size_x = 64) in;
 layout (rgba32f, binding = 0) uniform imageBuffer buffer_particle;
 layout (rgba32f, binding = 1) uniform imageBuffer buffer_velocity;
 
-uniform vec2 attractor;
 uniform float deltaTime;
+uniform float particleRadius;
+
+uniform float respawnTime = 4.0;
+
+uniform vec2 mousePos;
+
+float PHI = 1.61803398874989484820459 * 00000.1; // Golden Ratio   
+float PI  = 3.14159265358979323846264 * 00000.1; // PI
+float SQ2 = 1.41421356237309504880169 * 10000.0; // Square Root of Two
+
+float gold_noise(in vec2 coordinate, in float seed)
+{
+	return fract(tan(distance(coordinate*(seed+PHI), vec2(PHI, PI)))*SQ2);
+}
 
 void main () 
 {
 	vec4 particle = imageLoad(buffer_particle, int(gl_GlobalInvocationID.x));
 	vec4 velocity = imageLoad(buffer_velocity, int(gl_GlobalInvocationID.x));
+	
+	// decrease w
+	particle.w -= deltaTime;
 
-	particle.xy += velocity.xy * deltaTime;
-
-	vec2 dist = attractor - particle.xy;
-	velocity.xy += deltaTime * normalize(dist) * 10;
+	if (particle.w > 0.0)
+	{
+		particle.xy += velocity.xy * particleRadius * deltaTime;
+	}
+	else
+	{
+		particle.w = particle.z;
+		particle.xy = mousePos;
+	}
 
 	imageStore(buffer_particle, int(gl_GlobalInvocationID.x), particle);
 	imageStore(buffer_velocity, int(gl_GlobalInvocationID.x), velocity);

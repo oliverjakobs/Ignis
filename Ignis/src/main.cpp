@@ -4,8 +4,6 @@
 
 #include <GLFW/glfw3.h>
 
-#include <spdlog/fmt/fmt.h>
-
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -24,11 +22,6 @@ float mouseScroll = 0.0f;
 const int PARTICLE_GROUP_SIZE = 64;
 const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
-
-const float MAX_PARTICLE_SIZE = 10.0f;
-
-template<typename T>
-using Ref = std::shared_ptr<T>;
 
 int main()
 {
@@ -113,25 +106,25 @@ int main()
 
 	// position
 	ArrayBuffer bufferPosition;
-	bufferPosition.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+	bufferPosition.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
 	bufferPosition.VertexAttribPointer(0, 4, 0, 0);
 
 	glm::vec4* positions = bufferPosition.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
 	for (int i = 0; i < PARTICLE_COUNT; i++)
-	{
-		positions[i] = glm::vec4(glm::diskRand(SCREEN_CENTER.y) + mousePos, 0.0f, 1.0f);
-	}
+		positions[i] = glm::vec4(SCREEN_CENTER, (float)i / (float)PARTICLE_COUNT, 0.0f);
+
 	bufferPosition.UnmapBuffer();
 
 	// velocity
 	ArrayBuffer bufferVelocity;
-	bufferVelocity.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+	bufferVelocity.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
 
 	glm::vec4* velocities = bufferVelocity.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
+
 	for (int i = 0; i < PARTICLE_COUNT; i++)
-	{
-		velocities[i] = glm::vec4();
-	}
+		velocities[i] = glm::vec4(glm::diskRand(1.0f), 1.0f, 0.0f);
+
 	bufferVelocity.UnmapBuffer();
 
 	// textures buffer
@@ -140,6 +133,8 @@ int main()
 
 	// config 
 	float particleSize = 2.0f;
+	Color particleColor = WHITE;
+	float particleRadius = 100.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -148,13 +143,28 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		// update particleSize
-		particleSize = glm::clamp(particleSize + mouseScroll, 1.0f, MAX_PARTICLE_SIZE);
+		// update config
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+			particleColor = RED;
+		else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+			particleColor = GREEN;
+		else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+			particleColor = BLUE;
+
+		particleRadius += (mouseScroll * 10.0f);
+
+		// reset mousescroll
 		mouseScroll = 0.0f;
+
+		// clamping
+		particleRadius = glm::clamp(particleRadius, 10.0f, 200.0f);
+		particleSize = glm::clamp(particleSize, 1.0f, 10.0f);
+
 
 		compShader.Use();
 		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
-		compShader.SetUniform2f("attractor", SCREEN_CENTER);
+		compShader.SetUniform2f("mousePos", mousePos);
+		compShader.SetUniform1f("particleRadius", particleRadius);
 
 		texturePosition.BindImageTexture(0, GL_READ_WRITE);
 		textureVelocity.BindImageTexture(1, GL_READ_WRITE);
@@ -169,6 +179,7 @@ int main()
 
 		shader.Use();
 		shader.SetUniformMat4("mvp", projection * view * model);
+		shader.SetUniform4f("particleColor", particleColor);
 
 		vao.Bind();
 
@@ -178,6 +189,7 @@ int main()
 		Ignis::RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, Ignis::ScreenMat, fontShader);
 		Ignis::RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, Ignis::ScreenMat, fontShader);
 		Ignis::RenderText(fmt::format("Particle size: {0}", particleSize), 0.0f, 96.0f, font, Ignis::ScreenMat, fontShader);
+		Ignis::RenderText(fmt::format("Particle radius: {0}", particleRadius), 0.0f, 128.0f, font, Ignis::ScreenMat, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

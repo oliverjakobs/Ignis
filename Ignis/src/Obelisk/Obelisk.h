@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include <spdlog/fmt/fmt.h>
+
 #include "Debugger.h"
 #include "FileUtility.h"
 

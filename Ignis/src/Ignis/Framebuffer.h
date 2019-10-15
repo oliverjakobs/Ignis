@@ -8,7 +8,7 @@ namespace ignis
 	class FrameBuffer
 	{
 	private:
-		uint m_id;
+		uint m_name;
 		Texture m_texture;
 
 		VertexArray m_vao;
