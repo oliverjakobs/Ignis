@@ -103,12 +103,7 @@ int main()
 	});
 
 	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
-
 	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");
-	compShader.Use();
-
-	GLuint l_mousePos = compShader.GetUniformLocation("mousePos");
-	GLuint l_deltaTime = compShader.GetUniformLocation("deltaTime");
 
 	uint vao;
 	glGenVertexArrays(1, &vao);
@@ -174,8 +169,8 @@ int main()
 		mouseScroll = 0.0f;
 
 		compShader.Use();
-		glUniform1f(l_deltaTime, timer.DeltaTime);
-		glUniform2fv(l_mousePos, 1, &mousePos[0]);
+		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
+		compShader.SetUniform2f("mousePos", mousePos);
 
 		glBindImageTexture(0, texturePosition, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 		glBindImageTexture(1, textureVelocity, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
