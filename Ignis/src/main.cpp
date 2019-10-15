@@ -12,12 +12,10 @@
 using namespace ignis;
 
 // settings
-const unsigned int WIDTH = 800;
-const unsigned int HEIGHT = 600;
+const uint WIDTH = 800;
+const uint HEIGHT = 600;
 
 const glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
-
-glm::mat4 SCREEN_MAT = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f);
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
@@ -29,10 +27,13 @@ const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
 
 const float MAX_PARTICLE_SIZE = 10.0f;
 
+template<typename T>
+using Ref = std::shared_ptr<T>;
+
 int main()
 {
 	// ingis initialization
-	if (!InitIgnis())
+	if (!Ignis::Init(WIDTH, HEIGHT))
 	{
 		DEBUG_ERROR("[Ignis] Failed to initialize Ignis");
 		return -1;
@@ -78,7 +79,7 @@ int main()
 
 	bool debug = true;
 
-	if (!LoadGL(glfwGetProcAddress, debug))
+	if (!Ignis::LoadGL(glfwGetProcAddress, debug))
 	{
 		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();
@@ -86,15 +87,6 @@ int main()
 	}
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-	obelisk::Timer timer;
-
-	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
-	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
-
-	// configure global opengl state
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
 	{
@@ -106,6 +98,14 @@ int main()
 		mouseScroll = (float)yOffset;
 	});
 
+	obelisk::Timer timer;
+
+	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
+	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
+
+	// configure global opengl state
+	Ignis::EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
 	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");
 
@@ -114,33 +114,28 @@ int main()
 	// position
 	ArrayBuffer bufferPosition;
 	bufferPosition.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
+	bufferPosition.VertexAttribPointer(0, 4, 0, 0);
 
-	glm::vec4* positions = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-
+	glm::vec4* positions = bufferPosition.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
-		positions[i] = glm::vec4(glm::diskRand(200.0f) + mousePos, 0.0f, 1.0f);
+		positions[i] = glm::vec4(glm::diskRand(SCREEN_CENTER.y) + mousePos, 0.0f, 1.0f);
 	}
-
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-
-	bufferPosition.VertexAttribPointer(0, 4, 0, NULL);
-
-	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.Name);
+	bufferPosition.UnmapBuffer();
 
 	// velocity
 	ArrayBuffer bufferVelocity;
 	bufferVelocity.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), NULL, GL_DYNAMIC_COPY);
 
-	glm::vec4* velocities = (glm::vec4*)glMapBufferRange(GL_ARRAY_BUFFER, 0, PARTICLE_COUNT * sizeof(glm::vec4), GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-
+	glm::vec4* velocities = bufferVelocity.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
 		velocities[i] = glm::vec4();
 	}
+	bufferVelocity.UnmapBuffer();
 
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-
+	// textures buffer
+	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.Name);
 	TextureBuffer textureVelocity(GL_RGBA32F, bufferVelocity.Name);
 
 	// config 
@@ -180,9 +175,9 @@ int main()
 		glPointSize(particleSize);
 		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
 
-		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
-		RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, SCREEN_MAT, fontShader);
-		RenderText(fmt::format("Particle size: {0}", particleSize), 0.0f, 96.0f, font, SCREEN_MAT, fontShader);
+		Ignis::RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, Ignis::ScreenMat, fontShader);
+		Ignis::RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, Ignis::ScreenMat, fontShader);
+		Ignis::RenderText(fmt::format("Particle size: {0}", particleSize), 0.0f, 96.0f, font, Ignis::ScreenMat, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

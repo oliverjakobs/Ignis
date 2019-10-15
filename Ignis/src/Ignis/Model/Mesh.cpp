@@ -158,7 +158,7 @@ namespace ignis
 
 		m_vao.Bind();
 
-		m_vbo.BufferData(indexedVert);
+		m_vbo.BufferData(sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0]);
 
 		m_vbo.VertexAttribPointer(0, 3, sizeof(Vertex), 0);
 		m_vbo.VertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));

@@ -23,23 +23,31 @@ namespace ignis
 		ArrayBuffer();
 
 		void BufferData(uint size, const void* data, uint usage = GL_STATIC_DRAW);
-
-		template <typename Type>
-		void BufferData(std::vector<Type> v, uint usage = GL_STATIC_DRAW);
-
 		void BufferSubData(uint offset, uint size, const void* data);
-
-		void MapBuffer(const void* data, uint size);
 
 		void VertexAttribPointer(uint index, uint size, uint stride, uint offset);
 		void VertexAttribIPointer(uint index, uint size, uint stride, uint offset);
 		void VertexAttribDivisor(uint index, uint divisor);
+
+		void* MapBuffer(uint access);
+		void* MapBufferRange(uint offset, uint length, uint access);
+
+		template <typename Type> Type* MapBuffer(uint access);
+		template <typename Type> Type* MapBufferRange(uint offset, uint count, uint access);
+
+		void UnmapBuffer();
 	};
 
-	template<typename Type>
-	inline void ArrayBuffer::BufferData(std::vector<Type> v, uint usage)
+	template <typename Type>
+	inline Type* ArrayBuffer::MapBuffer(uint access)
 	{
-		BufferData(sizeof(v[0]) * v.size(), &v[0], usage);
+		return (Type*)MapBuffer(access);
+	}
+
+	template <typename Type>
+	inline Type* ArrayBuffer::MapBufferRange(uint offset, uint count, uint access)
+	{
+		return (Type*)MapBufferRange(offset, count * sizeof(Type), access);
 	}
 
 	struct ElementBuffer : public Buffer

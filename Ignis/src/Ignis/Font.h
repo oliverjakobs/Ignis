@@ -10,11 +10,14 @@ namespace ignis
 	class Font
 	{
 	private:
-		uint m_firstchar;
-		uint m_numchars;
+		struct FontData
+		{
+			uint FirstChar;
+			uint NumChars;
 
-		uint m_bitmap_width;
-		uint m_bitmap_height;
+			uint BitmapWidth;
+			uint BitmapHeight;
+		} m_fontData;
 
 		stbtt_bakedchar* m_chardata;
 		

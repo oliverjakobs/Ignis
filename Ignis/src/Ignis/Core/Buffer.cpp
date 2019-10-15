@@ -39,14 +39,20 @@ namespace ignis
 		glBufferSubData(Target, offset, size, data);
 	}
 
-	void ArrayBuffer::MapBuffer(const void* data, uint size)
+	void* ArrayBuffer::MapBuffer(uint access)
 	{
 		Bind();
+		return glMapBuffer(Target, access);
+	}
 
-		void* ptr = glMapBuffer(Target, GL_WRITE_ONLY);
+	void* ArrayBuffer::MapBufferRange(uint offset, uint length, uint access)
+	{
+		Bind();
+		return glMapBufferRange(Target, offset, length, access);
+	}
 
-		memcpy(ptr, data, size);
-
+	void ArrayBuffer::UnmapBuffer()
+	{
 		glUnmapBuffer(Target);
 	}
 

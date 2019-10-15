@@ -11,15 +11,23 @@
 
 namespace ignis
 {
-	bool InitIgnis();
-	bool LoadGL(void* loadProc, bool debug = false);
+	struct Ignis
+	{
+		static glm::mat4 ScreenMat;
 
-	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count);
-	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
-	void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+		static bool Init(uint width, uint height);
+		static bool LoadGL(void* loadProc, bool debug = false);
 
-	void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
-	void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
+		static void EnableBlend(uint sfactor, uint dfactor);
+		static void DisableBlend();
 
-	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader);
+		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count);
+		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+		static void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+
+		static void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
+		static void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
+
+		static void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader);
+	};
 }

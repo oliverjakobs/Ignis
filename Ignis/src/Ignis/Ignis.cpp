@@ -1,4 +1,5 @@
 #include "Ignis.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace ignis
 {
@@ -41,15 +42,20 @@ namespace ignis
 		}
 	}
 
-	bool InitIgnis()
+
+	glm::mat4 Ignis::ScreenMat = glm::mat4(1.0f);
+
+	bool Ignis::Init(uint width, uint height)
 	{
 		obelisk::Logger::SetFormat("[%^%l%$] %v");
 		obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
 
+		ScreenMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
+
 		return true;
 	}
 
-	bool LoadGL(void* loadProc, bool debug)
+	bool Ignis::LoadGL(void* loadProc, bool debug)
 	{
 		// loading glad
 		if (!gladLoadGLLoader((GLADloadproc)loadProc))
@@ -91,7 +97,18 @@ namespace ignis
 		return true;
 	}
 
-	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
+	void Ignis::EnableBlend(uint sfactor, uint dfactor)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(sfactor, dfactor);
+	}
+
+	void Ignis::DisableBlend()
+	{
+		glDisable(GL_BLEND);
+	}
+
+	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -103,7 +120,7 @@ namespace ignis
 		glDrawArrays(GL_TRIANGLES, first, count);
 	}
 
-	void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
+	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -116,7 +133,7 @@ namespace ignis
 		tex.Unbind();
 	}
 
-	void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
+	void Ignis::RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -129,7 +146,7 @@ namespace ignis
 		tex.Unbind();
 	}
 
-	void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
+	void Ignis::RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -147,7 +164,7 @@ namespace ignis
 		tex.Unbind();
 	}
 
-	void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
+	void Ignis::RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -165,7 +182,7 @@ namespace ignis
 		mtl.Unbind();
 	}
 	
-	void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
+	void Ignis::RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
 	{
 		shader.Use();
 		shader.SetUniformMat4("projection", proj);
