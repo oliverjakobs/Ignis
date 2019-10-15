@@ -94,6 +94,7 @@
     <ClInclude Include="src\Ignis\Camera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
+    <ClInclude Include="src\Ignis\Core\ShaderUtil.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
     <ClInclude Include="src\Ignis\Font.h" />
@@ -105,15 +106,17 @@
     <ClInclude Include="src\Ignis\Packages\stb_image_write.h" />
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
-    <ClInclude Include="src\Utility\Debugger.h" />
-    <ClInclude Include="src\Utility\Logger.h" />
-    <ClInclude Include="src\Utility\Timer.h" />
-    <ClInclude Include="src\Utility\Utility.h" />
+    <ClInclude Include="src\Obelisk\Debugger.h" />
+    <ClInclude Include="src\Obelisk\FileUtility.h" />
+    <ClInclude Include="src\Obelisk\Logger.h" />
+    <ClInclude Include="src\Obelisk\Obelisk.h" />
+    <ClInclude Include="src\Obelisk\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Camera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
+    <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp" />
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
@@ -130,10 +133,7 @@
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\particles.comp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project>
+</Project> 

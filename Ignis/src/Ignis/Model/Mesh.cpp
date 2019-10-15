@@ -3,7 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Ignis/Packages/tiny_obj_loader.h"
 
-#include "Utility/Debugger.h"
+#include "Obelisk/Debugger.h"
 
 namespace ignis
 {
@@ -12,7 +12,7 @@ namespace ignis
 		DEBUG_TRACE("[Obj] ------------------------------------------------");
 		DEBUG_TRACE("[Obj] Reading obj file {0}", filename);
 
-		DEBUG_TIMER();
+		DEBUG_CHRONO();
 
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -40,7 +40,7 @@ namespace ignis
 		DEBUG_TRACE("[Obj] {0} normals", (attrib.normals.size() / 3));
 		DEBUG_TRACE("[Obj] {0} texture coords", (attrib.texcoords.size() / 2));
 
-		DEBUG_TIMER_TRACE("[Obj] Parsed obj file in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Parsed obj file in {0}ms");
 
 		std::vector<Vertex> vertices;
 
@@ -74,7 +74,7 @@ namespace ignis
 			vertices.push_back(vertex);
 		}
 
-		DEBUG_TIMER_TRACE("[Obj] Converted to vertices in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Converted to vertices in {0}ms");
 
 		if (mtl && materials.size() > 0)
 		{
@@ -90,7 +90,7 @@ namespace ignis
 			mtl->Shininess = materials[0].shininess;
 		}
 
-		DEBUG_TIMER_TRACE("[Obj] Materials loaded in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Materials loaded in {0}ms");
 		DEBUG_TRACE("[Obj] ------------------------------------------------");
 		return Mesh(vertices);
 	}
@@ -99,7 +99,7 @@ namespace ignis
 	{
 		DEBUG_TRACE("[Mesh] Loading mesh with {0} vertices", vertices.size());
 
-		DEBUG_TIMER();
+		DEBUG_CHRONO();
 
 		for (unsigned int i = 0; i < vertices.size(); i += 3) 
 		{
@@ -174,7 +174,7 @@ namespace ignis
 
 		m_vao.Unbind();
 
-		DEBUG_TIMER_TRACE("[Mesh] Done in {0}ms");
+		DEBUG_CHRONO_TRACE("[Mesh] Done in {0}ms");
 	}
 
 	Mesh::~Mesh()

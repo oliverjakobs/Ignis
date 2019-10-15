@@ -7,8 +7,6 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Utility/Utility.h"
-
 using namespace ignis;
 
 // settings
@@ -25,52 +23,8 @@ const int PARTICLE_GROUP_SIZE = 64;
 const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
 
-GLuint CreateComputeShader(const char* src)
-{
-	GLuint program  = glCreateProgram();
+const float MAX_PARTICLE_SIZE = 10.0f;
 
-	GLuint shader = glCreateShader(GL_COMPUTE_SHADER);
-	glShaderSource(shader, 1, &src, NULL);
-	glCompileShader(shader);
-
-	// check shader errors
-	GLint params = -1;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &params);
-	if (GL_TRUE != params) 
-	{
-		fprintf(stderr, "ERROR: shader %u did not compile\n", shader);
-		int max_length = 4096;
-		int actual_length = 0;
-		char slog[4096];
-		glGetShaderInfoLog(shader, max_length, &actual_length, slog);
-		fprintf(stderr, "shader info log for GL index %u\n%s\n", shader, slog);
-		return 0;
-	}
-
-	glAttachShader(program, shader);
-	glLinkProgram(program);
-
-	//(check_program_errors(program)); // code moved to gl_utils.cpp
-	params = -1;
-	glGetProgramiv(program, GL_LINK_STATUS, &params);
-	if (GL_TRUE != params) 
-	{
-		fprintf(stderr, "ERROR: program %u did not link\n", program);
-		int max_length = 4096;
-		int actual_length = 0;
-		char plog[4096];
-		glGetProgramInfoLog(program, max_length, &actual_length, plog);
-		fprintf(stderr, "program info log for GL index %u\n%s\n", program, plog);
-		glDeleteShader(shader);
-		glDeleteProgram(program);
-		return 0;
-	}
-	glDeleteShader(shader);
-
-	return program;
-}
-
-#if 1
 int main()
 {
 	// ingis initialization
@@ -129,7 +83,7 @@ int main()
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 
-	FrameCounter frames;
+	obelisk::Timer timer;
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
@@ -150,11 +104,11 @@ int main()
 
 	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
 
-	GLuint compShader = CreateComputeShader(ReadFile("res/shaders/particles.comp").c_str());
-	glUseProgram(compShader);
+	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");
+	compShader.Use();
 
-	GLuint l_mousePos = glGetUniformLocation(compShader, "mousePos");
-	GLuint l_deltaTime = glGetUniformLocation(compShader, "deltaTime");
+	GLuint l_mousePos = compShader.GetUniformLocation("mousePos");
+	GLuint l_deltaTime = compShader.GetUniformLocation("deltaTime");
 
 	uint vao;
 	glGenVertexArrays(1, &vao);
@@ -210,19 +164,17 @@ int main()
 
 	while (!glfwWindowShouldClose(window))
 	{
-		frames.Start((float)glfwGetTime());
+		timer.Start((float)glfwGetTime());
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
 		// update particleSize
-		particleSize += mouseScroll;
+		particleSize = glm::clamp(particleSize + mouseScroll, 1.0f, MAX_PARTICLE_SIZE);
 		mouseScroll = 0.0f;
-		if (particleSize < 1.0f)
-			particleSize = 1.0f;
 
-		glUseProgram(compShader);
-		glUniform1f(l_deltaTime, frames.DeltaTime);
+		compShader.Use();
+		glUniform1f(l_deltaTime, timer.DeltaTime);
 		glUniform2fv(l_mousePos, 1, &mousePos[0]);
 
 		glBindImageTexture(0, texturePosition, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
@@ -246,14 +198,14 @@ int main()
 		glPointSize(particleSize);
 		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
 
-		RenderText(fmt::format("FPS: {0}", frames.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
+		RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, SCREEN_MAT, fontShader);
 		RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, SCREEN_MAT, fontShader);
 		RenderText(fmt::format("Particle size: {0}", particleSize), 0.0f, 96.0f, font, SCREEN_MAT, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-		frames.End((float)glfwGetTime());
+		timer.End((float)glfwGetTime());
 	}
 
 	glDeleteBuffers(1, &bufferPosition);
@@ -263,12 +215,9 @@ int main()
 	glDeleteTextures(1, &textureVelocity);
 
 	glDeleteVertexArrays(1, &vao);
-
-	glDeleteProgram(compShader);
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
 	return 0;
 }
-#endif

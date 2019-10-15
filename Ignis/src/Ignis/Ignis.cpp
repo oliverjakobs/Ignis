@@ -43,8 +43,8 @@ namespace ignis
 
 	bool InitIgnis()
 	{
-		Logger::SetFormat("[%^%l%$] %v");
-		Logger::SetLevel(LogLevel::Trace);
+		obelisk::Logger::SetFormat("[%^%l%$] %v");
+		obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
 
 		return true;
 	}

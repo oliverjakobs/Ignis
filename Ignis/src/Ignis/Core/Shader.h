@@ -1,21 +1,19 @@
 #pragma once
 
-#include <glad/glad.h>
-
-#include "Types.h"
+#include "ShaderUtil.h"
 
 namespace ignis
 {
 	class Shader
 	{
-	private:
+	protected:
 		uint m_program;
+
+		Shader() = default;
+
 	public:
 		Shader(const std::string& vert, const std::string& frag);
-		~Shader();
-
-		static uint CreateShader(const std::string& vertSrc, const std::string& geomSrc, const std::string& fragSrc);
-		static uint CompileShader(uint type, const std::string& source);
+		virtual ~Shader();
 
 		void Use();
 
@@ -38,5 +36,11 @@ namespace ignis
 		void SetUniformMat2(int location, const glm::mat4& matrix) const;
 		void SetUniformMat3(int location, const glm::mat4& matrix) const;
 		void SetUniformMat4(int location, const glm::mat4& matrix) const;
+	};
+
+	class ComputeShader : public Shader
+	{
+	public:
+		ComputeShader(const std::string& path);
 	};
 }

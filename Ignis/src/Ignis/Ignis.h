@@ -1,10 +1,10 @@
 #pragma once 
 
+#include "Obelisk/Obelisk.h"
+
 #include "Core/Buffer.h"
 #include "Core/Texture.h"
 #include "Core/Shader.h"
-
-#include "Utility/Utility.h"
 
 #include "Model/Mesh.h"
 #include "Font.h"

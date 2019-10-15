@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ignis/Packages/stb_image.h"
 
-#include "Utility/Debugger.h"
+#include "Obelisk/Debugger.h"
 
 namespace ignis
 {
@@ -13,7 +13,7 @@ namespace ignis
 		DEBUG_TRACE("[Tex] ------------------------------------------------");
 		DEBUG_TRACE("[Tex] Loading {0}", path);
 
-		DEBUG_TIMER();
+		DEBUG_CHRONO();
 
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
@@ -23,7 +23,7 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &Width, &Height, &BPP, 4);
 
-		DEBUG_TIMER_TRACE("[Tex] Parsed file in {0}ms");
+		DEBUG_CHRONO_TRACE("[Tex] Parsed file in {0}ms");
 
 		if (pixels)
 		{
@@ -37,7 +37,7 @@ namespace ignis
 			ID = 0;
 		}
 
-		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, DEBUG_TIMER_GET_ELAPSED());
+		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, DEBUG_CHRONO_GET_ELAPSED());
 		DEBUG_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
 	}
 

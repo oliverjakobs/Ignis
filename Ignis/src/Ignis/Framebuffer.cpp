@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "Utility/Utility.h"
+#include "Obelisk/Debugger.h"
 
 namespace ignis
 {
