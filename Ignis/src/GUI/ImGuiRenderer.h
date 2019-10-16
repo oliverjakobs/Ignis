@@ -6,9 +6,9 @@ struct GLFWwindow;
 
 struct ImGuiRenderer
 {
-	static void Init(GLFWwindow* window);
+	static void Init(GLFWwindow* context);
 	static void Quit();
 
 	static void Begin();
-	static void End(float width, float height);
+	static void End();
 };

@@ -25,9 +25,6 @@ const int PARTICLE_GROUP_SIZE = 64;
 const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
 
-#define MAX_VERTEX_BUFFER 512 * 1024
-#define MAX_ELEMENT_BUFFER 128 * 1024
-
 int main()
 {
 	// ingis initialization
@@ -141,8 +138,8 @@ int main()
 
 	// config 
 	float particleSize = 2.0f;
-	Color particleColor = WHITE;
 	float particleRadius = 100.0f;
+	Color particleColor = WHITE;
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -153,8 +150,8 @@ int main()
 
 		compShader.Use();
 		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
-		compShader.SetUniform2f("mousePos", mousePos);
 		compShader.SetUniform1f("particleRadius", particleRadius);
+		compShader.SetUniform2f("mousePos", mousePos);
 
 		texturePosition.BindImageTexture(0, GL_READ_WRITE);
 		textureVelocity.BindImageTexture(1, GL_READ_WRITE);
@@ -182,11 +179,11 @@ int main()
 		ImGui::Begin("Settings");
 		ImGui::Text("Particles (%d)", PARTICLE_COUNT);
 		ImGui::SliderFloat("Size", &particleSize, 1, 10, "%.1f");
-		ImGui::SliderFloat("Radius", &particleRadius, 1, 200, "%.1f");
+		ImGui::SliderFloat("Radius", &particleRadius, 10, 200, "%.1f");
 		ImGui::ColorEdit4("Color", &particleColor[0]);
 		ImGui::End();
 
-		ImGuiRenderer::End((float)WIDTH, (float)HEIGHT);
+		ImGuiRenderer::End();
 
 		// font
 		Ignis::RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, Ignis::ScreenMat, fontShader);

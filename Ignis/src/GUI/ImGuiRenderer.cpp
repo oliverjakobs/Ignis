@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 
 
-void ImGuiRenderer::Init(GLFWwindow* window)
+void ImGuiRenderer::Init(GLFWwindow* context)
 {
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -35,7 +35,7 @@ void ImGuiRenderer::Init(GLFWwindow* window)
 	}
 
 	// Setup Platform/Renderer bindings
-	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui_ImplGlfw_Init(context, true, GlfwClientApi_OpenGL);
 	ImGui_ImplOpenGL3_Init("#version 410");
 }
 
@@ -53,10 +53,13 @@ void ImGuiRenderer::Begin()
 	ImGui::NewFrame();
 }
 
-void ImGuiRenderer::End(float width, float height)
+void ImGuiRenderer::End()
 {
 	ImGuiIO& io = ImGui::GetIO();
-	io.DisplaySize = ImVec2(width, height);
+
+	int width, height;
+	glfwGetWindowSize(glfwGetCurrentContext(), &width, &height);
+	io.DisplaySize = ImVec2((float)width, (float)height);
 
 	// Rendering
 	ImGui::Render();
