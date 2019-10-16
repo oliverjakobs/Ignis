@@ -2,9 +2,10 @@
 
 // one dimensional problem with a group size of 64
 layout (local_size_x = 64) in;
+
 // x,y -> position; z -> generated value to distribute lifecycles; w -> remaining lifetime 
 layout (rgba32f, binding = 0) uniform imageBuffer buffer_particle; 
-// x.y -> velocity; z,w -> unused
+// x.y -> velocity, randomly distributed on a disk with a radius of 1.0; z,w -> unused
 layout (rgba32f, binding = 1) uniform imageBuffer buffer_velocity;
 
 uniform float deltaTime;		// timestep to keep simulation seperated from fps
