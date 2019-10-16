@@ -58,7 +58,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -74,7 +74,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -91,6 +91,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GUI\ImGuiRenderer.h" />
     <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
     <ClInclude Include="src\Ignis\Camera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
@@ -114,6 +115,7 @@
     <ClInclude Include="src\Obelisk\Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\GUI\ImGuiRenderer.cpp" />
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
     <ClCompile Include="src\Ignis\Camera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
@@ -133,6 +135,9 @@
     </ProjectReference>
     <ProjectReference Include="packages\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
+    </ProjectReference>
+    <ProjectReference Include="packages\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

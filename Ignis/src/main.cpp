@@ -7,6 +7,8 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "GUI/ImGuiRenderer.h"
+
 using namespace ignis;
 
 // settings
@@ -22,6 +24,9 @@ float mouseScroll = 0.0f;
 const int PARTICLE_GROUP_SIZE = 64;
 const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
+
+#define MAX_VERTEX_BUFFER 512 * 1024
+#define MAX_ELEMENT_BUFFER 128 * 1024
 
 int main()
 {
@@ -91,6 +96,9 @@ int main()
 		mouseScroll = (float)yOffset;
 	});
 
+	// imgui
+	ImGuiRenderer::Init(window);
+
 	obelisk::Timer timer;
 
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
@@ -135,31 +143,13 @@ int main()
 	float particleSize = 2.0f;
 	Color particleColor = WHITE;
 	float particleRadius = 100.0f;
-
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		timer.Start((float)glfwGetTime());
 
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
-
-		// update config
-		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-			particleColor = RED;
-		else if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-			particleColor = GREEN;
-		else if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
-			particleColor = BLUE;
-
-		particleRadius += (mouseScroll * 10.0f);
-
-		// reset mousescroll
-		mouseScroll = 0.0f;
-
-		// clamping
-		particleRadius = glm::clamp(particleRadius, 10.0f, 200.0f);
-		particleSize = glm::clamp(particleSize, 1.0f, 10.0f);
-
 
 		compShader.Use();
 		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
@@ -186,10 +176,20 @@ int main()
 		glPointSize(particleSize);
 		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
 
+		// gui
+		ImGuiRenderer::Begin();
+
+		ImGui::Begin("Settings");
+		ImGui::Text("Particles (%d)", PARTICLE_COUNT);
+		ImGui::SliderFloat("Size", &particleSize, 1, 10, "%.1f");
+		ImGui::SliderFloat("Radius", &particleRadius, 1, 200, "%.1f");
+		ImGui::ColorEdit4("Color", &particleColor[0]);
+		ImGui::End();
+
+		ImGuiRenderer::End((float)WIDTH, (float)HEIGHT);
+
+		// font
 		Ignis::RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, Ignis::ScreenMat, fontShader);
-		Ignis::RenderText(fmt::format("Particles: {0}", PARTICLE_COUNT), 0.0f, 64.0f, font, Ignis::ScreenMat, fontShader);
-		Ignis::RenderText(fmt::format("Particle size: {0}", particleSize), 0.0f, 96.0f, font, Ignis::ScreenMat, fontShader);
-		Ignis::RenderText(fmt::format("Particle radius: {0}", particleRadius), 0.0f, 128.0f, font, Ignis::ScreenMat, fontShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -197,6 +197,8 @@ int main()
 		timer.End((float)glfwGetTime());
 	}
 	
+	ImGuiRenderer::Quit();
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
