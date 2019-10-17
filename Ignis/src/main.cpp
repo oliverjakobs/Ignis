@@ -165,7 +165,7 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 
 		shader.Use();
-		shader.SetUniformMat4("mvp", projection * view * model);
+		shader.SetUniformMat4("mvp", projection* view* model);
 		shader.SetUniform4f("particleColor", particleColor);
 
 		vao.Bind();

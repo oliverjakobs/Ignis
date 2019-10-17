@@ -1,13 +1,13 @@
 #version 430 core
 
-in vec4 vert;
+layout (location = 0) in vec4 aVert;
 
 uniform mat4 mvp;
 
-out float value;
+out float fValue;
 
 void main(void)
 {
-	value = vert.w;
-	gl_Position = mvp * vec4(vert.xy, 0.0f, 1.0);
+	fValue = aVert.w;
+	gl_Position = mvp * vec4(aVert.xy, 0.0f, 1.0);
 }

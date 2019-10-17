@@ -4,29 +4,32 @@
 
 namespace ignis
 {
-	uint CreateShader(const std::string& vertSrc, const std::string& geomSrc, const std::string& fragSrc)
+	uint CreateShaderProgram(std::map<uint, const std::string&> shaderSrc)
 	{
 		uint program = glCreateProgram();
+		std::vector<uint> attachedShader;
 
-		uint vert = CompileShader(GL_VERTEX_SHADER, vertSrc);
-		uint frag = CompileShader(GL_FRAGMENT_SHADER, fragSrc);
+		for (auto& [type, src] : shaderSrc)
+		{
+			uint shader = CompileShader(type, src);
 
-		if (vert == 0 || frag == 0)
-			return 0;
+			if (shader == 0)
+			{
+				glDeleteProgram(program);
+				return 0;
+			}
 
-		glAttachShader(program, vert);
-		glAttachShader(program, frag);
-
-		uint geom = 0;
-
-		// optional shader
-		if (!geomSrc.empty())
-			geom = CompileShader(GL_GEOMETRY_SHADER, geomSrc);
-
-		if (geom != 0)
-			glAttachShader(program, geom);
+			glAttachShader(program, shader);
+			attachedShader.push_back(shader);
+		}
 
 		glLinkProgram(program);
+
+		for (auto& shader : attachedShader)
+		{
+			glDeleteShader(shader);
+			glDetachShader(program, shader);
+		}
 
 		GLint result = GL_FALSE;
 		glGetProgramiv(program, GL_LINK_STATUS, &result);
@@ -35,7 +38,6 @@ namespace ignis
 			DEBUG_ERROR("[SHADER] Linking Error");
 			DEBUG_ERROR("[SHADER] {0}", GetProgramLog(program));
 			glDeleteProgram(program);
-
 			return 0;
 		}
 
@@ -51,11 +53,6 @@ namespace ignis
 
 			return 0;
 		}
-
-		glDeleteShader(vert);
-		glDeleteShader(frag);
-
-		glDeleteShader(geom);
 
 		return program;
 	}

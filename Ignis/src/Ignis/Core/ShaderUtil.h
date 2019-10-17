@@ -6,7 +6,7 @@
 
 namespace ignis
 {
-	uint CreateShader(const std::string& vertSrc, const std::string& geomSrc, const std::string& fragSrc);
+	uint CreateShaderProgram(std::map<uint, const std::string&> shadersrc);
 	uint CompileShader(uint type, const std::string& source);
 
 	std::string GetShaderLog(uint object);

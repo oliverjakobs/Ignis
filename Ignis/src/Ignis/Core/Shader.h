@@ -9,10 +9,11 @@ namespace ignis
 	protected:
 		uint m_program;
 
-		Shader() = default;
+		Shader() : m_program(0) {};
 
 	public:
 		Shader(const std::string& vert, const std::string& frag);
+		Shader(const std::string& vert, const std::string& geom, const std::string& frag);
 		virtual ~Shader();
 
 		void Use();
