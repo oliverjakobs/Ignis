@@ -22,7 +22,7 @@ namespace ignis
 	{
 		ArrayBuffer();
 
-		void BufferData(uint size, const void* data, uint usage = GL_STATIC_DRAW);
+		void BufferData(uint size, const void* data, uint usage);
 		void BufferSubData(uint offset, uint size, const void* data);
 
 		void VertexAttribPointer(uint index, uint size, uint stride, uint offset);
@@ -56,7 +56,7 @@ namespace ignis
 
 		ElementBuffer();
 
-		void BufferData(uint count, const uint* data, uint usage = GL_STATIC_DRAW);
+		void BufferData(uint count, const uint* data, uint usage);
 	};
 
 	// TODO: Handling buffers through here

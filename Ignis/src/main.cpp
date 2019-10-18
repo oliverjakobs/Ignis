@@ -156,7 +156,7 @@ int main()
 		texturePosition.BindImageTexture(0, GL_READ_WRITE);
 		textureVelocity.BindImageTexture(1, GL_READ_WRITE);
 
-		compShader.Dispatch(PARTICLE_GROUP_COUNT, 1, 1);
+		compShader.Dispatch(PARTICLE_GROUP_COUNT, 1, 1, GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 

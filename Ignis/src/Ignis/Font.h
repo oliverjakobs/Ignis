@@ -17,9 +17,9 @@ namespace ignis
 
 			uint BitmapWidth;
 			uint BitmapHeight;
-		} m_fontData;
 
-		stbtt_bakedchar* m_chardata;
+			stbtt_bakedchar* CharData;
+		} m_fontData;
 		
 		Texture* m_texture;
 

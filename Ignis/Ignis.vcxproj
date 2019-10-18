@@ -93,7 +93,9 @@
   <ItemGroup>
     <ClInclude Include="src\GUI\ImGuiRenderer.h" />
     <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
-    <ClInclude Include="src\Ignis\Camera.h" />
+    <ClInclude Include="src\Ignis\Camera\FpsCamera.h" />
+    <ClInclude Include="src\Ignis\Camera\Camera.h" />
+    <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
     <ClInclude Include="src\Ignis\Core\ShaderUtil.h" />
@@ -108,6 +110,7 @@
     <ClInclude Include="src\Ignis\Packages\stb_image_write.h" />
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
+    <ClInclude Include="src\Ignis\RenderState.h" />
     <ClInclude Include="src\Obelisk\Debugger.h" />
     <ClInclude Include="src\Obelisk\FileUtility.h" />
     <ClInclude Include="src\Obelisk\Logger.h" />
@@ -117,7 +120,8 @@
   <ItemGroup>
     <ClCompile Include="src\GUI\ImGuiRenderer.cpp" />
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
-    <ClCompile Include="src\Ignis\Camera.cpp" />
+    <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp" />
+    <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
     <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp" />

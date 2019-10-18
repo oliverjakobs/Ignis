@@ -42,7 +42,6 @@ namespace ignis
 		}
 	}
 
-
 	glm::mat4 Ignis::ScreenMat = glm::mat4(1.0f);
 
 	bool Ignis::Init(uint width, uint height)
