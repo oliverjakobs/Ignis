@@ -7,7 +7,7 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "GUI/ImGuiRenderer.h"
+#include "ImGuiBinding/ImGuiRenderer.h"
 
 using namespace ignis;
 
@@ -74,7 +74,7 @@ int main()
 
 	bool debug = true;
 
-	if (!Ignis::LoadGL(glfwGetProcAddress, debug))
+	if (!Ignis::LoadGL(debug))
 	{
 		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();
@@ -165,7 +165,7 @@ int main()
 		glm::mat4 model = glm::mat4(1.0f);
 
 		shader.Use();
-		shader.SetUniformMat4("mvp", projection* view* model);
+		shader.SetUniformMat4("mvp", projection * view * model);
 		shader.SetUniform4f("particleColor", particleColor);
 
 		vao.Bind();

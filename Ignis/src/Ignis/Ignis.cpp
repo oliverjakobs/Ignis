@@ -54,10 +54,10 @@ namespace ignis
 		return true;
 	}
 
-	bool Ignis::LoadGL(void* loadProc, bool debug)
+	bool Ignis::LoadGL(bool debug)
 	{
 		// loading glad
-		if (!gladLoadGLLoader((GLADloadproc)loadProc))
+		if (!gladLoadGL())
 		{
 			DEBUG_ERROR("[GLAD] Failed to initialize GLAD");
 			return false;

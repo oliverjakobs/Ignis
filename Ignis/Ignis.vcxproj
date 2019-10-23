@@ -91,7 +91,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\GUI\ImGuiRenderer.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
+    <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
     <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
     <ClInclude Include="src\Ignis\Camera\FpsCamera.h" />
     <ClInclude Include="src\Ignis\Camera\Camera.h" />
@@ -118,7 +120,9 @@
     <ClInclude Include="src\Obelisk\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\GUI\ImGuiRenderer.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
+    <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
     <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp" />
     <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />

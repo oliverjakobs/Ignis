@@ -16,7 +16,7 @@ namespace ignis
 		static glm::mat4 ScreenMat;
 
 		static bool Init(uint width, uint height);
-		static bool LoadGL(void* loadProc, bool debug = false);
+		static bool LoadGL(bool debug = false);
 
 		static void EnableBlend(uint sfactor, uint dfactor);
 		static void DisableBlend();

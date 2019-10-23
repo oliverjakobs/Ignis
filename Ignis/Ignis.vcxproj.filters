@@ -84,13 +84,15 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
-    <ClInclude Include="src\GUI\ImGuiRenderer.h" />
     <ClInclude Include="src\Ignis\RenderState.h" />
     <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
     <ClInclude Include="src\Ignis\Camera\Camera.h" />
     <ClInclude Include="src\Ignis\Camera\FpsCamera.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -124,10 +126,12 @@
       <Filter>Ignis\Model</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\GUI\ImGuiRenderer.cpp" />
     <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
+    <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
   </ItemGroup>
 </Project>
