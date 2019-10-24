@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Core/Texture.h"
-#include "Core/Buffer.h"
+#include "Core/VertexArray.h"
 
 namespace ignis
 {

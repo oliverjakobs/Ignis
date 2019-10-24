@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Buffer.h"
+#include "Core/VertexArray.h"
 #include "Core/Texture.h"
 
 #include "Ignis/Packages/stb_truetype.h"
@@ -24,8 +24,7 @@ namespace ignis
 		Texture* m_texture;
 
 		// buffer
-		VertexArray m_vao;
-		ArrayBuffer m_vbo;
+		VertexArray m_vertexArray;
 	public:
 		Font(const std::string& path, float size);
 		~Font();

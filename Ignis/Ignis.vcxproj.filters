@@ -108,6 +108,8 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\FontRenderer.h" />
+    <ClInclude Include="src\Ignis\Core\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -156,5 +158,7 @@
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\FontRenderer.cpp" />
+    <ClCompile Include="src\Ignis\Core\VertexArray.cpp" />
   </ItemGroup>
 </Project>

@@ -21,6 +21,7 @@ namespace ignis
 	struct ArrayBuffer : public Buffer
 	{
 		ArrayBuffer();
+		ArrayBuffer(uint size, const void* data, uint usage);
 
 		void BufferData(uint size, const void* data, uint usage);
 		void BufferSubData(uint offset, uint size, const void* data);
@@ -55,20 +56,9 @@ namespace ignis
 		uint Count;
 
 		ElementBuffer();
+		ElementBuffer(uint count, const uint* data, uint usage);
 
 		void BufferData(uint count, const uint* data, uint usage);
-	};
-
-	// TODO: Handling buffers through here
-	struct VertexArray
-	{
-		uint Name;
-
-		VertexArray();
-		~VertexArray();
-
-		void Bind() const;
-		void Unbind() const;
 	};
 
 	// Advanced buffers

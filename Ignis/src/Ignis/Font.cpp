@@ -64,9 +64,11 @@ namespace ignis
 		free(bitmap);
 
 		// set up vertex array
-		m_vao.Bind();
-		m_vbo.BufferData(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
-		m_vbo.VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
+		m_vertexArray.Bind();
+		auto vbo = m_vertexArray.AddArrayBuffer(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
+		vbo->VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
+
+		m_vertexArray.LoadElementBuffer({ 0,1,2,2,3,0 }, GL_STATIC_DRAW);
 	}
 
 	Font::~Font()
@@ -79,13 +81,13 @@ namespace ignis
 	void Font::Bind()
 	{
 		m_texture->Bind();
-		m_vao.Bind();
+		m_vertexArray.Bind();
 	}
 
 	void Font::Unbind()
 	{
 		m_texture->Unbind();
-		m_vao.Unbind();
+		m_vertexArray.Unbind();
 	}
 
 	bool Font::LoadCharQuad(char c, float* x, float* y)
@@ -104,7 +106,7 @@ namespace ignis
 			};
 
 			// Update content of VBO memory
-			m_vbo.BufferSubData(0, sizeof(vertices), vertices);
+			m_vertexArray.GetArrayBuffer(0)->BufferSubData(0, sizeof(vertices), vertices);
 
 			return true;
 		}

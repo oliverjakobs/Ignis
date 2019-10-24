@@ -9,6 +9,9 @@
 #include "Model/Mesh.h"
 #include "Font.h"
 
+// Renderer
+#include "FontRenderer.h"
+
 namespace ignis
 {
 	struct Ignis
@@ -27,7 +30,5 @@ namespace ignis
 
 		static void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
 		static void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
-
-		static void RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader);
 	};
 }

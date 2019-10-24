@@ -27,6 +27,11 @@ namespace ignis
 
 	ArrayBuffer::ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) { }
 
+	ArrayBuffer::ArrayBuffer(uint size, const void* data, uint usage) : Buffer(GL_ARRAY_BUFFER)
+	{
+		BufferData(size, data, usage);
+	}
+
 	void ArrayBuffer::BufferData(uint size, const void* data, uint usage)
 	{
 		Bind();
@@ -75,33 +80,16 @@ namespace ignis
 
 	ElementBuffer::ElementBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER), Count(0) { }
 
+	ElementBuffer::ElementBuffer(uint count, const uint* data, uint usage) : Buffer(GL_ELEMENT_ARRAY_BUFFER), Count(count)
+	{
+		BufferData(count, data, usage);
+	}
+
 	void ElementBuffer::BufferData(uint count, const uint* data, uint usage)
 	{
 		Bind();
 		glBufferData(Target, count * sizeof(uint), data, (GLenum)usage);
 		Count = count;
-	}
-
-	VertexArray::VertexArray()
-	{
-		glGenVertexArrays(1, &Name);
-		glBindVertexArray(Name);
-	}
-
-	VertexArray::~VertexArray()
-	{
-		glDeleteVertexArrays(1, &Name);
-		glBindVertexArray(0);
-	}
-
-	void VertexArray::Bind() const
-	{
-		glBindVertexArray(Name);
-	}
-
-	void VertexArray::Unbind() const
-	{
-		glBindVertexArray(0);
 	}
 
 	TextureBuffer::TextureBuffer(uint format, uint buffer) : Format(format)

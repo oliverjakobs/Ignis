@@ -5,6 +5,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include <memory>
+
 namespace ignis
 {
 	typedef glm::vec4 Color;

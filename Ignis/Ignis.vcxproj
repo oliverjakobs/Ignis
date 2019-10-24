@@ -100,7 +100,9 @@
     <ClInclude Include="src\Ignis\Core\ShaderUtil.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
+    <ClInclude Include="src\Ignis\Core\VertexArray.h" />
     <ClInclude Include="src\Ignis\Font.h" />
+    <ClInclude Include="src\Ignis\FontRenderer.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Model\Material.h" />
@@ -127,7 +129,9 @@
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
     <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp" />
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />
+    <ClCompile Include="src\Ignis\Core\VertexArray.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
+    <ClCompile Include="src\Ignis\FontRenderer.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />
     <ClCompile Include="src\Ignis\Model\Material.cpp" />

@@ -185,8 +185,11 @@ int main()
 
 		ImGuiRenderer::End();
 
-		// font
-		Ignis::RenderText(fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f, font, Ignis::ScreenMat, fontShader);
+		// debug info
+		fontShader.Use();
+		fontShader.SetUniformMat4("projection", Ignis::ScreenMat);
+
+		FontRenderer::RenderText(font, fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

@@ -180,22 +180,4 @@ namespace ignis
 
 		mtl.Unbind();
 	}
-	
-	void Ignis::RenderText(const std::string& text, float x, float y, Font& font, glm::mat4 proj, Shader& shader)
-	{
-		shader.Use();
-		shader.SetUniformMat4("projection", proj);
-
-		font.Bind();
-
-		for (auto& c : text)
-		{
-			if (font.LoadCharQuad(c, &x, &y))
-			{
-				// Render quad
-				std::vector<uint> indices = { 0,1,2,2,3,0 };
-				glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, indices.data());
-			}
-		}
-	}
 }
