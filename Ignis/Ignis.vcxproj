@@ -97,10 +97,8 @@
     <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
-    <ClInclude Include="src\Ignis\Core\ShaderUtil.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
-    <ClInclude Include="src\Ignis\Core\VertexArray.h" />
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
@@ -110,7 +108,7 @@
     <ClInclude Include="src\Ignis\Packages\stb_image_write.h" />
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
-    <ClInclude Include="src\Ignis\RenderState.h" />
+    <ClInclude Include="src\Ignis\Renderer\RenderState.h" />
     <ClInclude Include="src\Ignis\Renderer\FontRenderer.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
@@ -127,9 +125,7 @@
     <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
-    <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp" />
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />
-    <ClCompile Include="src\Ignis\Core\VertexArray.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
     <ClCompile Include="src\Ignis\Ignis.cpp" />

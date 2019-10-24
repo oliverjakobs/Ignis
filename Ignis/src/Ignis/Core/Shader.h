@@ -1,6 +1,8 @@
 #pragma once
 
-#include "ShaderUtil.h"
+#include <glad/glad.h>
+
+#include "Types.h"
 
 namespace ignis
 {
@@ -38,4 +40,12 @@ namespace ignis
 		void SetUniformMat3(int location, const glm::mat4& matrix) const;
 		void SetUniformMat4(int location, const glm::mat4& matrix) const;
 	};
+
+	// Shader utils
+	uint CreateShaderProgram(std::map<uint, const std::string&> shadersrc);
+	uint CompileShader(uint type, const std::string& source);
+
+	std::string GetShaderLog(uint object);
+	std::string GetProgramLog(uint object);
+	std::string GetShaderType(uint type);
 }

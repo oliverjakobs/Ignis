@@ -48,16 +48,10 @@
     <ClInclude Include="src\Ignis\Core\Shader.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Core\ShaderUtil.h">
-      <Filter>Ignis\Core</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Core\Texture.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Types.h">
-      <Filter>Ignis\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Core\VertexArray.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Font.h">
@@ -87,9 +81,6 @@
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h">
       <Filter>Ignis\Packages</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\RenderState.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Renderer\FontRenderer.h">
       <Filter>Ignis\Renderer</Filter>
     </ClInclude>
@@ -117,6 +108,9 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Renderer\RenderState.h">
+      <Filter>Ignis</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -134,13 +128,7 @@
     <ClCompile Include="src\Ignis\Core\Shader.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp">
-      <Filter>Ignis\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\Ignis\Core\Texture.cpp">
-      <Filter>Ignis\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Core\VertexArray.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Font.cpp">

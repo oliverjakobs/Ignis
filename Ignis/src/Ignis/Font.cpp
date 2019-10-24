@@ -16,51 +16,21 @@ namespace ignis
 		m_fontData.BitmapWidth = 512;
 		m_fontData.BitmapHeight = 512;
 
-		FILE* file = fopen(path.c_str(), "rb");
-
-		if (file == nullptr)
-		{
-			DEBUG_ERROR("Failed to load font: {0}", path);
-			return;
-		}
-
-		// obtain file size:
-		fseek(file, 0, SEEK_END);
-		uint buffer_size = ftell(file);
-		rewind(file);
-
-		// allocate memory to contain the whole file:
-		byte* buffer = (byte*)malloc(sizeof(byte) * buffer_size);
-		if (buffer == nullptr)
-		{
-			DEBUG_ERROR("Failed to allocate memory for font: {0}", path);
-			fclose(file);
-			return;
-		}
-
-		if (fread(buffer, sizeof(byte), buffer_size, file) != buffer_size)
-		{
-			DEBUG_ERROR("Failed to read font: {0}", path);
-			fclose(file);
-			free(buffer);
-			return;
-		}
-
-		fclose(file);
+		std::ifstream input(path, std::ios::binary);
+		std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
 
 		m_fontData.CharData = (stbtt_bakedchar*)malloc(sizeof(stbtt_bakedchar) * m_fontData.NumChars);
 
 		// load bitmap
-		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
-		stbtt_BakeFontBitmap(buffer, 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
-
 		TextureConfig config = DEFAULT_CONFIG;
 		config.INTERAL_FORMAT = GL_RED;
 		config.FORMAT = GL_RED;
 
+		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
+		stbtt_BakeFontBitmap(buffer.data(), 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
+
 		m_texture = new Texture(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
 
-		free(buffer);
 		free(bitmap);
 
 		// set up vertex array
