@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{2AEC870B-96F5-877C-1F71-9E7C8B79937C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Ignis">
       <UniqueIdentifier>{DF59620D-4B6E-8ABE-14F0-2D1E80C386EF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ignis\Advanced">
+      <UniqueIdentifier>{C473F4F8-B041-E8FE-99D5-58258542C463}</UniqueIdentifier>
     </Filter>
     <Filter Include="Ignis\Core">
       <UniqueIdentifier>{97816961-8339-ABAE-EC40-840AD817469F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ignis\Model">
+      <UniqueIdentifier>{5F6E4E8F-CB23-C784-5418-C15BC0CCBD88}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Ignis\Packages">
       <UniqueIdentifier>{ED173DBE-D9E5-30C4-C279-A1EAAEE60C29}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Utility">
-      <UniqueIdentifier>{22877D10-8E47-F946-5782-42C4C3013E23}</UniqueIdentifier>
+    <Filter Include="Obelisk">
+      <UniqueIdentifier>{4E9CF2B0-BA7B-714C-C393-FC222FF2D7AD}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Camera.h">
-      <Filter>Ignis</Filter>
+    <ClInclude Include="src\Ignis\Advanced\ComputeShader.h">
+      <Filter>Ignis\Advanced</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Buffer.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Shader.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\ShaderUtil.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Texture.h">
@@ -39,6 +51,12 @@
     <ClInclude Include="src\Ignis\Ignis.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Model\Material.h">
+      <Filter>Ignis\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Model\Mesh.h">
+      <Filter>Ignis\Model</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Packages\stb_image.h">
       <Filter>Ignis\Packages</Filter>
     </ClInclude>
@@ -51,31 +69,42 @@
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h">
       <Filter>Ignis\Packages</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utility\Debugger.h">
-      <Filter>Ignis\Utility</Filter>
+    <ClInclude Include="src\Obelisk\Debugger.h">
+      <Filter>Obelisk</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utility\Timer.h">
-      <Filter>Ignis\Utility</Filter>
+    <ClInclude Include="src\Obelisk\FileUtility.h">
+      <Filter>Obelisk</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utility\Utility.h">
-      <Filter>Ignis\Utility</Filter>
+    <ClInclude Include="src\Obelisk\Logger.h">
+      <Filter>Obelisk</Filter>
     </ClInclude>
-    <ClInclude Include="src\Utility\Logger.h" />
-    <ClInclude Include="src\Ignis\Model\Mesh.h">
+    <ClInclude Include="src\Obelisk\Obelisk.h">
+      <Filter>Obelisk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Obelisk\Timer.h">
+      <Filter>Obelisk</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\RenderState.h" />
+    <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
+    <ClInclude Include="src\Ignis\Camera\Camera.h" />
+    <ClInclude Include="src\Ignis\Camera\FpsCamera.h">
       <Filter>Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Model\Material.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
+    <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ignis\Camera.cpp">
-      <Filter>Ignis</Filter>
+    <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
+      <Filter>Ignis\Advanced</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Core\Buffer.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Core\Shader.cpp">
+      <Filter>Ignis\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Core\Texture.cpp">
@@ -90,16 +119,19 @@
     <ClCompile Include="src\Ignis\Ignis.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Model\Material.cpp">
-      <Filter>Ignis</Filter>
+      <Filter>Ignis\Model</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Model\Mesh.cpp">
+      <Filter>Ignis\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\shader.comp" />
-    <None Include="res\shaders\trail.comp" />
+    <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
   </ItemGroup>
 </Project>

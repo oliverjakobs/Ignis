@@ -2,103 +2,148 @@
 
 namespace ignis
 {
-	VAO::VAO()
+	Buffer::Buffer(uint target)
+		: Target(target)
 	{
-		glGenVertexArrays(1, &ID);
-		glBindVertexArray(ID);
+		glGenBuffers(1, &Name);
+		glBindBuffer(Target, Name);
 	}
 
-	VAO::~VAO()
+	Buffer::~Buffer()
 	{
-		glDeleteVertexArrays(1, &ID);
-
-		for (auto& b : Buffers)
-			glDeleteBuffers(1, &b.ID);
+		glDeleteBuffers(1, &Name);
+		glBindBuffer(Target, 0);
 	}
 
-	void VAO::Bind() const
+	void Buffer::Bind() const
 	{
-		glBindVertexArray(ID);
+		glBindBuffer(Target, Name);
 	}
 
-	void VAO::Unbind() const
+	void Buffer::Unbind() const
 	{
-		glBindVertexArray(0);
+		glBindBuffer(Target, 0);
 	}
 
-	uint VAO::GetBufferType(uint index) const
-	{
-		if (index < Buffers.size())
-			return Buffers.at(index).Type;
+	ArrayBuffer::ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) { }
 
-		return 0;
+	void ArrayBuffer::BufferData(uint size, const void* data, uint usage)
+	{
+		Bind();
+		glBufferData(Target, size, data, (GLenum)usage);
 	}
 
-	void VAO::BindBuffer(uint index)
+	void ArrayBuffer::BufferSubData(uint offset, uint size, const void* data)
 	{
-		if (index < Buffers.size())
-		{
-			Buffer& buffer = Buffers.at(index);
-			glBindBuffer(buffer.Type, buffer.ID);
-		}
+		Bind();
+		glBufferSubData(Target, offset, size, data);
 	}
 
-	void VAO::UnbindBuffer(uint type)
+	void* ArrayBuffer::MapBuffer(uint access)
 	{
-		glBindBuffer(type, 0);
+		Bind();
+		return glMapBuffer(Target, access);
 	}
 
-	uint VAO::GenBuffer(uint type)
+	void* ArrayBuffer::MapBufferRange(uint offset, uint length, uint access)
 	{
-		uint buffer;
-
-		glGenBuffers(1, &buffer);
-		glBindBuffer(type, buffer);
-
-		Buffers.push_back({ buffer, type });
-
-		return Buffers.size() - 1;
+		Bind();
+		return glMapBufferRange(Target, offset, length, access);
 	}
 
-	void VAO::SetBufferData(uint type, uint size, const void* data, uint usage)
+	void ArrayBuffer::UnmapBuffer()
 	{
-		glBufferData(type, size, data, (GLenum)usage);
+		glUnmapBuffer(Target);
 	}
 
-	void VAO::SetBufferSubData(uint target, uint offset, uint size, const void* data)
-	{
-		glBufferSubData(target, offset, size, data);
-	}
-
-	void VAO::SetVertexAttribPointer(uint index, uint size, uint stride, uint offset)
+	void ArrayBuffer::VertexAttribPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
 		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 	}
 
-	void VAO::SetVertexAttribIPointer(uint index, uint size, uint stride, uint offset)
+	void ArrayBuffer::VertexAttribIPointer(uint index, uint size, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
 		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride, (void*)offset);
 	}
 
-	void VAO::SetVertexAttribDivisor(uint index, uint divisor)
+	void ArrayBuffer::VertexAttribDivisor(uint index, uint divisor)
 	{
 		glVertexAttribDivisor(index, divisor);
 	}
 
-	void VAO::MapBufferData(uint index, const void* data, uint size)
+	ElementBuffer::ElementBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER), Count(0) { }
+
+	void ElementBuffer::BufferData(uint count, const uint* data, uint usage)
 	{
-		if (index < Buffers.size())
-		{
-			Buffer& buffer = Buffers.at(index);
-			glBindBuffer(buffer.Type, buffer.ID);
+		Bind();
+		glBufferData(Target, count * sizeof(uint), data, (GLenum)usage);
+		Count = count;
+	}
 
-			void* ptr = glMapBuffer(buffer.Type, GL_WRITE_ONLY);
+	VertexArray::VertexArray()
+	{
+		glGenVertexArrays(1, &Name);
+		glBindVertexArray(Name);
+	}
 
-			memcpy(ptr, data, size);
+	VertexArray::~VertexArray()
+	{
+		glDeleteVertexArrays(1, &Name);
+		glBindVertexArray(0);
+	}
 
-			glUnmapBuffer(buffer.Type);
-		}
+	void VertexArray::Bind() const
+	{
+		glBindVertexArray(Name);
+	}
+
+	void VertexArray::Unbind() const
+	{
+		glBindVertexArray(0);
+	}
+
+	TextureBuffer::TextureBuffer(uint format, uint buffer) : Format(format)
+	{
+		glGenTextures(1, &Texture);
+		glBindTexture(GL_TEXTURE_BUFFER, Texture);
+		glTexBuffer(GL_TEXTURE_BUFFER, Format, buffer);
+	}
+
+	TextureBuffer::~TextureBuffer()
+	{
+		glDeleteTextures(1, &Texture);
+	}
+
+	void TextureBuffer::BindImageTexture(uint unit, uint access)
+	{
+		glBindImageTexture(unit, Texture, 0, GL_FALSE, 0, access, Format);
+	}
+
+	RenderBuffer::RenderBuffer()
+	{
+		glGenRenderbuffers(1, &Name);
+	}
+
+	RenderBuffer::~RenderBuffer()
+	{
+		glDeleteRenderbuffers(1, &Name);
+	}
+
+	void RenderBuffer::Bind() const
+	{
+		glBindRenderbuffer(GL_RENDERBUFFER, Name);
+	}
+
+	void RenderBuffer::Unbind() const
+	{
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	}
+
+	void RenderBuffer::RenderbufferStorage(uint format, int width, int height)
+	{
+		Bind();
+		glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
 	}
 }

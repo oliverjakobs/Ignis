@@ -58,7 +58,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -74,7 +74,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;packages\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -91,9 +91,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Camera.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
+    <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
+    <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
+    <ClInclude Include="src\Ignis\Camera\FpsCamera.h" />
+    <ClInclude Include="src\Ignis\Camera\Camera.h" />
+    <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
+    <ClInclude Include="src\Ignis\Core\ShaderUtil.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
     <ClInclude Include="src\Ignis\Core\Types.h" />
     <ClInclude Include="src\Ignis\Font.h" />
@@ -105,15 +112,23 @@
     <ClInclude Include="src\Ignis\Packages\stb_image_write.h" />
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
-    <ClInclude Include="src\Utility\Debugger.h" />
-    <ClInclude Include="src\Utility\Logger.h" />
-    <ClInclude Include="src\Utility\Timer.h" />
-    <ClInclude Include="src\Utility\Utility.h" />
+    <ClInclude Include="src\Ignis\RenderState.h" />
+    <ClInclude Include="src\Obelisk\Debugger.h" />
+    <ClInclude Include="src\Obelisk\FileUtility.h" />
+    <ClInclude Include="src\Obelisk\Logger.h" />
+    <ClInclude Include="src\Obelisk\Obelisk.h" />
+    <ClInclude Include="src\Obelisk\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ignis\Camera.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
+    <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
+    <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
+    <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp" />
+    <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />
     <ClCompile Include="src\Ignis\Core\Shader.cpp" />
+    <ClCompile Include="src\Ignis\Core\ShaderUtil.cpp" />
     <ClCompile Include="src\Ignis\Core\Texture.cpp" />
     <ClCompile Include="src\Ignis\Font.cpp" />
     <ClCompile Include="src\Ignis\Framebuffer.cpp" />
@@ -129,10 +144,9 @@
     <ProjectReference Include="packages\glad\Glad.vcxproj">
       <Project>{BDD6857C-A90D-870D-52FA-6C103E10030F}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\shader.comp" />
-    <None Include="res\shaders\trail.comp" />
+    <ProjectReference Include="packages\imgui\ImGui.vcxproj">
+      <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

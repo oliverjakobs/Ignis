@@ -10,16 +10,22 @@ namespace ignis
 	class Font
 	{
 	private:
-		uint m_firstchar;
-		uint m_numchars;
+		struct FontData
+		{
+			uint FirstChar;
+			uint NumChars;
 
-		uint m_bitmap_width;
-		uint m_bitmap_height;
+			uint BitmapWidth;
+			uint BitmapHeight;
 
-		stbtt_bakedchar* m_chardata;
+			stbtt_bakedchar* CharData;
+		} m_fontData;
 		
 		Texture* m_texture;
-		VAO m_vao;
+
+		// buffer
+		VertexArray m_vao;
+		ArrayBuffer m_vbo;
 	public:
 		Font(const std::string& path, float size);
 		~Font();

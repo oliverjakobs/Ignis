@@ -11,6 +11,7 @@ outputDir = "%{cfg.buildcfg}"
 
 include "Ignis/packages/glfw"
 include "Ignis/packages/glad"
+include "Ignis/packages/imgui"
 
 project "Ignis"
 	location "Ignis"
@@ -34,6 +35,7 @@ project "Ignis"
 	{
 		"GLFW",
 		"Glad",
+		"ImGui",
 		"opengl32"
 	}
 
@@ -43,6 +45,7 @@ project "Ignis"
 		"%{prj.name}/packages",
 		"%{prj.name}/packages/glm",
 		"%{prj.name}/packages/stb",
+		"%{prj.name}/packages/imgui",
 		"%{prj.name}/packages/glfw/include",
 		"%{prj.name}/packages/glad/include",
 		"%{prj.name}/packages/spdlog/include",

@@ -3,7 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Ignis/Packages/tiny_obj_loader.h"
 
-#include "Utility/Debugger.h"
+#include "Obelisk/Debugger.h"
 
 namespace ignis
 {
@@ -12,7 +12,7 @@ namespace ignis
 		DEBUG_TRACE("[Obj] ------------------------------------------------");
 		DEBUG_TRACE("[Obj] Reading obj file {0}", filename);
 
-		DEBUG_TIMER();
+		DEBUG_CHRONO();
 
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -40,7 +40,7 @@ namespace ignis
 		DEBUG_TRACE("[Obj] {0} normals", (attrib.normals.size() / 3));
 		DEBUG_TRACE("[Obj] {0} texture coords", (attrib.texcoords.size() / 2));
 
-		DEBUG_TIMER_TRACE("[Obj] Parsed obj file in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Parsed obj file in {0}ms");
 
 		std::vector<Vertex> vertices;
 
@@ -74,7 +74,7 @@ namespace ignis
 			vertices.push_back(vertex);
 		}
 
-		DEBUG_TIMER_TRACE("[Obj] Converted to vertices in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Converted to vertices in {0}ms");
 
 		if (mtl && materials.size() > 0)
 		{
@@ -90,7 +90,7 @@ namespace ignis
 			mtl->Shininess = materials[0].shininess;
 		}
 
-		DEBUG_TIMER_TRACE("[Obj] Materials loaded in {0}ms");
+		DEBUG_CHRONO_TRACE("[Obj] Materials loaded in {0}ms");
 		DEBUG_TRACE("[Obj] ------------------------------------------------");
 		return Mesh(vertices);
 	}
@@ -99,7 +99,7 @@ namespace ignis
 	{
 		DEBUG_TRACE("[Mesh] Loading mesh with {0} vertices", vertices.size());
 
-		DEBUG_TIMER();
+		DEBUG_CHRONO();
 
 		for (unsigned int i = 0; i < vertices.size(); i += 3) 
 		{
@@ -156,25 +156,21 @@ namespace ignis
 			}
 		}
 
-		m_numIndices = indices.size();
-
 		m_vao.Bind();
 
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, indexedVert);
+		m_vbo.BufferData(sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0], GL_STATIC_DRAW);
 
-		m_vao.SetVertexAttribPointer(0, 3, sizeof(Vertex), 0);
-		m_vao.SetVertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
-		m_vao.SetVertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
-		m_vao.SetVertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
-		m_vao.SetVertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
+		m_vbo.VertexAttribPointer(0, 3, sizeof(Vertex), 0);
+		m_vbo.VertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
+		m_vbo.VertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
+		m_vbo.VertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
+		m_vbo.VertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
 
-		m_vao.GenBuffer(GL_ELEMENT_ARRAY_BUFFER);
-		m_vao.SetBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), &indices[0]);
+		m_ibo.BufferData(indices.size(), &indices[0], GL_STATIC_DRAW);
 
 		m_vao.Unbind();
 
-		DEBUG_TIMER_TRACE("[Mesh] Done in {0}ms");
+		DEBUG_CHRONO_TRACE("[Mesh] Done in {0}ms");
 	}
 
 	Mesh::~Mesh()
@@ -182,13 +178,13 @@ namespace ignis
 
 	}
 
-	VAO& Mesh::VAO()
+	VertexArray& Mesh::VAO()
 	{
 		return m_vao;
 	}
 
-	uint Mesh::NumIndices()
+	uint Mesh::ElementCount()
 	{
-		return m_numIndices;
+		return m_ibo.Count;
 	}
 }

@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "Utility/Utility.h"
+#include "Obelisk/Debugger.h"
 
 namespace ignis
 {
@@ -17,41 +17,37 @@ namespace ignis
 
 		m_vao.Bind();
 
-		m_vao.GenBuffer(GL_ARRAY_BUFFER);
+		m_vbo.BufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
+		m_vbo.VertexAttribPointer(0, 2, 4, 0);
+		m_vbo.VertexAttribPointer(1, 2, 4, 2);
 
-		m_vao.SetBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices);
-		m_vao.SetVertexAttribPointer(0, 2, 4, 0);
-		m_vao.SetVertexAttribPointer(1, 2, 4, 2);
-
-		glGenFramebuffers(1, &m_fbo);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+		glGenFramebuffers(1, &m_name);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_name);
 
 		// create a color attachment texture
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.ID, 0);
 
 		// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-		unsigned int rbo;
-		glGenRenderbuffers(1, &rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h); // use a single renderbuffer object for both a depth AND stencil buffer.
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+		RenderBuffer rbo;
+		rbo.RenderbufferStorage(GL_DEPTH24_STENCIL8, w, h); // use a single renderbuffer object for both a depth AND stencil buffer.
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo.Name); // now actually attach it
 
 		// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			DEBUG_WARN("Framebuffer is not complete!");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		m_vao.UnbindBuffer(GL_ARRAY_BUFFER);
+		m_vbo.Unbind();
 	}
 
 	FrameBuffer::~FrameBuffer()
 	{
-
+		glDeleteFramebuffers(1, &m_name);
 	}
 
 	void FrameBuffer::Bind()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_name);
 	}
 
 	void FrameBuffer::Unbind()
@@ -64,7 +60,7 @@ namespace ignis
 		m_vao.Bind();
 	}
 
-	VAO& FrameBuffer::VAO()
+	VertexArray& FrameBuffer::VAO()
 	{
 		return m_vao;
 	}

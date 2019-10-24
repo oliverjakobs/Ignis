@@ -1,21 +1,20 @@
 #pragma once
 
-#include <glad/glad.h>
-
-#include "Types.h"
+#include "ShaderUtil.h"
 
 namespace ignis
 {
 	class Shader
 	{
-	private:
+	protected:
 		uint m_program;
+
+		Shader() : m_program(0) {};
+
 	public:
 		Shader(const std::string& vert, const std::string& frag);
-		~Shader();
-
-		static uint CreateShader(const std::string& vertSrc, const std::string& geomSrc, const std::string& fragSrc);
-		static uint CompileShader(uint type, const std::string& source);
+		Shader(const std::string& vert, const std::string& geom, const std::string& frag);
+		virtual ~Shader();
 
 		void Use();
 

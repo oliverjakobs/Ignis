@@ -1,6 +1,6 @@
 #include "Material.h"
 
-#include "Utility/Utility.h"
+#include "Obelisk/Obelisk.h"
 
 namespace ignis
 {
