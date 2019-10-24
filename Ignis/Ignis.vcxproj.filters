@@ -111,6 +111,7 @@
     <ClInclude Include="src\Ignis\Renderer\RenderState.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Renderer\Renderer2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -159,5 +160,6 @@
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Renderer\Renderer2D.cpp" />
   </ItemGroup>
 </Project>

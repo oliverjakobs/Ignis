@@ -17,7 +17,7 @@ namespace ignis
 		m_fontData.BitmapHeight = 512;
 
 		std::ifstream input(path, std::ios::binary);
-		std::vector<unsigned char> buffer(std::istreambuf_iterator<char>(input), {});
+		std::vector<byte> buffer(std::istreambuf_iterator<char>(input), {});
 
 		m_fontData.CharData = (stbtt_bakedchar*)malloc(sizeof(stbtt_bakedchar) * m_fontData.NumChars);
 
