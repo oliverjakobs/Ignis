@@ -19,6 +19,9 @@
     <Filter Include="Ignis\Packages">
       <UniqueIdentifier>{ED173DBE-D9E5-30C4-C279-A1EAAEE60C29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ignis\Renderer">
+      <UniqueIdentifier>{6528D6E3-51F6-C9E9-3A8A-3A1026F7A54E}</UniqueIdentifier>
+    </Filter>
     <Filter Include="ImGuiBinding">
       <UniqueIdentifier>{1B46C02E-07A9-4FD3-B02E-88899C701B56}</UniqueIdentifier>
     </Filter>
@@ -54,6 +57,9 @@
     <ClInclude Include="src\Ignis\Core\Types.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Core\VertexArray.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Font.h">
       <Filter>Ignis</Filter>
     </ClInclude>
@@ -84,6 +90,9 @@
     <ClInclude Include="src\Ignis\RenderState.h">
       <Filter>Ignis</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Renderer\FontRenderer.h">
+      <Filter>Ignis\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h">
       <Filter>ImGuiBinding</Filter>
     </ClInclude>
@@ -108,8 +117,6 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\FontRenderer.h" />
-    <ClInclude Include="src\Ignis\Core\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -133,6 +140,9 @@
     <ClCompile Include="src\Ignis\Core\Texture.cpp">
       <Filter>Ignis\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Core\VertexArray.cpp">
+      <Filter>Ignis\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Font.cpp">
       <Filter>Ignis</Filter>
     </ClCompile>
@@ -148,6 +158,9 @@
     <ClCompile Include="src\Ignis\Model\Mesh.cpp">
       <Filter>Ignis\Model</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Renderer\FontRenderer.cpp">
+      <Filter>Ignis\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp">
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
@@ -158,7 +171,5 @@
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Ignis\FontRenderer.cpp" />
-    <ClCompile Include="src\Ignis\Core\VertexArray.cpp" />
   </ItemGroup>
 </Project>

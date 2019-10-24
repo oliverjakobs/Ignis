@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Font.h"
-
-#include "Core/Shader.h"
+#include "Ignis/Font.h"
+#include "Ignis/Core/Shader.h"
 
 namespace ignis
 {

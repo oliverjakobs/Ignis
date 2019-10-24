@@ -10,7 +10,7 @@
 #include "Font.h"
 
 // Renderer
-#include "FontRenderer.h"
+#include "Renderer/FontRenderer.h"
 
 namespace ignis
 {
