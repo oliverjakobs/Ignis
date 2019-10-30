@@ -112,6 +112,7 @@
       <Filter>Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Ignis\Callback.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -162,5 +163,6 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Ignis\Renderer\RenderState.cpp" />
+    <ClCompile Include="src\Ignis\Callback.cpp" />
   </ItemGroup>
 </Project>

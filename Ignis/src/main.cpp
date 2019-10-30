@@ -11,6 +11,8 @@
 
 #include "Ignis/Renderer/RenderState.h"
 
+#include "Obelisk/Obelisk.h"
+
 using namespace ignis;
 
 // settings
@@ -82,7 +84,7 @@ int main()
 	// config 
 	float particleSize = 2.0f;
 	float particleRadius = 100.0f;
-	Color particleColor = WHITE;
+	color particleColor = WHITE;
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -150,23 +152,35 @@ int main()
 
 GLFWwindow* Init(const char* title, uint width, uint height)
 {
+	obelisk::Logger::SetFormat("[%^%l%$] %v");
+	obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
 
 	// ingis initialization
 	if (!Ignis::Init(width, height))
 	{
-		DEBUG_ERROR("[Ignis] Failed to initialize Ignis");
+		OBELISK_ERROR("[Ignis] Failed to initialize Ignis");
 		return nullptr;
 	}
+	
+	ignisSetErrorCallback([](ignisErrorLevel level, const std::string& desc)
+	{
+		switch (level)
+		{
+		case ignisErrorLevel::Warn:		OBELISK_WARN(desc.c_str()); break;
+		case ignisErrorLevel::Error:	OBELISK_ERROR(desc.c_str()); break;
+		case ignisErrorLevel::Critical:	OBELISK_CRITICAL(desc.c_str()); break;
+		}
+	});
 
 	// GLFW initialization
 	if (glfwInit() == GLFW_FALSE)
 	{
-		DEBUG_ERROR("[GLFW] Failed to initialize GLFW");
+		OBELISK_ERROR("[GLFW] Failed to initialize GLFW");
 		glfwTerminate();
 		return nullptr;
 	}
 
-	DEBUG_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
+	OBELISK_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -180,7 +194,7 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (window == nullptr)
 	{
-		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
+		OBELISK_ERROR("[GLFW] Failed to create GLFW window");
 		glfwTerminate();
 		return nullptr;
 	}
@@ -188,22 +202,27 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(0);
 
-	DEBUG_INFO("[GLFW] Window created.");
+	OBELISK_INFO("[GLFW] Window created.");
 
 	// Set GLFW callbacks
 	glfwSetErrorCallback([](int error, const char* desc)
 	{
-		DEBUG_ERROR("[GLFW] ({0}) {1}", error, desc);
+		OBELISK_ERROR("[GLFW] ({0}) {1}", error, desc);
 	});
 
 	bool debug = true;
 
 	if (!Ignis::LoadGL(debug))
 	{
-		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
+		OBELISK_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();
 		return nullptr;
 	}
+
+	OBELISK_INFO("[OpenGL] Version: {0}", glGetString(GL_VERSION));
+	OBELISK_INFO("[OpenGL] Vendor: {0}", glGetString(GL_VENDOR));
+	OBELISK_INFO("[OpenGL] Renderer: {0}", glGetString(GL_RENDERER));
+	OBELISK_INFO("[OpenGL] GLSL Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 

@@ -1,5 +1,8 @@
 #include "Ignis.h"
+
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <sstream> 
 
 namespace ignis
 {
@@ -8,37 +11,41 @@ namespace ignis
 		// ignore non-significant error/warning codes
 		if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-		DEBUG_ERROR("OpenGL debug output ({0}): {1}", id, message);
+		std::stringstream sstream;
+		sstream << "[OpenGL] Debug output (" << id << "):";
+
+		_ignisErrorCallback(ignisErrorLevel::Error, sstream.str());
+		_ignisErrorCallback(ignisErrorLevel::Error, std::string("[OpenGL] ").append(message));
 
 		switch (source)
 		{
-		case GL_DEBUG_SOURCE_API:				DEBUG_ERROR("Source: API"); break;
-		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:		DEBUG_ERROR("Source: Window System"); break;
-		case GL_DEBUG_SOURCE_SHADER_COMPILER:	DEBUG_ERROR("Source: Shader Compiler"); break;
-		case GL_DEBUG_SOURCE_THIRD_PARTY:		DEBUG_ERROR("Source: Third Party"); break;
-		case GL_DEBUG_SOURCE_APPLICATION:		DEBUG_ERROR("Source: Application"); break;
-		case GL_DEBUG_SOURCE_OTHER:				DEBUG_ERROR("Source: Other"); break;
+		case GL_DEBUG_SOURCE_API:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: API"); break;
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:		_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: Window System"); break;
+		case GL_DEBUG_SOURCE_SHADER_COMPILER:	_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: Shader Compiler"); break;
+		case GL_DEBUG_SOURCE_THIRD_PARTY:		_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: Third Party"); break;
+		case GL_DEBUG_SOURCE_APPLICATION:		_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: Application"); break;
+		case GL_DEBUG_SOURCE_OTHER:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Source: Other"); break;
 		}
 
 		switch (type)
 		{
-		case GL_DEBUG_TYPE_ERROR:				DEBUG_ERROR("Type: Error"); break;
-		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:	DEBUG_ERROR("Type: Deprecated Behaviour"); break;
-		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:	DEBUG_ERROR("Type: Undefined Behaviour"); break;
-		case GL_DEBUG_TYPE_PORTABILITY:			DEBUG_ERROR("Type: Portability"); break;
-		case GL_DEBUG_TYPE_PERFORMANCE:			DEBUG_ERROR("Type: Performance"); break;
-		case GL_DEBUG_TYPE_MARKER:				DEBUG_ERROR("Type: Marker"); break;
-		case GL_DEBUG_TYPE_PUSH_GROUP:			DEBUG_ERROR("Type: Push Group"); break;
-		case GL_DEBUG_TYPE_POP_GROUP:			DEBUG_ERROR("Type: Pop Group"); break;
-		case GL_DEBUG_TYPE_OTHER:				DEBUG_ERROR("Type: Other"); break;
+		case GL_DEBUG_TYPE_ERROR:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Error"); break;
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:	_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Deprecated Behaviour"); break;
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:	_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Undefined Behaviour"); break;
+		case GL_DEBUG_TYPE_PORTABILITY:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Portability"); break;
+		case GL_DEBUG_TYPE_PERFORMANCE:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Performance"); break;
+		case GL_DEBUG_TYPE_MARKER:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Marker"); break;
+		case GL_DEBUG_TYPE_PUSH_GROUP:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Push Group"); break;
+		case GL_DEBUG_TYPE_POP_GROUP:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Pop Group"); break;
+		case GL_DEBUG_TYPE_OTHER:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Type: Other"); break;
 		}
 
 		switch (severity)
 		{
-		case GL_DEBUG_SEVERITY_HIGH:			DEBUG_ERROR("Severity: high"); break;
-		case GL_DEBUG_SEVERITY_MEDIUM:			DEBUG_ERROR("Severity: medium"); break;
-		case GL_DEBUG_SEVERITY_LOW:				DEBUG_ERROR("Severity: low"); break;
-		case GL_DEBUG_SEVERITY_NOTIFICATION:	DEBUG_ERROR("Severity: notification"); break;
+		case GL_DEBUG_SEVERITY_HIGH:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Severity: high"); break;
+		case GL_DEBUG_SEVERITY_MEDIUM:			_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Severity: medium"); break;
+		case GL_DEBUG_SEVERITY_LOW:				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Severity: low"); break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION:	_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Severity: notification"); break;
 		}
 	}
 
@@ -46,9 +53,6 @@ namespace ignis
 
 	bool Ignis::Init(uint width, uint height)
 	{
-		obelisk::Logger::SetFormat("[%^%l%$] %v");
-		obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
-
 		ScreenMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
 
 		return true;
@@ -59,11 +63,9 @@ namespace ignis
 		// loading glad
 		if (!gladLoadGL())
 		{
-			DEBUG_ERROR("[GLAD] Failed to initialize GLAD");
+			_ignisErrorCallback(ignisErrorLevel::Error, "[GLAD] Failed to initialize GLAD");
 			return false;
 		}
-
-		DEBUG_INFO("[GLAD] Initialized");
 
 		if (debug)
 		{
@@ -79,19 +81,12 @@ namespace ignis
 				glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 				glDebugMessageCallback(glDebugOutput, nullptr);
 				glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-
-				DEBUG_INFO("[OpenGL] Debug context created");
 			}
 			else
 			{
-				DEBUG_ERROR("[OpenGL] Could not create debug context");
+				_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Could not create debug context");
 			}
 		}
-
-		DEBUG_INFO("[OpenGL] Version: {0}", glGetString(GL_VERSION));
-		DEBUG_INFO("[OpenGL] Vendor: {0}", glGetString(GL_VENDOR));
-		DEBUG_INFO("[OpenGL] Renderer: {0}", glGetString(GL_RENDERER));
-		DEBUG_INFO("[OpenGL] GLSL Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 		return true;
 	}

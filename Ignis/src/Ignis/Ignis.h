@@ -1,6 +1,4 @@
-#pragma once 
-
-#include "Obelisk/Obelisk.h"
+#pragma once
 
 #include "Core/Buffer.h"
 #include "Core/Texture.h"
@@ -8,6 +6,8 @@
 
 #include "Model/Mesh.h"
 #include "Font.h"
+
+#include "Callback.h"
 
 // Renderer
 #include "Renderer/FontRenderer.h"

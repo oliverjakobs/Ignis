@@ -21,12 +21,12 @@ namespace ignis
 			stbtt_bakedchar* CharData;
 		} m_fontData;
 		
-		Texture* m_texture;
+		std::unique_ptr<Texture> m_texture;
 
 		// buffer
 		VertexArray m_vertexArray;
 	public:
-		Font(const char* path, float size);
+		Font(const std::string& path, float size);
 		~Font();
 
 		void Bind();

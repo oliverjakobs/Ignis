@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ignis/Packages/stb_image.h"
 
+#include "Ignis/Callback.h"
+
 #include "Obelisk/Debugger.h"
 
 namespace ignis
@@ -10,10 +12,10 @@ namespace ignis
 	Texture::Texture(const std::string& path, bool flipOnLoad, TextureConfig config)
 		: m_activeSlot(0)
 	{
-		DEBUG_TRACE("[Tex] ------------------------------------------------");
-		DEBUG_TRACE("[Tex] Loading {0}", path);
+		OBELISK_TRACE("[Tex] ------------------------------------------------");
+		OBELISK_TRACE("[Tex] Loading {0}", path);
 
-		DEBUG_CHRONO();
+		OBELISK_CHRONO();
 
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
@@ -23,22 +25,21 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &Width, &Height, &BPP, 4);
 
-		DEBUG_CHRONO_TRACE("[Tex] Parsed file in {0}ms");
+		OBELISK_CHRONO_TRACE("[Tex] Parsed file in {0}ms");
 
 		if (pixels)
 		{
-			//DEBUG_TRACE("[Tex] Bytes:\n {0}", std::string(reinterpret_cast<char*>(pixels)));
 			ID = CreateTexture(pixels, Width, Height, config);
 			stbi_image_free(pixels);
 		}
 		else
 		{
-			DEBUG_ERROR("[Tex] Failed to load texture({0}): {1}", path, stbi_failure_reason());
+			_ignisErrorCallback(ignisErrorLevel::Error, "[Tex] Failed to load texture(" + path + "): " + stbi_failure_reason());
 			ID = 0;
 		}
 
-		DEBUG_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, DEBUG_CHRONO_GET_ELAPSED());
-		DEBUG_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
+		OBELISK_TRACE("[Tex] Loaded Texture ({0}) in {1}ms", ID, OBELISK_CHRONO_GET_ELAPSED());
+		OBELISK_TRACE("[Tex] Size: {0}x{1} (bpp: {2})", Width, Height, BPP);
 	}
 
 	Texture::Texture(int width, int height, TextureConfig config)

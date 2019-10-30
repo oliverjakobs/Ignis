@@ -101,6 +101,7 @@
     <ClInclude Include="src\Ignis\Core\Types.h" />
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
+    <ClInclude Include="src\Ignis\Callback.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
     <ClInclude Include="src\Ignis\Model\Material.h" />
     <ClInclude Include="src\Ignis\Model\Mesh.h" />
@@ -122,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
+    <ClCompile Include="src\Ignis\Callback.cpp" />
     <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp" />
     <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Core\Buffer.cpp" />

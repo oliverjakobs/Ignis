@@ -3,12 +3,11 @@
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
 #include "Ignis/Packages/stb_truetype.h"
 
-#include "Obelisk/Obelisk.h"
+#include <fstream>
 
 namespace ignis
 {
-	Font::Font(const char* path, float size)
-		: m_texture(nullptr)
+	Font::Font(const std::string& path, float size)
 	{
 		m_fontData.FirstChar = 32;
 		m_fontData.NumChars = 96; // ASCII 32..126 is 95 glyphs
@@ -29,7 +28,7 @@ namespace ignis
 		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
 		stbtt_BakeFontBitmap(buffer.data(), 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
 
-		m_texture = new Texture(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
+		m_texture = std::make_unique<Texture>(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
 
 		free(bitmap);
 
@@ -43,8 +42,6 @@ namespace ignis
 
 	Font::~Font()
 	{
-		SAFE_DELETE(m_texture);
-
 		free(m_fontData.CharData);
 	}
 
