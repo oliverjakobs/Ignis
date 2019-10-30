@@ -7,7 +7,7 @@
 
 namespace ignis
 {
-	Font::Font(const std::string& path, float size)
+	Font::Font(const char* path, float size)
 		: m_texture(nullptr)
 	{
 		m_fontData.FirstChar = 32;

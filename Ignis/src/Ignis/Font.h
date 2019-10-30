@@ -26,7 +26,7 @@ namespace ignis
 		// buffer
 		VertexArray m_vertexArray;
 	public:
-		Font(const std::string& path, float size);
+		Font(const char* path, float size);
 		~Font();
 
 		void Bind();

@@ -25,73 +25,13 @@ const int PARTICLE_GROUP_SIZE = 64;
 const int PARTICLE_GROUP_COUNT = 128;
 const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
 
+GLFWwindow* Init(const char* title, uint width, uint height);
+
 int main()
 {
-	// ingis initialization
-	if (!Ignis::Init(WIDTH, HEIGHT))
-	{
-		DEBUG_ERROR("[Ignis] Failed to initialize Ignis");
-		return -1;
-	}
+	GLFWwindow* window = Init("Ignis", WIDTH, HEIGHT);
 
-	// GLFW initialization
-	if (glfwInit() == GLFW_FALSE)
-	{
-		DEBUG_ERROR("[GLFW] Failed to initialize GLFW");
-		glfwTerminate();
-		return -1;
-	}
-
-	DEBUG_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef _DEBUG
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
-
-	// creating the window
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Ignis", nullptr, nullptr);
-	if (window == nullptr)
-	{
-		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(0);
-
-	DEBUG_INFO("[GLFW] Window created.");
-
-	// Set GLFW callbacks
-	glfwSetErrorCallback([](int error, const char* desc)
-	{
-		DEBUG_ERROR("[GLFW] ({0}) {1}", error, desc);
-	});
-
-	bool debug = true;
-
-	if (!Ignis::LoadGL(debug))
-	{
-		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
-		glfwTerminate();
-		return -1;
-	}
-
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
-	{
-		mousePos = { (float)xPos, HEIGHT - (float)yPos };
-	});
-
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
-	{
-		mouseScroll = (float)yOffset;
-	});
+	if (!window) return -1;
 
 	// imgui
 	ImGuiRenderer::Init(window);
@@ -203,4 +143,76 @@ int main()
 	glfwTerminate();
 
 	return 0;
+}
+
+GLFWwindow* Init(const char* title, uint width, uint height)
+{
+
+	// ingis initialization
+	if (!Ignis::Init(width, height))
+	{
+		DEBUG_ERROR("[Ignis] Failed to initialize Ignis");
+		return nullptr;
+	}
+
+	// GLFW initialization
+	if (glfwInit() == GLFW_FALSE)
+	{
+		DEBUG_ERROR("[GLFW] Failed to initialize GLFW");
+		glfwTerminate();
+		return nullptr;
+	}
+
+	DEBUG_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef _DEBUG
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
+
+	// creating the window
+	GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (window == nullptr)
+	{
+		DEBUG_ERROR("[GLFW] Failed to create GLFW window");
+		glfwTerminate();
+		return nullptr;
+	}
+
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(0);
+
+	DEBUG_INFO("[GLFW] Window created.");
+
+	// Set GLFW callbacks
+	glfwSetErrorCallback([](int error, const char* desc)
+	{
+		DEBUG_ERROR("[GLFW] ({0}) {1}", error, desc);
+	});
+
+	bool debug = true;
+
+	if (!Ignis::LoadGL(debug))
+	{
+		DEBUG_ERROR("[IGNIS] Failed to load OpenGL");
+		glfwTerminate();
+		return nullptr;
+	}
+
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		mousePos = { (float)xPos, HEIGHT - (float)yPos };
+	});
+
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
+	{
+		mouseScroll = (float)yOffset;
+	});
+
+	return window;
 }
