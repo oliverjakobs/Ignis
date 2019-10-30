@@ -9,6 +9,8 @@
 
 #include "ImGuiBinding/ImGuiRenderer.h"
 
+#include "Ignis/Renderer/RenderState.h"
+
 using namespace ignis;
 
 // settings
@@ -41,8 +43,9 @@ int main()
 	Font font = Font("res/fonts/OpenSans.ttf", 32.0f);
 	Shader fontShader = Shader("res/shaders/font.vert", "res/shaders/font.frag");
 
-	// configure global opengl state
-	Ignis::EnableBlend(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// configure render state
+	RenderState renderState;
+	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
 	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");

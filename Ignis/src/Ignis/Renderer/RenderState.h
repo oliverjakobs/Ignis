@@ -2,20 +2,26 @@
 
 #include <glad/glad.h>
 
-#include "Core/Types.h"
+#include "Ignis/Core/Types.h"
+
+#include <map>
 
 namespace ignis
 {
-	enum class RenderState
+	class RenderState
 	{
-		None			= 0 << 0,
-		EnableBlending	= 1 << 0,
-		EnableDepthTest = 1 << 1
-	};
+	private:
+		bool m_blend;
+		uint m_blend_sfactor, m_blend_dfactor;
 
-	struct RenderSettings
-	{
-		RenderState State;
-		std::pair<uint, uint> BlendFunc;
+		bool m_depth;
+
+	public:
+		RenderState();
+
+		void SetBlend(bool enable, uint sfactor, uint dfactor);
+		void SetDepthTest(bool enable);
+
+		void Reset();
 	};
 }

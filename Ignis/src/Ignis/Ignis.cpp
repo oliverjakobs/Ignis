@@ -96,17 +96,6 @@ namespace ignis
 		return true;
 	}
 
-	void Ignis::EnableBlend(uint sfactor, uint dfactor)
-	{
-		glEnable(GL_BLEND);
-		glBlendFunc(sfactor, dfactor);
-	}
-
-	void Ignis::DisableBlend()
-	{
-		glDisable(GL_BLEND);
-	}
-
 	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
 	{
 		glm::mat4 mvp = proj * view * model;

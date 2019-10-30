@@ -161,5 +161,6 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Ignis\Renderer\RenderState.cpp" />
   </ItemGroup>
 </Project>
