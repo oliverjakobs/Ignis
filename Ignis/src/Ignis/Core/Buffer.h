@@ -6,20 +6,26 @@
 
 namespace ignis
 {
-	struct Buffer
+	class Buffer
 	{
-		uint Target;
-		uint Name;
+	protected:
+		uint m_name;
+		uint m_target;
 
+	public:
 		Buffer(uint target);
 		virtual ~Buffer();
 
 		void Bind() const;
 		void Unbind() const;
+
+		const uint GetName() const { return m_name; }
+		const uint GetTarget() const { return m_target; }
 	};
 
-	struct ArrayBuffer : public Buffer
+	class ArrayBuffer : public Buffer
 	{
+	public:
 		ArrayBuffer();
 		ArrayBuffer(uint size, const void* data, uint usage);
 
@@ -51,32 +57,43 @@ namespace ignis
 		return (Type*)MapBufferRange(offset, count * sizeof(Type), access);
 	}
 
-	struct ElementBuffer : public Buffer
+	class ElementBuffer : public Buffer
 	{
-		uint Count;
+	private:
+		uint m_count;
 
+	public:
 		ElementBuffer();
 		ElementBuffer(uint count, const uint* data, uint usage);
 
 		void BufferData(uint count, const uint* data, uint usage);
+
+		const uint GetCount() const { return m_count; }
 	};
 
 	// Advanced buffers
-	struct TextureBuffer
+	class TextureBuffer
 	{
-		uint Texture;
-		uint Format;
+	private:
+		uint m_texture;
+		uint m_format;
 
+	public:
 		TextureBuffer(uint format, uint buffer);
 		~TextureBuffer();
 
 		void BindImageTexture(uint unit, uint access);
+
+		const uint GetTexture() const { return m_texture; }
+		const uint GetFormat() const { return m_format; }
 	};
 
-	struct RenderBuffer
+	class RenderBuffer
 	{
-		uint Name;
+	private:
+		uint m_name;
 
+	public:
 		RenderBuffer();
 		~RenderBuffer();
 
@@ -84,6 +101,8 @@ namespace ignis
 		void Unbind() const;
 
 		void RenderbufferStorage(uint format, int width, int height);
+
+		const uint GetName() const { return m_name; }
 	};
 
 	// VertexArray

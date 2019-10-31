@@ -14,13 +14,13 @@
 
 namespace ignis
 {
+	bool ignisInit(uint width, uint height);
+	bool ignisLoadGL(bool debug = false);
+
+	const glm::mat4& ignisScreenMat();
+
 	struct Ignis
 	{
-		static glm::mat4 ScreenMat;
-
-		static bool Init(uint width, uint height);
-		static bool LoadGL(bool debug = false);
-
 		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count);
 		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
 		static void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);

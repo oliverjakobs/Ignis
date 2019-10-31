@@ -78,8 +78,8 @@ int main()
 	bufferVelocity.UnmapBuffer();
 
 	// textures buffer
-	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.Name);
-	TextureBuffer textureVelocity(GL_RGBA32F, bufferVelocity.Name);
+	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.GetName());
+	TextureBuffer textureVelocity(GL_RGBA32F, bufferVelocity.GetName());
 
 	// config 
 	float particleSize = 2.0f;
@@ -132,7 +132,7 @@ int main()
 
 		// debug info
 		fontShader.Use();
-		fontShader.SetUniformMat4("projection", Ignis::ScreenMat);
+		fontShader.SetUniformMat4("projection", ignisScreenMat());
 
 		FontRenderer::RenderText(font, fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f);
 
@@ -156,7 +156,7 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
 
 	// ingis initialization
-	if (!Ignis::Init(width, height))
+	if (!ignisInit(width, height))
 	{
 		OBELISK_ERROR("[Ignis] Failed to initialize Ignis");
 		return nullptr;
@@ -202,8 +202,6 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(0);
 
-	OBELISK_INFO("[GLFW] Window created.");
-
 	// Set GLFW callbacks
 	glfwSetErrorCallback([](int error, const char* desc)
 	{
@@ -212,7 +210,7 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 
 	bool debug = true;
 
-	if (!Ignis::LoadGL(debug))
+	if (!ignisLoadGL(debug))
 	{
 		OBELISK_ERROR("[IGNIS] Failed to load OpenGL");
 		glfwTerminate();

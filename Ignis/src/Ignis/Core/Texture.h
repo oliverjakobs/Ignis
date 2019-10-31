@@ -25,23 +25,27 @@ namespace ignis
 	struct Texture
 	{
 	private:
+		uint m_name;
+
+		int m_width;
+		int m_height;
+
 		uint m_activeSlot;
+
 	public:
-		uint ID;
-
-		int Width;
-		int Height;
-		int BPP;
-
-		// functions
 		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
 		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
 		Texture(byte* bitmap, int width, int height, TextureConfig config = DEFAULT_CONFIG);
 		~Texture();
 
-		static unsigned int CreateTexture(byte* pixels, int width, int height, TextureConfig config);
-
 		void Bind(uint slot = 0);
 		void Unbind();
+
+		const uint GetName() const { return m_name; }
+
+		const int GetWidth() const { return m_width; }
+		const int GetHeight() const { return m_height; }
 	};
+
+	uint CreateTexture(byte* pixels, int width, int height, TextureConfig config);
 }

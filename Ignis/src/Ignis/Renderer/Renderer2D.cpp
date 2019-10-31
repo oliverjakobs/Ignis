@@ -58,6 +58,6 @@ namespace ignis
 		RenderData->Shader->SetUniformMat4("u_Transform", transform);
 
 		RenderData->VertexArray->Bind();
-		glDrawElements(GL_TRIANGLES, RenderData->VertexArray->GetElementBuffer()->Count, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, RenderData->VertexArray->GetElementBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }

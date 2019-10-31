@@ -42,7 +42,7 @@ namespace ignis
 	};
 
 	// Shader utils
-	uint CreateShaderProgram(std::map<uint, const std::string&> shadersrc);
+	uint CreateShaderProgram(std::map<uint, const std::string&> sources);
 	uint CompileShader(uint type, const std::string& source);
 
 	std::string GetShaderLog(uint object);

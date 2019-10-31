@@ -3,26 +3,26 @@
 namespace ignis
 {
 	Buffer::Buffer(uint target)
-		: Target(target)
+		: m_target(target)
 	{
-		glGenBuffers(1, &Name);
-		glBindBuffer(Target, Name);
+		glGenBuffers(1, &m_name);
+		glBindBuffer(m_target, m_name);
 	}
 
 	Buffer::~Buffer()
 	{
-		glDeleteBuffers(1, &Name);
-		glBindBuffer(Target, 0);
+		glDeleteBuffers(1, &m_name);
+		glBindBuffer(m_target, 0);
 	}
 
 	void Buffer::Bind() const
 	{
-		glBindBuffer(Target, Name);
+		glBindBuffer(m_target, m_name);
 	}
 
 	void Buffer::Unbind() const
 	{
-		glBindBuffer(Target, 0);
+		glBindBuffer(m_target, 0);
 	}
 
 	ArrayBuffer::ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) { }
@@ -35,30 +35,30 @@ namespace ignis
 	void ArrayBuffer::BufferData(uint size, const void* data, uint usage)
 	{
 		Bind();
-		glBufferData(Target, size, data, (GLenum)usage);
+		glBufferData(m_target, size, data, (GLenum)usage);
 	}
 
 	void ArrayBuffer::BufferSubData(uint offset, uint size, const void* data)
 	{
 		Bind();
-		glBufferSubData(Target, offset, size, data);
+		glBufferSubData(m_target, offset, size, data);
 	}
 
 	void* ArrayBuffer::MapBuffer(uint access)
 	{
 		Bind();
-		return glMapBuffer(Target, access);
+		return glMapBuffer(m_target, access);
 	}
 
 	void* ArrayBuffer::MapBufferRange(uint offset, uint length, uint access)
 	{
 		Bind();
-		return glMapBufferRange(Target, offset, length, access);
+		return glMapBufferRange(m_target, offset, length, access);
 	}
 
 	void ArrayBuffer::UnmapBuffer()
 	{
-		glUnmapBuffer(Target);
+		glUnmapBuffer(m_target);
 	}
 
 	void ArrayBuffer::VertexAttribPointer(uint index, uint size, uint stride, uint offset)
@@ -78,9 +78,9 @@ namespace ignis
 		glVertexAttribDivisor(index, divisor);
 	}
 
-	ElementBuffer::ElementBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER), Count(0) { }
+	ElementBuffer::ElementBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER), m_count(0) { }
 
-	ElementBuffer::ElementBuffer(uint count, const uint* data, uint usage) : Buffer(GL_ELEMENT_ARRAY_BUFFER), Count(count)
+	ElementBuffer::ElementBuffer(uint count, const uint* data, uint usage) : Buffer(GL_ELEMENT_ARRAY_BUFFER), m_count(count)
 	{
 		BufferData(count, data, usage);
 	}
@@ -88,40 +88,40 @@ namespace ignis
 	void ElementBuffer::BufferData(uint count, const uint* data, uint usage)
 	{
 		Bind();
-		glBufferData(Target, count * sizeof(uint), data, (GLenum)usage);
-		Count = count;
+		glBufferData(m_target, count * sizeof(uint), data, (GLenum)usage);
+		m_count = count;
 	}
 
-	TextureBuffer::TextureBuffer(uint format, uint buffer) : Format(format)
+	TextureBuffer::TextureBuffer(uint format, uint buffer) : m_format(format)
 	{
-		glGenTextures(1, &Texture);
-		glBindTexture(GL_TEXTURE_BUFFER, Texture);
-		glTexBuffer(GL_TEXTURE_BUFFER, Format, buffer);
+		glGenTextures(1, &m_texture);
+		glBindTexture(GL_TEXTURE_BUFFER, m_texture);
+		glTexBuffer(GL_TEXTURE_BUFFER, m_format, buffer);
 	}
 
 	TextureBuffer::~TextureBuffer()
 	{
-		glDeleteTextures(1, &Texture);
+		glDeleteTextures(1, &m_texture);
 	}
 
 	void TextureBuffer::BindImageTexture(uint unit, uint access)
 	{
-		glBindImageTexture(unit, Texture, 0, GL_FALSE, 0, access, Format);
+		glBindImageTexture(unit, m_texture, 0, GL_FALSE, 0, access, m_format);
 	}
 
 	RenderBuffer::RenderBuffer()
 	{
-		glGenRenderbuffers(1, &Name);
+		glGenRenderbuffers(1, &m_name);
 	}
 
 	RenderBuffer::~RenderBuffer()
 	{
-		glDeleteRenderbuffers(1, &Name);
+		glDeleteRenderbuffers(1, &m_name);
 	}
 
 	void RenderBuffer::Bind() const
 	{
-		glBindRenderbuffer(GL_RENDERBUFFER, Name);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_name);
 	}
 
 	void RenderBuffer::Unbind() const

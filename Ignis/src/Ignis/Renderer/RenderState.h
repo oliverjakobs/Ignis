@@ -4,8 +4,6 @@
 
 #include "Ignis/Core/Types.h"
 
-#include <map>
-
 namespace ignis
 {
 	class RenderState

@@ -169,12 +169,12 @@ namespace ignis
 	}
 
 	// Shader utils
-	uint CreateShaderProgram(std::map<uint, const std::string&> shaderSrc)
+	uint CreateShaderProgram(std::map<uint, const std::string&> sources)
 	{
 		uint program = glCreateProgram();
 		std::vector<uint> attachedShader;
 
-		for (auto& [type, src] : shaderSrc)
+		for (auto& [type, src] : sources)
 		{
 			uint shader = CompileShader(type, src);
 

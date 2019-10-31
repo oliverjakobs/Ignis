@@ -187,6 +187,6 @@ namespace ignis
 
 	uint Mesh::ElementCount()
 	{
-		return m_ibo.Count;
+		return m_ibo.GetCount();
 	}
 }

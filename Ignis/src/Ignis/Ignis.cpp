@@ -11,11 +11,8 @@ namespace ignis
 		// ignore non-significant error/warning codes
 		if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
 
-		std::stringstream sstream;
-		sstream << "[OpenGL] Debug output (" << id << "):";
-
-		_ignisErrorCallback(ignisErrorLevel::Error, sstream.str());
-		_ignisErrorCallback(ignisErrorLevel::Error, std::string("[OpenGL] ").append(message));
+		_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] Debug output (" + std::to_string(id) + "):");
+		_ignisErrorCallback(ignisErrorLevel::Error, "[OpenGL] " + std::string(message));
 
 		switch (source)
 		{
@@ -49,16 +46,16 @@ namespace ignis
 		}
 	}
 
-	glm::mat4 Ignis::ScreenMat = glm::mat4(1.0f);
+	static glm::mat4 s_screenMat = glm::mat4(1.0f);
 
-	bool Ignis::Init(uint width, uint height)
+	bool ignisInit(uint width, uint height)
 	{
-		ScreenMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
+		s_screenMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
 
 		return true;
 	}
 
-	bool Ignis::LoadGL(bool debug)
+	bool ignisLoadGL(bool debug)
 	{
 		// loading glad
 		if (!gladLoadGL())
@@ -89,6 +86,11 @@ namespace ignis
 		}
 
 		return true;
+	}
+
+	const glm::mat4& ignisScreenMat()
+	{
+		return s_screenMat;
 	}
 
 	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
