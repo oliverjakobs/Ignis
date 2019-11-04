@@ -1,9 +1,6 @@
 [submodule "Ignis/packages/glm"]
 	path = Ignis/packages/glm
 	url = https://github.com/g-truc/glm
-[submodule "Ignis/packages/spdlog"]
-	path = Ignis/packages/spdlog
-	url = https://github.com/gabime/spdlog
 [submodule "Ignis/packages/imgui"]
 	path = Ignis/packages/imgui
 	url = https://github.com/oliverjakobs/imgui
