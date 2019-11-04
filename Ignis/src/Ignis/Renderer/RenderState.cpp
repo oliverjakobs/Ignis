@@ -42,9 +42,24 @@ namespace ignis
 		}
 	}
 
+	void RenderState::SetCullFace(bool enable)
+	{
+		m_cull = enable;
+
+		if (enable)
+		{
+			glEnable(GL_CULL_FACE);
+		}
+		else
+		{
+			glDisable(GL_CULL_FACE);
+		}
+	}
+
 	void RenderState::Reset()
 	{
 		SetBlend(m_blend, m_blend_sfactor, m_blend_dfactor);
 		SetDepthTest(m_depth);
+		SetCullFace(m_cull);
 	}
 }

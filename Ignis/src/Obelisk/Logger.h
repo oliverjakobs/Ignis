@@ -4,8 +4,9 @@
 
 #include <iostream>
 
-
+#ifdef _WIN32
 #include <windows.h>
+#endif 
 
 namespace obelisk
 {
@@ -42,6 +43,7 @@ namespace obelisk
 		return std::move(output);
 	}
 
+#ifdef _WIN32
 	inline std::ostream& colored_stream(std::ostream& s, unsigned int color)
 	{
 		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -78,6 +80,9 @@ namespace obelisk
 	{
 		return colored_stream(s, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_RED);
 	}
+#else
+#error Colored Stream only supported for windows
+#endif
 
 	class Logger : private Singleton<Logger>
 	{

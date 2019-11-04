@@ -14,11 +14,14 @@ namespace ignis
 
 		bool m_depth;
 
+		bool m_cull;
+
 	public:
 		RenderState();
 
 		void SetBlend(bool enable, uint sfactor, uint dfactor);
 		void SetDepthTest(bool enable);
+		void SetCullFace(bool enable);
 
 		void Reset();
 	};

@@ -4,11 +4,14 @@
 
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp> 
 
 #include "Ignis/Advanced/ComputeShader.h"
 
 #include "Obelisk/Obelisk.h"
 #include "ImGuiBinding/ImGuiRenderer.h"
+
+#include "Ignis/Camera/FpsCamera.h"
 
 using namespace ignis;
 
@@ -20,17 +23,21 @@ const glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
+glm::vec2 mouseOffset = glm::vec2();
 float mouseScroll = 0.0f;
 
-const int PARTICLE_GROUP_SIZE = 64;
-const int PARTICLE_GROUP_COUNT = 128;
-const int PARTICLE_COUNT = (PARTICLE_GROUP_SIZE * PARTICLE_GROUP_COUNT);
+bool firstMouse = true;
 
 GLFWwindow* Init(const char* title, uint width, uint height);
 
 int main()
 {
 	GLFWwindow* window = Init("Ignis", WIDTH, HEIGHT);
+
+	FpsCamera camera;
+	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
+	float cameraSpeed = 2.5f;
+	float cameraSensitivity = 0.1f;
 
 	if (!window) return -1;
 
@@ -45,85 +52,150 @@ int main()
 	// configure render state
 	RenderState renderState;
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	renderState.SetDepthTest(true);
+	renderState.SetCullFace(true);
 
-	Shader shader = Shader("res/shaders/particles.vert", "res/shaders/particles.frag");
-	ComputeShader compShader = ComputeShader("res/shaders/particles.comp");
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		if (firstMouse)
+		{
+			mousePos = glm::vec2((float)xPos, (float)yPos);
+			firstMouse = false;
+		}
 
-	VertexArray vao;
-
-	// position
-	ArrayBuffer bufferPosition(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
-	bufferPosition.VertexAttribPointer(0, 4, 0, 0);
-
-	glm::vec4* positions = bufferPosition.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-
-	for (int i : obelisk::range(0, PARTICLE_COUNT))
-		positions[i] = glm::vec4(SCREEN_CENTER, (float)i / (float)PARTICLE_COUNT, 0.0f);
-
-	bufferPosition.UnmapBuffer();
-
-	// velocity
-	ArrayBuffer bufferVelocity(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
-
-	glm::vec4* velocities = bufferVelocity.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
-
-	for (int i : obelisk::range(0, PARTICLE_COUNT))
-		velocities[i] = glm::vec4(glm::diskRand(1.0f), 1.0f, 0.0f);
-
-	bufferVelocity.UnmapBuffer();
-
-	// textures buffer
-	TextureBuffer texturePosition(GL_RGBA32F, bufferPosition.GetName());
-	TextureBuffer textureVelocity(GL_RGBA32F, bufferVelocity.GetName());
-
-	// config 
-	float particleSize = 2.0f;
-	float particleRadius = 100.0f;
-	color particleColor = WHITE;
+		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
+		mousePos = glm::vec2((float)xPos, (float)yPos);
+	});
 	
+	// load .obj file
+	Material material;
+	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
+
+	// load shader
+	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+
+	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
+
+	shader.Use();
+	shader.SetUniform1i("diffuseMap", 0);
+	shader.SetUniform1i("normalMap", 1);
+	//shader.SetUniform1i("specularMap", 2);
+
+	// lamp
+	float lampVertices[] =
+	{
+		// front
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+		// back
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 // left
+		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		 // right
+		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		  // bot
+		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 // top
+		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f
+	};
+
+	VertexArray lampVao;
+	lampVao.Bind();
+
+	auto vbo = lampVao.AddArrayBuffer(sizeof(lampVertices), lampVertices, GL_STATIC_DRAW);
+	vbo->VertexAttribPointer(0, 3, 6 * sizeof(float), 0);
+	vbo->VertexAttribPointer(1, 3, 6 * sizeof(float), 3 * sizeof(float));
+
+	// lighting
+	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		timer.Start((float)glfwGetTime());
 
+		// input
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		compShader.Use();
-		compShader.SetUniform1f("deltaTime", timer.DeltaTime);
-		compShader.SetUniform1f("particleRadius", particleRadius);
-		compShader.SetUniform2f("mousePos", mousePos);
+		float velocity = cameraSpeed * timer.DeltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			camera.Move(camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			camera.Move(-camera.Front * velocity);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			camera.Move(-camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			camera.Move(camera.Right * velocity);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			camera.Move(camera.WorldUp * velocity);
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			camera.Move(-camera.WorldUp * velocity);
 
-		texturePosition.BindImageTexture(0, GL_READ_WRITE);
-		textureVelocity.BindImageTexture(1, GL_READ_WRITE);
+		camera.YawPitch(mouseOffset.x * cameraSensitivity, mouseOffset.y * cameraSensitivity);
+		mouseOffset = glm::vec2();
 
-		compShader.Dispatch(PARTICLE_GROUP_COUNT, 1, 1, GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::mat4 projection = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 model = glm::mat4(1.0f);
+		float fov = 70.0f;
+		float aspect = (float)WIDTH / (float)HEIGHT;
+
+		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
+		glm::mat4 view = camera.View();
+		glm::mat4 model = glm::mat4(1.0);
 
 		shader.Use();
-		shader.SetUniformMat4("mvp", projection * view * model);
-		shader.SetUniform4f("particleColor", particleColor);
+		shader.SetUniform3f("lightPos", lightPos);
 
-		vao.Bind();
+		// render mesh 
+		Ignis::RenderMesh(mesh, material, projection, view, model, shader);
 
-		glPointSize(particleSize);
-		glDrawArrays(GL_POINTS, 0, PARTICLE_COUNT);
+		// also draw the lamp object
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+
+		glm::mat4 mvp = projection * view * model;
+
+		lampShader.Use();
+		lampShader.SetUniformMat4("mvp", mvp);
+
+		lampVao.Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// gui
-		ImGuiRenderer::Begin();
-
-		ImGui::Begin("Settings");
-		ImGui::Text("Particles (%d)", PARTICLE_COUNT);
-		ImGui::SliderFloat("Size", &particleSize, 1, 10, "%.1f");
-		ImGui::SliderFloat("Radius", &particleRadius, 10, 200, "%.1f");
-		ImGui::ColorEdit4("Color", &particleColor[0]);
-		ImGui::End();
-
-		ImGuiRenderer::End();
+		// ImGuiRenderer::Begin();
+		// ImGuiRenderer::End();
 
 		// debug info
 		fontShader.Use();

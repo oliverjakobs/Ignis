@@ -49,7 +49,7 @@ namespace ignis
 	{
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::RenderQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
 	{
 		RenderData->Shader->Use();
 		RenderData->Shader->SetUniform4f("u_Color", color);
@@ -59,5 +59,9 @@ namespace ignis
 
 		RenderData->VertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, RenderData->VertexArray->GetElementBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void Renderer2D::RenderQuad(const glm::vec3& position, const glm::vec2& size, const std::shared_ptr<Texture>& color)
+	{
 	}
 }
