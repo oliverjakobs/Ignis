@@ -1,59 +1,118 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
+#include "Singelton.h"
+
+#include <iostream>
+
+
+#include <windows.h>
 
 namespace obelisk
 {
-	enum class LogLevel
+	/*
+	specifier	Output
+	d or i		Signed decimal integer
+	u			Unsigned decimal integer
+	o			Unsigned octal
+	x			Unsigned hexadecimal integer, lowercase 7fa
+	X			Unsigned hexadecimal integer, uppercase 7FA
+	f			Decimal floating point, lowercase
+	F			Decimal floating point, uppercase
+	e			Scientific notation(mantissa / exponent), lowercase 3.9265e+2
+	E			Scientific notation(mantissa / exponent), uppercase 3.9265E+2
+	g			Use the shortest representation: % e or % f
+	G			Use the shortest representation: % E or % F
+	a			Hexadecimal floating point, lowercase - 0xc.90fep-2
+	A			Hexadecimal floating point, uppercase - 0XC.90FEP-2
+	c			Character
+	s			String of characters
+	p			Pointer address
+	%			A % followed by another % character will write a single % to the stream.
+	*/
+
+	// a string formatter using std::snprintf
+	template<typename... argv> std::string format(const char* format, argv ...args)
 	{
-		Trace = SPDLOG_LEVEL_TRACE,
-		Debug = SPDLOG_LEVEL_DEBUG,
-		Info = SPDLOG_LEVEL_INFO,
-		Warn = SPDLOG_LEVEL_WARN,
-		Error = SPDLOG_LEVEL_ERROR
-	};
+		const size_t str_size = std::snprintf(nullptr, 0, format, args...);
 
-	// wrapper for spdlog
-	struct Logger
+		std::string output;
+		output.resize(str_size + 1);
+
+		std::snprintf(&output[0], str_size + 1, format, args...);
+		return std::move(output);
+	}
+
+	inline std::ostream& colored_stream(std::ostream& s, unsigned int color)
 	{
-		inline static void SetLevel(LogLevel lvl)
+		HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+		SetConsoleTextAttribute(hStdout, color);
+		return s;
+	}
+
+	inline std::ostream& red(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_RED | FOREGROUND_INTENSITY);
+	}
+
+	inline std::ostream& green(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	}
+
+	inline std::ostream& blue(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	}
+
+	inline std::ostream& yellow(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+	}
+
+	inline std::ostream& white(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+	}
+
+	inline std::ostream& red_bg(std::ostream& s)
+	{
+		return colored_stream(s, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | BACKGROUND_RED);
+	}
+
+	class Logger : private Singleton<Logger>
+	{
+	private:
+		std::ostream& m_target = std::cout;
+
+	public:
+		template<typename... argv>
+		inline static void Trace(const char* fmt, const argv& ...args)
 		{
-			spdlog::set_level((spdlog::level::level_enum)lvl);
+			Get().m_target << white << "[TRACE] " << format(fmt, args...) << "\n";
 		}
 
-		inline static void SetFormat(const std::string& pattern)
+		template<typename... argv>
+		inline static void Info(const char* fmt, const argv& ...args)
 		{
-			spdlog::set_pattern(pattern);
+			Get().m_target << green << "[INFO] " << white << format(fmt, args...) << "\n";
 		}
 
-		template<typename... Args>
-		inline static void Info(const char* fmt, const Args& ... args)
+		template<typename... argv>
+		inline static void Warn(const char* fmt, const argv& ...args)
 		{
-			spdlog::info(fmt, args...);
+			Get().m_target << yellow << "[WARN] " << white << format(fmt, args...) << "\n";
 		}
 
-		template<typename... Args>
-		inline static void Trace(const char* fmt, const Args& ... args)
+		template<typename... argv>
+		inline static void Error(const char* fmt, const argv& ...args)
 		{
-			spdlog::trace(fmt, args...);
+			Get().m_target << red << "[ERROR] " << white << format(fmt, args...) << "\n";
 		}
 
-		template<typename... Args>
-		inline static void Warn(const char* fmt, const Args& ... args)
+		template<typename... argv>
+		inline static void Critical(const char* fmt, const argv& ...args)
 		{
-			spdlog::warn(fmt, args...);
-		}
-
-		template<typename... Args>
-		inline static void Error(const char* fmt, const Args& ... args)
-		{
-			spdlog::error(fmt, args...);
-		}
-
-		template<typename... Args>
-		inline static void Critical(const char* fmt, const Args& ... args)
-		{
-			spdlog::critical(fmt, args...);
+			Get().m_target << red_bg << "[CRITICAL]" << white << " " << format(fmt, args...) << "\n";
 		}
 	};
 }

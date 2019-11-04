@@ -129,7 +129,7 @@ int main()
 		fontShader.Use();
 		fontShader.SetUniformMat4("projection", ignisScreenMat());
 
-		FontRenderer::RenderText(font, fmt::format("FPS: {0}", timer.FPS), 0.0f, 32.0f);
+		FontRenderer::RenderText(font, obelisk::format("FPS: %d", timer.FPS), 0.0f, 32.0f);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -147,9 +147,6 @@ int main()
 
 GLFWwindow* Init(const char* title, uint width, uint height)
 {
-	obelisk::Logger::SetFormat("[%^%l%$] %v");
-	obelisk::Logger::SetLevel(obelisk::LogLevel::Trace);
-
 	// ingis initialization
 	if (!ignisInit(width, height))
 	{
@@ -175,7 +172,7 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 		return nullptr;
 	}
 
-	OBELISK_INFO("[GLFW] Initialized GLFW {0}", glfwGetVersionString());
+	OBELISK_INFO("[GLFW] Initialized GLFW %s", glfwGetVersionString());
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -200,7 +197,7 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	// Set GLFW callbacks
 	glfwSetErrorCallback([](int error, const char* desc)
 	{
-		OBELISK_ERROR("[GLFW] ({0}) {1}", error, desc);
+		OBELISK_ERROR("[GLFW] (%d) %s", error, desc);
 	});
 
 	bool debug = true;
@@ -212,10 +209,10 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 		return nullptr;
 	}
 
-	OBELISK_INFO("[OpenGL] Version: {0}", glGetString(GL_VERSION));
-	OBELISK_INFO("[OpenGL] Vendor: {0}", glGetString(GL_VENDOR));
-	OBELISK_INFO("[OpenGL] Renderer: {0}", glGetString(GL_RENDERER));
-	OBELISK_INFO("[OpenGL] GLSL Version: {0}", glGetString(GL_SHADING_LANGUAGE_VERSION));
+	OBELISK_INFO("[OpenGL] Version: %s", glGetString(GL_VERSION));
+	OBELISK_INFO("[OpenGL] Vendor: %s", glGetString(GL_VENDOR));
+	OBELISK_INFO("[OpenGL] Renderer: %s", glGetString(GL_RENDERER));
+	OBELISK_INFO("[OpenGL] GLSL Version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 

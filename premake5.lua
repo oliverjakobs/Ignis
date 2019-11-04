@@ -47,8 +47,7 @@ project "Ignis"
 		"%{prj.name}/packages/stb",
 		"%{prj.name}/packages/imgui",
 		"%{prj.name}/packages/glfw/include",
-		"%{prj.name}/packages/glad/include",
-		"%{prj.name}/packages/spdlog/include",
+		"%{prj.name}/packages/glad/include"
 	}
 
 	filter "system:windows"
