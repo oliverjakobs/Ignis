@@ -9,6 +9,8 @@
 
 #include "Callback.h"
 
+#include "Renderer/RenderState.h"
+
 // Renderer
 #include "Renderer/FontRenderer.h"
 

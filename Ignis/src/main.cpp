@@ -1,17 +1,14 @@
 ﻿#include "Ignis/Ignis.h"
 
-#include "Ignis/Advanced/ComputeShader.h"
-
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "ImGuiBinding/ImGuiRenderer.h"
-
-#include "Ignis/Renderer/RenderState.h"
+#include "Ignis/Advanced/ComputeShader.h"
 
 #include "Obelisk/Obelisk.h"
+#include "ImGuiBinding/ImGuiRenderer.h"
 
 using namespace ignis;
 
@@ -55,24 +52,22 @@ int main()
 	VertexArray vao;
 
 	// position
-	ArrayBuffer bufferPosition;
-	bufferPosition.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
+	ArrayBuffer bufferPosition(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
 	bufferPosition.VertexAttribPointer(0, 4, 0, 0);
 
 	glm::vec4* positions = bufferPosition.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
-	for (int i = 0; i < PARTICLE_COUNT; i++)
+	for (int i : obelisk::range(0, PARTICLE_COUNT))
 		positions[i] = glm::vec4(SCREEN_CENTER, (float)i / (float)PARTICLE_COUNT, 0.0f);
 
 	bufferPosition.UnmapBuffer();
 
 	// velocity
-	ArrayBuffer bufferVelocity;
-	bufferVelocity.BufferData(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
+	ArrayBuffer bufferVelocity(PARTICLE_COUNT * sizeof(glm::vec4), nullptr, GL_DYNAMIC_COPY);
 
 	glm::vec4* velocities = bufferVelocity.MapBufferRange<glm::vec4>(0, PARTICLE_COUNT, GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT);
 
-	for (int i = 0; i < PARTICLE_COUNT; i++)
+	for (int i : obelisk::range(0, PARTICLE_COUNT))
 		velocities[i] = glm::vec4(glm::diskRand(1.0f), 1.0f, 0.0f);
 
 	bufferVelocity.UnmapBuffer();

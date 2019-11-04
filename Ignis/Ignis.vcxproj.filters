@@ -113,6 +113,7 @@
     </ClInclude>
     <ClInclude Include="src\Ignis\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Ignis\Callback.h" />
+    <ClInclude Include="src\Obelisk\Range.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
