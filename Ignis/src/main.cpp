@@ -16,10 +16,11 @@
 using namespace ignis;
 
 // settings
-const uint WIDTH = 800;
-const uint HEIGHT = 600;
+const uint WIDTH = 1280;
+const uint HEIGHT = 720;
 
 const glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
+const float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
@@ -28,16 +29,15 @@ float mouseScroll = 0.0f;
 
 bool firstMouse = true;
 
+float cameraSpeed = 5.0f;
+float cameraRotation = 180.0f;
+float cameraZoom = 1.0f;
+
 GLFWwindow* Init(const char* title, uint width, uint height);
 
 int main()
 {
 	GLFWwindow* window = Init("Ignis", WIDTH, HEIGHT);
-
-	FpsCamera camera;
-	camera.Position = glm::vec3(0.0f, 0.0f, 3.0f);
-	float cameraSpeed = 2.5f;
-	float cameraSensitivity = 0.1f;
 
 	if (!window) return -1;
 
@@ -55,7 +55,6 @@ int main()
 	renderState.SetDepthTest(true);
 	renderState.SetCullFace(true);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
 	{
 		if (firstMouse)
@@ -68,76 +67,11 @@ int main()
 		mousePos = glm::vec2((float)xPos, (float)yPos);
 	});
 	
-	// load .obj file
-	Material material;
-	Mesh mesh = Mesh::LoadFromFile("res/models/barrel2/barrel.obj", "res/models/barrel2/", &material);
+	Renderer2D::Init();
 
-	// load shader
-	Shader shader = Shader("res/shaders/material.vert", "res/shaders/material.frag");
+	OrthographicCamera camera(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
 
-	Shader lampShader = Shader("res/shaders/lamp.vert", "res/shaders/lamp.frag");
-
-	shader.Use();
-	shader.SetUniform1i("diffuseMap", 0);
-	shader.SetUniform1i("normalMap", 1);
-	//shader.SetUniform1i("specularMap", 2);
-
-	// lamp
-	float lampVertices[] =
-	{
-		// front
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
-		// back
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 // left
-		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		 -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		 -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-		 -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		 -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-		 // right
-		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		  0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		  0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		  // bot
-		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		  0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		  0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 // top
-		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		  0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		  0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f
-	};
-
-	VertexArray lampVao;
-	lampVao.Bind();
-
-	auto vbo = lampVao.AddArrayBuffer(sizeof(lampVertices), lampVertices, GL_STATIC_DRAW);
-	vbo->VertexAttribPointer(0, 3, 6 * sizeof(float), 0);
-	vbo->VertexAttribPointer(1, 3, 6 * sizeof(float), 3 * sizeof(float));
-
-	// lighting
-	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/checkerboard.png");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -147,51 +81,54 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		float velocity = cameraSpeed * timer.DeltaTime;
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			camera.Move(camera.Front * velocity);
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			camera.Move(-camera.Front * velocity);
+		// camera movement
+		glm::vec3 position = camera.GetPosition();
+		float rotation = camera.GetRotation();
+
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			camera.Move(-camera.Right * velocity);
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			camera.Move(camera.Right * velocity);
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-			camera.Move(camera.WorldUp * velocity);
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			camera.Move(-camera.WorldUp * velocity);
+		{
+			position.x -= cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+			position.y -= sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		{
+			position.x += cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+			position.y += sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+		}
 
-		camera.YawPitch(mouseOffset.x * cameraSensitivity, mouseOffset.y * cameraSensitivity);
-		mouseOffset = glm::vec2();
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		{
+			position.x += -sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+			position.y += cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		{
+			position.x -= -sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+			position.y -= cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
+		}
 
-		lightPos = glm::rotate(lightPos, glm::radians(60.0f * timer.DeltaTime), glm::vec3(0.0f, 1.0f, 0.0f));
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+			rotation += cameraRotation * timer.DeltaTime;
+		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+			rotation -= cameraRotation * timer.DeltaTime;
+
+		if (rotation > 180.0f)
+			rotation -= 360.0f;
+		else if (rotation <= -180.0f)
+			rotation += 360.0f;
+
+		camera.SetPosition(position);
+		camera.SetRotation(rotation);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		float fov = 70.0f;
-		float aspect = (float)WIDTH / (float)HEIGHT;
+		Renderer2D::BeginScene(camera);
 
-		glm::mat4 projection = glm::perspective(fov, aspect, 0.1f, 100.0f);
-		glm::mat4 view = camera.View();
-		glm::mat4 model = glm::mat4(1.0);
+		Renderer2D::RenderQuad({ -1.0f, 0.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+		Renderer2D::RenderQuad({ 0.5f, -0.5f, 0.0f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+		Renderer2D::RenderQuad({ 0.0f, 0.0f, 0.0f }, { 10.0f, 10.0f }, texture);
 
-		shader.Use();
-		shader.SetUniform3f("lightPos", lightPos);
-
-		// render mesh 
-		Ignis::RenderMesh(mesh, material, projection, view, model, shader);
-
-		// also draw the lamp object
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-
-		glm::mat4 mvp = projection * view * model;
-
-		lampShader.Use();
-		lampShader.SetUniformMat4("mvp", mvp);
-
-		lampVao.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		Renderer2D::EndScene();
 
 		// gui
 		// ImGuiRenderer::Begin();

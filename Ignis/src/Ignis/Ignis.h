@@ -13,6 +13,7 @@
 
 // Renderer
 #include "Renderer/FontRenderer.h"
+#include "Renderer/Renderer2D.h"
 
 namespace ignis
 {
