@@ -1,2 +1,2 @@
 # Ignis
-OpenGl Renderer written in C++
+OpenGL Renderer written in C++

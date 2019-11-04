@@ -3,16 +3,18 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Ignis/Packages/tiny_obj_loader.h"
 
+#include "Ignis/Callback.h"
+
 #include "Obelisk/Debugger.h"
 
 namespace ignis
 {
 	Mesh Mesh::LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl)
 	{
-		DEBUG_TRACE("[Obj] ------------------------------------------------");
-		DEBUG_TRACE("[Obj] Reading obj file {0}", filename);
+		OBELISK_TRACE("[Obj] ------------------------------------------------");
+		OBELISK_TRACE("[Obj] Reading obj file {0}", filename);
 
-		DEBUG_CHRONO();
+		OBELISK_CHRONO();
 
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;
@@ -24,23 +26,23 @@ namespace ignis
 		bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), mtldir.c_str());
 
 		if (!warn.empty())
-			DEBUG_WARN("{0}", warn);
+			_ignisErrorCallback(ignisErrorLevel::Warn, warn);
 
 		if (!err.empty())
-			DEBUG_ERROR("{0}", err);
+			_ignisErrorCallback(ignisErrorLevel::Error, err);
 
 		if (!success)
 		{
-			DEBUG_ERROR("[Obj] Failed to load obj: {0}", filename);
+			_ignisErrorCallback(ignisErrorLevel::Error, "[Obj] Failed to load obj: " + filename);
 			return Mesh({});
 		}
 
-		DEBUG_TRACE("[Obj] Detected:");
-		DEBUG_TRACE("[Obj] {0} vertices", (attrib.vertices.size() / 3));
-		DEBUG_TRACE("[Obj] {0} normals", (attrib.normals.size() / 3));
-		DEBUG_TRACE("[Obj] {0} texture coords", (attrib.texcoords.size() / 2));
+		OBELISK_TRACE("[Obj] Detected:");
+		OBELISK_TRACE("[Obj] {0} vertices", (attrib.vertices.size() / 3));
+		OBELISK_TRACE("[Obj] {0} normals", (attrib.normals.size() / 3));
+		OBELISK_TRACE("[Obj] {0} texture coords", (attrib.texcoords.size() / 2));
 
-		DEBUG_CHRONO_TRACE("[Obj] Parsed obj file in {0}ms");
+		OBELISK_CHRONO_TRACE("[Obj] Parsed obj file in {0}ms");
 
 		std::vector<Vertex> vertices;
 
@@ -74,7 +76,7 @@ namespace ignis
 			vertices.push_back(vertex);
 		}
 
-		DEBUG_CHRONO_TRACE("[Obj] Converted to vertices in {0}ms");
+		OBELISK_CHRONO_TRACE("[Obj] Converted to vertices in {0}ms");
 
 		if (mtl && materials.size() > 0)
 		{
@@ -90,16 +92,16 @@ namespace ignis
 			mtl->Shininess = materials[0].shininess;
 		}
 
-		DEBUG_CHRONO_TRACE("[Obj] Materials loaded in {0}ms");
-		DEBUG_TRACE("[Obj] ------------------------------------------------");
+		OBELISK_CHRONO_TRACE("[Obj] Materials loaded in {0}ms");
+		OBELISK_TRACE("[Obj] ------------------------------------------------");
 		return Mesh(vertices);
 	}
 
 	Mesh::Mesh(std::vector<Vertex> vertices)
 	{
-		DEBUG_TRACE("[Mesh] Loading mesh with {0} vertices", vertices.size());
+		OBELISK_TRACE("[Mesh] Loading mesh with {0} vertices", vertices.size());
 
-		DEBUG_CHRONO();
+		OBELISK_CHRONO();
 
 		for (unsigned int i = 0; i < vertices.size(); i += 3) 
 		{
@@ -170,7 +172,7 @@ namespace ignis
 
 		m_vao.Unbind();
 
-		DEBUG_CHRONO_TRACE("[Mesh] Done in {0}ms");
+		OBELISK_CHRONO_TRACE("[Mesh] Done in {0}ms");
 	}
 
 	Mesh::~Mesh()
@@ -185,6 +187,6 @@ namespace ignis
 
 	uint Mesh::ElementCount()
 	{
-		return m_ibo.Count;
+		return m_ibo.GetCount();
 	}
 }

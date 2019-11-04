@@ -1,8 +1,0 @@
-#Directories
-.vs/
-bin-int/
-bin/
-
-#files
-*.user
-*.vcxproj

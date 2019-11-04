@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-#include "Obelisk/Debugger.h"
+#include "Ignis/Callback.h"
 
 namespace ignis
 {
@@ -25,16 +25,16 @@ namespace ignis
 		glBindFramebuffer(GL_FRAMEBUFFER, m_name);
 
 		// create a color attachment texture
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.ID, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture.GetName(), 0);
 
 		// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
 		RenderBuffer rbo;
 		rbo.RenderbufferStorage(GL_DEPTH24_STENCIL8, w, h); // use a single renderbuffer object for both a depth AND stencil buffer.
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo.Name); // now actually attach it
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo.GetName()); // now actually attach it
 
 		// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			DEBUG_WARN("Framebuffer is not complete!");
+			_ignisErrorCallback(ignisErrorLevel::Warn, "Framebuffer is not complete!");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		m_vbo.Unbind();

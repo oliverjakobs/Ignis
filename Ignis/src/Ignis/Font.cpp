@@ -3,12 +3,11 @@
 #define STB_TRUETYPE_IMPLEMENTATION  // force following include to generate implementation
 #include "Ignis/Packages/stb_truetype.h"
 
-#include "Obelisk/Obelisk.h"
+#include <fstream>
 
 namespace ignis
 {
 	Font::Font(const std::string& path, float size)
-		: m_texture(nullptr)
 	{
 		m_fontData.FirstChar = 32;
 		m_fontData.NumChars = 96; // ASCII 32..126 is 95 glyphs
@@ -16,76 +15,46 @@ namespace ignis
 		m_fontData.BitmapWidth = 512;
 		m_fontData.BitmapHeight = 512;
 
-		FILE* file = fopen(path.c_str(), "rb");
-
-		if (file == nullptr)
-		{
-			DEBUG_ERROR("Failed to load font: {0}", path);
-			return;
-		}
-
-		// obtain file size:
-		fseek(file, 0, SEEK_END);
-		uint buffer_size = ftell(file);
-		rewind(file);
-
-		// allocate memory to contain the whole file:
-		byte* buffer = (byte*)malloc(sizeof(byte) * buffer_size);
-		if (buffer == nullptr)
-		{
-			DEBUG_ERROR("Failed to allocate memory for font: {0}", path);
-			fclose(file);
-			return;
-		}
-
-		if (fread(buffer, sizeof(byte), buffer_size, file) != buffer_size)
-		{
-			DEBUG_ERROR("Failed to read font: {0}", path);
-			fclose(file);
-			free(buffer);
-			return;
-		}
-
-		fclose(file);
+		std::ifstream input(path, std::ios::binary);
+		std::vector<byte> buffer(std::istreambuf_iterator<char>(input), {});
 
 		m_fontData.CharData = (stbtt_bakedchar*)malloc(sizeof(stbtt_bakedchar) * m_fontData.NumChars);
 
 		// load bitmap
-		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
-		stbtt_BakeFontBitmap(buffer, 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
-
 		TextureConfig config = DEFAULT_CONFIG;
 		config.INTERAL_FORMAT = GL_RED;
 		config.FORMAT = GL_RED;
 
-		m_texture = new Texture(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
+		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
+		stbtt_BakeFontBitmap(buffer.data(), 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
 
-		free(buffer);
+		m_texture = std::make_unique<Texture>(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
+
 		free(bitmap);
 
 		// set up vertex array
-		m_vao.Bind();
-		m_vbo.BufferData(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
-		m_vbo.VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
+		m_vertexArray.Bind();
+		auto vbo = m_vertexArray.AddArrayBuffer(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
+		vbo->VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
+
+		m_vertexArray.LoadElementBuffer({ 0,1,2,2,3,0 }, GL_STATIC_DRAW);
 	}
 
 	Font::~Font()
 	{
-		SAFE_DELETE(m_texture);
-
 		free(m_fontData.CharData);
 	}
 
 	void Font::Bind()
 	{
 		m_texture->Bind();
-		m_vao.Bind();
+		m_vertexArray.Bind();
 	}
 
 	void Font::Unbind()
 	{
 		m_texture->Unbind();
-		m_vao.Unbind();
+		m_vertexArray.Unbind();
 	}
 
 	bool Font::LoadCharQuad(char c, float* x, float* y)
@@ -104,7 +73,7 @@ namespace ignis
 			};
 
 			// Update content of VBO memory
-			m_vbo.BufferSubData(0, sizeof(vertices), vertices);
+			m_vertexArray.GetArrayBuffer(0)->BufferSubData(0, sizeof(vertices), vertices);
 
 			return true;
 		}
