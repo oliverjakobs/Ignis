@@ -115,8 +115,10 @@
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
     <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Obelisk\Average.h" />
     <ClInclude Include="src\Obelisk\Debugger.h" />
     <ClInclude Include="src\Obelisk\FileUtility.h" />
+    <ClInclude Include="src\Obelisk\Flags.h" />
     <ClInclude Include="src\Obelisk\Logger.h" />
     <ClInclude Include="src\Obelisk\Obelisk.h" />
     <ClInclude Include="src\Obelisk\Range.h" />

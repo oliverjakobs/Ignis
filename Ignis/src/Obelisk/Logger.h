@@ -93,31 +93,31 @@ namespace obelisk
 		template<typename... argv>
 		inline static void Trace(const char* fmt, const argv& ...args)
 		{
-			Get().m_target << white << "[TRACE] " << format(fmt, args...) << "\n";
+			Get().m_target << "[TRACE] " << format(fmt, args...) << "\n";
 		}
 
 		template<typename... argv>
 		inline static void Info(const char* fmt, const argv& ...args)
 		{
-			Get().m_target << green << "[INFO] " << white << format(fmt, args...) << "\n";
+			Get().m_target << "[" << green << "INFO" << white << "] " << format(fmt, args...) << "\n";
 		}
 
 		template<typename... argv>
 		inline static void Warn(const char* fmt, const argv& ...args)
 		{
-			Get().m_target << yellow << "[WARN] " << white << format(fmt, args...) << "\n";
+			Get().m_target << "[" << yellow << "WARN" << white << "] " << format(fmt, args...) << "\n";
 		}
 
 		template<typename... argv>
 		inline static void Error(const char* fmt, const argv& ...args)
 		{
-			Get().m_target << red << "[ERROR] " << white << format(fmt, args...) << "\n";
+			Get().m_target << "[" << red << "ERROR" << white << "] " << format(fmt, args...) << "\n";
 		}
 
 		template<typename... argv>
 		inline static void Critical(const char* fmt, const argv& ...args)
 		{
-			Get().m_target << red_bg << "[CRITICAL]" << white << " " << format(fmt, args...) << "\n";
+			Get().m_target << "[" << red_bg << "CRITICAL" << white << "] " << format(fmt, args...) << "\n";
 		}
 	};
 }

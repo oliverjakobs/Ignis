@@ -123,6 +123,8 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
+    <ClInclude Include="src\Obelisk\Average.h" />
+    <ClInclude Include="src\Obelisk\Flags.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
