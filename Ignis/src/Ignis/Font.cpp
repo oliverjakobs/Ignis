@@ -34,9 +34,7 @@ namespace ignis
 
 		// set up vertex array
 		m_vertexArray.Bind();
-		auto vbo = m_vertexArray.AddArrayBuffer(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW);
-		vbo->VertexAttribPointer(0, 4, 4 * sizeof(float), 0);
-
+		m_vertexArray.AddArrayBuffer(std::make_shared<ArrayBuffer>(sizeof(float) * 4 * 4, nullptr, GL_DYNAMIC_DRAW), { {GL_FLOAT, 4} });
 		m_vertexArray.LoadElementBuffer({ 0,1,2,2,3,0 }, GL_STATIC_DRAW);
 	}
 

@@ -32,7 +32,7 @@ namespace ignis
 		void BufferData(uint size, const void* data, uint usage);
 		void BufferSubData(uint offset, uint size, const void* data);
 
-		void VertexAttribPointer(uint index, uint size, uint stride, uint offset);
+		void VertexAttribPointer(uint index, uint size, bool normalized, uint stride, uint offset);
 		void VertexAttribIPointer(uint index, uint size, uint stride, uint offset);
 		void VertexAttribDivisor(uint index, uint divisor);
 
@@ -106,10 +106,68 @@ namespace ignis
 	};
 
 	// VertexArray
+	static uint GetOpenGLTypeSize(uint type)
+	{
+		switch (type)
+		{
+		case GL_FLOAT:	return sizeof(float);
+		case GL_INT:	return sizeof(int);
+		case GL_UNSIGNED_INT: return sizeof(uint);
+		default: return 0;
+		}
+	}
+
+	struct BufferElement
+	{
+		uint Type;
+		uint Count;
+		uint Offset;
+		bool Normalized;
+
+		BufferElement() : Type(GL_UNSIGNED_INT), Count(0), Offset(0), Normalized(false) { }
+		BufferElement(uint type, uint count, bool normalized = false) : Type(type), Count(count), Offset(0), Normalized(normalized) { }
+	};
+
+	class BufferLayout
+	{
+	private:
+		std::vector<BufferElement> m_elements;
+		uint m_stride = 0;
+
+	public:
+		BufferLayout() {}
+
+		BufferLayout(const std::initializer_list<BufferElement>& elements)
+			: m_elements(elements)
+		{
+			// Calculate offsets and stride
+			uint offset = 0;
+			m_stride = 0;
+			for (auto& element : m_elements)
+			{
+				element.Offset = offset;
+				uint size = GetOpenGLTypeSize(element.Type) * element.Count;
+
+				offset += size;
+				m_stride += size;
+			}
+		}
+
+		inline uint GetStride() const { return m_stride; }
+		inline const std::vector<BufferElement>& GetElements() const { return m_elements; }
+
+		std::vector<BufferElement>::iterator begin() { return m_elements.begin(); }
+		std::vector<BufferElement>::iterator end() { return m_elements.end(); }
+		std::vector<BufferElement>::const_iterator begin() const { return m_elements.begin(); }
+		std::vector<BufferElement>::const_iterator end() const { return m_elements.end(); }
+	};
+
 	class VertexArray
 	{
 	private:
 		uint m_name;
+
+		uint m_vertexAttribIndex;
 
 		std::vector<std::shared_ptr<ArrayBuffer>> m_arrayBuffers;
 		std::shared_ptr<ElementBuffer> m_elementBuffer;
@@ -121,8 +179,8 @@ namespace ignis
 		void Bind() const;
 		void Unbind() const;
 
-		// TODO: ArrayBuffer Layout?
-		std::shared_ptr<ArrayBuffer> AddArrayBuffer(uint size, const void* data, uint usage);
+		void AddArrayBuffer(const std::shared_ptr<ArrayBuffer>& buffer);
+		void AddArrayBuffer(const std::shared_ptr<ArrayBuffer>& buffer, const BufferLayout& layout);
 		void LoadElementBuffer(std::vector<uint> indices, uint usage);
 
 		const uint GetName() const { return m_name; }

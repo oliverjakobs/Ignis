@@ -61,10 +61,10 @@ namespace ignis
 		glUnmapBuffer(m_target);
 	}
 
-	void ArrayBuffer::VertexAttribPointer(uint index, uint size, uint stride, uint offset)
+	void ArrayBuffer::VertexAttribPointer(uint index, uint size, bool normalized, uint stride, uint offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribPointer(index, size, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+		glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride, (void*)offset);
 	}
 
 	void ArrayBuffer::VertexAttribIPointer(uint index, uint size, uint stride, uint offset)
@@ -136,7 +136,7 @@ namespace ignis
 	}
 
 	// VertexArray
-	VertexArray::VertexArray()
+	VertexArray::VertexArray() : m_vertexAttribIndex(0)
 	{
 		glGenVertexArrays(1, &m_name);
 		glBindVertexArray(m_name);
@@ -158,12 +158,28 @@ namespace ignis
 		glBindVertexArray(0);
 	}
 
-	std::shared_ptr<ArrayBuffer> VertexArray::AddArrayBuffer(uint size, const void* data, uint usage)
+	void VertexArray::AddArrayBuffer(const std::shared_ptr<ArrayBuffer>& buffer)
 	{
-		std::shared_ptr<ArrayBuffer> buffer = std::make_shared<ArrayBuffer>(size, data, usage);
-		m_arrayBuffers.push_back(buffer);
+		Bind();
+		buffer->Bind();
 
-		return buffer;
+		m_arrayBuffers.push_back(buffer);
+	}
+
+	void VertexArray::AddArrayBuffer(const std::shared_ptr<ArrayBuffer>& buffer, const BufferLayout& layout)
+	{
+		Bind();
+		buffer->Bind();
+
+		for (const auto& element : layout)
+		{
+			glEnableVertexAttribArray(m_vertexAttribIndex);
+			glVertexAttribPointer(m_vertexAttribIndex, element.Count, element.Type, element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(), (const void*)(intptr_t)element.Offset);
+
+			m_vertexAttribIndex++;
+		}
+
+		m_arrayBuffers.push_back(buffer);
 	}
 
 	void VertexArray::LoadElementBuffer(std::vector<uint> indices, uint usage)

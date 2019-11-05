@@ -1,4 +1,5 @@
 workspace "Ignis"
+	architecture "x64"
 	startproject "Ignis"
 
 	configurations

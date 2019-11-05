@@ -27,9 +27,12 @@ namespace ignis
 			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		auto vbo = RenderData->VertexArray->AddArrayBuffer(sizeof(vertices), vertices, GL_STATIC_DRAW);
-		vbo->VertexAttribPointer(0, 3, 5 * sizeof(float), 0);
-		vbo->VertexAttribPointer(1, 2, 5 * sizeof(float), 3 * sizeof(float));
+		
+		RenderData->VertexArray->AddArrayBuffer(std::make_shared<ArrayBuffer>(sizeof(vertices), vertices, GL_STATIC_DRAW), 
+			{
+				{GL_FLOAT, 3},
+				{GL_FLOAT, 2}
+			});
 
 		RenderData->VertexArray->LoadElementBuffer({ 0, 1, 2, 2, 3, 0 }, GL_STATIC_DRAW);
 

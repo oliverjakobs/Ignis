@@ -21,9 +21,7 @@ namespace ignis
 	struct Mesh
 	{
 	private:
-		VertexArray m_vao;
-		ArrayBuffer m_vbo;
-		ElementBuffer m_ibo;
+		VertexArray m_vertexArray;
 
 	public:
 		static Mesh LoadFromFile(const std::string& filename, const std::string& mtldir, Material* mtl);

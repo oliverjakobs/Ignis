@@ -158,19 +158,17 @@ namespace ignis
 			}
 		}
 
-		m_vao.Bind();
+		auto vbo = std::make_shared<ArrayBuffer>(sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0], GL_STATIC_DRAW);
 
-		m_vbo.BufferData(sizeof(indexedVert[0]) * indexedVert.size(), &indexedVert[0], GL_STATIC_DRAW);
+		m_vertexArray.AddArrayBuffer(vbo);
 
-		m_vbo.VertexAttribPointer(0, 3, sizeof(Vertex), 0);
-		m_vbo.VertexAttribPointer(1, 2, sizeof(Vertex), offsetof(Vertex, TexCoord));
-		m_vbo.VertexAttribPointer(2, 3, sizeof(Vertex), offsetof(Vertex, Normal));
-		m_vbo.VertexAttribPointer(3, 3, sizeof(Vertex), offsetof(Vertex, Tangent));
-		m_vbo.VertexAttribPointer(4, 3, sizeof(Vertex), offsetof(Vertex, Bitangent));
+		vbo->VertexAttribPointer(0, 3, false, sizeof(Vertex), 0);
+		vbo->VertexAttribPointer(1, 2, false, sizeof(Vertex), offsetof(Vertex, TexCoord));
+		vbo->VertexAttribPointer(2, 3, false, sizeof(Vertex), offsetof(Vertex, Normal));
+		vbo->VertexAttribPointer(3, 3, false, sizeof(Vertex), offsetof(Vertex, Tangent));
+		vbo->VertexAttribPointer(4, 3, false, sizeof(Vertex), offsetof(Vertex, Bitangent));
 
-		m_ibo.BufferData(indices.size(), &indices[0], GL_STATIC_DRAW);
-
-		m_vao.Unbind();
+		m_vertexArray.LoadElementBuffer(indices, GL_STATIC_DRAW);
 
 		OBELISK_CHRONO_TRACE("[Mesh] Done in {0}ms");
 	}
@@ -182,11 +180,11 @@ namespace ignis
 
 	VertexArray& Mesh::VAO()
 	{
-		return m_vao;
+		return m_vertexArray;
 	}
 
 	uint Mesh::ElementCount()
 	{
-		return m_ibo.GetCount();
+		return m_vertexArray.GetElementBuffer()->GetCount();
 	}
 }
