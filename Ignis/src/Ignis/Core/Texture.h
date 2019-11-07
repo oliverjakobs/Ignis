@@ -8,19 +8,17 @@ namespace ignis
 {
 	struct TextureConfig
 	{
-		int INTERAL_FORMAT;
+		uint INTERAL_FORMAT;
 		uint FORMAT;
 
-		uint TYPE;
+		uint MIN_FILTER;
+		uint MAG_FILTER;
 
-		int MIN_FILTER;
-		int MAG_FILTER;
-
-		int WRAP_S;
-		int WRAP_T;
+		uint WRAP_S;
+		uint WRAP_T;
 	};
 
-	constexpr TextureConfig DEFAULT_CONFIG{ GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT };
+	constexpr TextureConfig DEFAULT_CONFIG{ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT };
 
 	struct Texture
 	{
@@ -32,10 +30,12 @@ namespace ignis
 
 		uint m_activeSlot;
 
+		TextureConfig m_config;
+
 	public:
-		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
 		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
-		Texture(byte* bitmap, int width, int height, TextureConfig config = DEFAULT_CONFIG);
+		Texture(int width, int height, void* pixels, TextureConfig config = DEFAULT_CONFIG);
+		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
 		~Texture();
 
 		void Bind(uint slot = 0);
@@ -47,5 +47,5 @@ namespace ignis
 		const int GetHeight() const { return m_height; }
 	};
 
-	uint CreateTexture(byte* pixels, int width, int height, TextureConfig config);
+	uint CreateTexture2D(int width, int height, void* pixels, TextureConfig config);
 }

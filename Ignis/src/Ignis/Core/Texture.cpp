@@ -7,8 +7,20 @@
 
 namespace ignis
 {
+	Texture::Texture(int width, int height, TextureConfig config)
+		: m_width(width), m_height(height), m_activeSlot(0), m_config(config)
+	{
+		m_name = CreateTexture2D(width, height, nullptr, config);
+	}
+
+	Texture::Texture(int width, int height, void* pixels, TextureConfig config)
+		: m_width(width), m_height(height), m_activeSlot(0), m_config(config)
+	{
+		m_name = CreateTexture2D(width, height, pixels, config);
+	}
+
 	Texture::Texture(const std::string& path, bool flipOnLoad, TextureConfig config)
-		: m_width(0), m_height(0), m_activeSlot(0)
+		: m_width(0), m_height(0), m_activeSlot(0), m_config(config)
 	{
 		stbi_set_flip_vertically_on_load(flipOnLoad);
 
@@ -16,9 +28,11 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &m_width, &m_height, &bpp, 4);
 
+		// TODO: check if bpp and format matches
+
 		if (pixels)
 		{
-			m_name = CreateTexture(pixels, m_width, m_height, config);
+			m_name = CreateTexture2D(m_width, m_height, pixels, config);
 			stbi_image_free(pixels);
 		}
 		else
@@ -26,18 +40,6 @@ namespace ignis
 			_ignisErrorCallback(ignisErrorLevel::Error, "[Tex] Failed to load texture(" + path + "): " + stbi_failure_reason());
 			m_name = 0;
 		}
-	}
-
-	Texture::Texture(int width, int height, TextureConfig config)
-		: m_width(width), m_height(height), m_activeSlot(0)
-	{
-		m_name = CreateTexture(nullptr, width, height, config);
-	}
-
-	Texture::Texture(byte* bitmap, int width, int height, TextureConfig config)
-		: m_width(width), m_height(height), m_activeSlot(0)
-	{
-		m_name = CreateTexture(bitmap, width, height, config);
 	}
 
 	Texture::~Texture()
@@ -60,7 +62,7 @@ namespace ignis
 		m_activeSlot = 0;
 	}
 
-	uint CreateTexture(byte* pixels, int width, int height, TextureConfig config)
+	uint CreateTexture2D(int width, int height, void* pixels, TextureConfig config)
 	{
 		uint name;
 		glGenTextures(1, &name);
@@ -72,7 +74,7 @@ namespace ignis
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, config.MIN_FILTER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, config.MAG_FILTER);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, config.INTERAL_FORMAT, width, height, 0, config.FORMAT, config.TYPE, pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, config.INTERAL_FORMAT, width, height, 0, config.FORMAT, GL_UNSIGNED_BYTE, pixels);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		return name;

@@ -125,6 +125,7 @@
     </ClInclude>
     <ClInclude Include="src\Obelisk\Average.h" />
     <ClInclude Include="src\Obelisk\Flags.h" />
+    <ClInclude Include="src\Obelisk\Memory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">

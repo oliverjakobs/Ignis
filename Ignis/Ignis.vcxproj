@@ -120,6 +120,7 @@
     <ClInclude Include="src\Obelisk\FileUtility.h" />
     <ClInclude Include="src\Obelisk\Flags.h" />
     <ClInclude Include="src\Obelisk\Logger.h" />
+    <ClInclude Include="src\Obelisk\Memory.h" />
     <ClInclude Include="src\Obelisk\Obelisk.h" />
     <ClInclude Include="src\Obelisk\Range.h" />
     <ClInclude Include="src\Obelisk\Singelton.h" />

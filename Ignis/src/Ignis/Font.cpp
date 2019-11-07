@@ -22,13 +22,13 @@ namespace ignis
 
 		// load bitmap
 		TextureConfig config = DEFAULT_CONFIG;
-		config.INTERAL_FORMAT = GL_RED;
+		config.INTERAL_FORMAT = GL_R8;
 		config.FORMAT = GL_RED;
 
 		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
 		stbtt_BakeFontBitmap(buffer.data(), 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
 
-		m_texture = std::make_unique<Texture>(bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, config);
+		m_texture = std::make_unique<Texture>(m_fontData.BitmapWidth, m_fontData.BitmapHeight, bitmap, config);
 
 		free(bitmap);
 

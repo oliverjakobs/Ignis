@@ -184,6 +184,8 @@ namespace ignis
 		void LoadElementBuffer(std::vector<uint> indices, uint usage);
 
 		const uint GetName() const { return m_name; }
+		const uint GetElementCount() const { return (m_elementBuffer ? m_elementBuffer->GetCount() : 0); }
+
 		const std::vector<std::shared_ptr<ArrayBuffer>>& GetArrayBuffers() const { return m_arrayBuffers; }
 		const std::shared_ptr<ElementBuffer>& GetElementBuffer() const { return m_elementBuffer; }
 
