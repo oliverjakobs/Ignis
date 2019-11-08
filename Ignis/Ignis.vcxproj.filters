@@ -33,9 +33,6 @@
     <ClInclude Include="src\Ignis\Advanced\ComputeShader.h">
       <Filter>Ignis\Advanced</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Callback.h">
-      <Filter>Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\Ignis\Camera\Camera.h">
       <Filter>Ignis\Camera</Filter>
     </ClInclude>
@@ -52,9 +49,6 @@
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Texture.h">
-      <Filter>Ignis\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Types.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Font.h">
@@ -126,13 +120,13 @@
     <ClInclude Include="src\Obelisk\Average.h" />
     <ClInclude Include="src\Obelisk\Flags.h" />
     <ClInclude Include="src\Obelisk\Memory.h" />
+    <ClInclude Include="src\Ignis\Core\Api.h">
+      <Filter>Ignis\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
       <Filter>Ignis\Advanced</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Ignis\Callback.cpp">
-      <Filter>Ignis</Filter>
     </ClCompile>
     <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp">
       <Filter>Ignis\Camera</Filter>
@@ -183,5 +177,6 @@
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Ignis\Core\Api.cpp" />
   </ItemGroup>
 </Project>

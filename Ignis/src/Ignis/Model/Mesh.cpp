@@ -3,8 +3,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "Ignis/Packages/tiny_obj_loader.h"
 
-#include "Ignis/Callback.h"
-
 #include "Obelisk/Debugger.h"
 
 namespace ignis

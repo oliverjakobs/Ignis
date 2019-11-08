@@ -6,6 +6,14 @@
 #include <glm/glm.hpp>
 
 #include <memory>
+#include <functional>
+#include <string>
+
+// You can #define IGNIS_ASSERT(x) before the #include to avoid using assert.h.
+#ifndef IGNIS_ASSERT
+#include <assert.h>
+#define IGNIS_ASSERT(x) assert(x)
+#endif
 
 namespace ignis
 {
@@ -20,6 +28,18 @@ namespace ignis
 	const color MAGENTA = { 1.0f, 0.0f, 1.0f, 1.0f };
 	const color YELLOW	= { 1.0f, 1.0f, 0.0f, 1.0f };
 
+	// TODO: revert to gl types
 	typedef unsigned char byte;
 	typedef unsigned int uint;
 }
+
+enum class ignisErrorLevel
+{
+	Warn = 0,
+	Error = 1,
+	Critical = 2
+};
+
+void ignisSetErrorCallback(std::function<void(ignisErrorLevel level, const std::string & desc)> callback);
+
+void _ignisErrorCallback(ignisErrorLevel level, const std::string& desc);

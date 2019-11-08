@@ -3,8 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Ignis/Packages/stb_image.h"
 
-#include "Ignis/Callback.h"
-
 namespace ignis
 {
 	Texture::Texture(int width, int height, TextureConfig config)
@@ -28,7 +26,17 @@ namespace ignis
 
 		byte* pixels = stbi_load(path.c_str(), &m_width, &m_height, &bpp, 4);
 
-		// TODO: check if bpp and format matches
+		// check if bpp and format matches
+		if (bpp == 4)
+		{
+			if (config.FORMAT != GL_RGBA || config.INTERAL_FORMAT != GL_RGBA8)
+				_ignisErrorCallback(ignisErrorLevel::Warn, "[Tex] Format mismatch for " + path);
+		}
+		else if (bpp == 3)
+		{
+			if (config.FORMAT != GL_RGB || config.INTERAL_FORMAT != GL_RGB8)
+				_ignisErrorCallback(ignisErrorLevel::Warn, "[Tex] Format mismatch for " + path);
+		}
 
 		if (pixels)
 		{
@@ -50,15 +58,13 @@ namespace ignis
 
 	void Texture::Bind(uint slot)
 	{
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, m_name);
+		glBindTextureUnit(slot, m_name);
 		m_activeSlot = slot;
 	}
 
 	void Texture::Unbind()
 	{
-		glActiveTexture(GL_TEXTURE0 + m_activeSlot);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTextureUnit(m_activeSlot, 0);
 		m_activeSlot = 0;
 	}
 

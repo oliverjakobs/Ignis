@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-#include "Types.h"
+#include "Api.h"
 
 namespace ignis
 {

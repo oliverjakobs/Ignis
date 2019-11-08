@@ -1,7 +1,5 @@
 #include "Framebuffer.h"
 
-#include "Ignis/Callback.h"
-
 namespace ignis
 {
 	FrameBuffer::FrameBuffer(int w, int h)

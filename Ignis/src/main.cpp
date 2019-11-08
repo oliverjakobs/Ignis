@@ -25,7 +25,6 @@ float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
 glm::vec2 mouseOffset = glm::vec2();
-float mouseScroll = 0.0f;
 
 bool firstMouse = true;
 
@@ -56,38 +55,6 @@ int main()
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	renderState.SetDepthTest(true);
 	renderState.SetCullFace(true);
-
-	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
-	{
-		WIDTH = width;
-		HEIGHT = height;
-
-		glm::vec2 SCREEN_CENTER = { width / 2.0f, height / 2.0f };
-
-		ASPECT_RATIO = (float)width / (float)height;
-		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
-
-		ignisViewport(0, 0, width, height);
-	});
-
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
-	{
-		if (firstMouse)
-		{
-			mousePos = glm::vec2((float)xPos, (float)yPos);
-			firstMouse = false;
-		}
-
-		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
-		mousePos = glm::vec2((float)xPos, (float)yPos);
-	});
-
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
-	{
-		cameraZoom -= yOffset * 0.25f;
-		cameraZoom = max(cameraZoom, 0.25f);
-		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
-	});
 	
 	Renderer2D::Init();
 
@@ -229,6 +196,38 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 		OBELISK_ERROR("[GLFW] (%d) %s", error, desc);
 	});
 
+	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
+	{
+		WIDTH = width;
+		HEIGHT = height;
+
+		glm::vec2 SCREEN_CENTER = { width / 2.0f, height / 2.0f };
+
+		ASPECT_RATIO = (float)width / (float)height;
+		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
+
+		ignisViewport(0, 0, width, height);
+	});
+
+	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
+	{
+		if (firstMouse)
+		{
+			mousePos = glm::vec2((float)xPos, (float)yPos);
+			firstMouse = false;
+		}
+
+		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
+		mousePos = glm::vec2((float)xPos, (float)yPos);
+	});
+
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
+	{
+		cameraZoom -= yOffset * 0.25f;
+		cameraZoom = max(cameraZoom, 0.25f);
+		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
+	});
+
 	bool debug = true;
 
 	if (!ignisLoadGL(debug))
@@ -244,16 +243,6 @@ GLFWwindow* Init(const char* title, uint width, uint height)
 	OBELISK_INFO("[OpenGL] GLSL Version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-
-	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
-	{
-		mousePos = { (float)xPos, HEIGHT - (float)yPos };
-	});
-
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
-	{
-		mouseScroll = (float)yOffset;
-	});
 
 	return window;
 }
