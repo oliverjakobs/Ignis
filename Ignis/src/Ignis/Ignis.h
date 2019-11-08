@@ -19,6 +19,7 @@ namespace ignis
 {
 	bool ignisInit(uint width, uint height);
 	bool ignisLoadGL(bool debug = false);
+	void ignisViewport(uint x, uint y, uint w, uint h);
 
 	const glm::mat4& ignisScreenMat();
 

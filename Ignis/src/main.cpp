@@ -16,11 +16,11 @@
 using namespace ignis;
 
 // settings
-const uint WIDTH = 1280;
-const uint HEIGHT = 720;
+uint WIDTH = 1280;
+uint HEIGHT = 720;
 
-const glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
-const float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
+glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
+float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
@@ -32,6 +32,8 @@ bool firstMouse = true;
 float cameraSpeed = 5.0f;
 float cameraRotation = 180.0f;
 float cameraZoom = 1.0f;
+
+OrthographicCamera camera = OrthographicCamera(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO* cameraZoom, -cameraZoom, cameraZoom);
 
 GLFWwindow* Init(const char* title, uint width, uint height);
 
@@ -55,6 +57,19 @@ int main()
 	renderState.SetDepthTest(true);
 	renderState.SetCullFace(true);
 
+	glfwSetWindowSizeCallback(window, [](GLFWwindow* window, int width, int height)
+	{
+		WIDTH = width;
+		HEIGHT = height;
+
+		glm::vec2 SCREEN_CENTER = { width / 2.0f, height / 2.0f };
+
+		ASPECT_RATIO = (float)width / (float)height;
+		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
+
+		ignisViewport(0, 0, width, height);
+	});
+
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
 	{
 		if (firstMouse)
@@ -66,10 +81,15 @@ int main()
 		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
 		mousePos = glm::vec2((float)xPos, (float)yPos);
 	});
+
+	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
+	{
+		cameraZoom -= yOffset * 0.25f;
+		cameraZoom = max(cameraZoom, 0.25f);
+		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
+	});
 	
 	Renderer2D::Init();
-
-	OrthographicCamera camera(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
 
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/checkerboard.png");
 

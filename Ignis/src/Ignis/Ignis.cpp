@@ -88,6 +88,13 @@ namespace ignis
 		return true;
 	}
 
+	void ignisViewport(uint x, uint y, uint w, uint h)
+	{
+		s_screenMat = glm::ortho((float)x, (float)w, (float)h, (float)y);
+
+		glViewport(x, y, w, h);
+	}
+
 	const glm::mat4& ignisScreenMat()
 	{
 		return s_screenMat;
