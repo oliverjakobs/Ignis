@@ -2,7 +2,7 @@
 
 namespace ignis
 {
-	TextureAtlas::TextureAtlas(int width, int height, GLuint rows, GLuint columns, TextureConfig config) : Texture(width, height, config), rows(rows), columns(columns) { }
+	TextureAtlas::TextureAtlas(int width, int height, GLuint rows, GLuint columns, TextureConfig config) : Texture(width, height, config), m_rows(rows), m_columns(columns) { }
 
-	TextureAtlas::TextureAtlas(const std::string& path, GLuint rows, GLuint columns, TextureConfig config) : Texture(path, config), rows(rows), columns(columns) { }
+	TextureAtlas::TextureAtlas(const std::string& path, GLuint rows, GLuint columns, TextureConfig config) : Texture(path, true, config), m_rows(rows), m_columns(columns) { }
 }

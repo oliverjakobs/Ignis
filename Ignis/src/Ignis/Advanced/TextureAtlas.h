@@ -4,7 +4,7 @@
 
 namespace ignis
 {
-	class TextureAtlas : Texture
+	class TextureAtlas : public Texture
 	{
 	private:
 		GLuint m_rows;
