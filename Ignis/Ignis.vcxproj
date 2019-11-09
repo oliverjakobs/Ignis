@@ -92,6 +92,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Ignis\Advanced\ComputeShader.h" />
+    <ClInclude Include="src\Ignis\Advanced\TextureAtlas.h" />
     <ClInclude Include="src\Ignis\Camera\Camera.h" />
     <ClInclude Include="src\Ignis\Camera\FpsCamera.h" />
     <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
@@ -127,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
+    <ClCompile Include="src\Ignis\Advanced\TextureAtlas.cpp" />
     <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp" />
     <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp" />
     <ClCompile Include="src\Ignis\Core\Api.cpp" />

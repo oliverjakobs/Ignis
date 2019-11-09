@@ -123,6 +123,7 @@
     <ClInclude Include="src\Ignis\Core\Api.h">
       <Filter>Ignis\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Advanced\TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -178,5 +179,6 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Ignis\Core\Api.cpp" />
+    <ClCompile Include="src\Ignis\Advanced\TextureAtlas.cpp" />
   </ItemGroup>
 </Project>
