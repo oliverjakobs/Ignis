@@ -43,9 +43,7 @@ project "Ignis"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/packages",
 		"%{prj.name}/packages/glm",
-		"%{prj.name}/packages/stb",
 		"%{prj.name}/packages/imgui",
 		"%{prj.name}/packages/glfw/include",
 		"%{prj.name}/packages/glad/include"

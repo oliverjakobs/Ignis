@@ -34,6 +34,6 @@ namespace ignis
 		void operator=(const Mesh& mesh) = delete;
 
 		VertexArray& VAO();
-		uint ElementCount();
+		GLsizei ElementCount();
 	};
 }

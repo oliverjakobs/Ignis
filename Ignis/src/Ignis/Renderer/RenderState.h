@@ -10,7 +10,7 @@ namespace ignis
 	{
 	private:
 		bool m_blend;
-		uint m_blend_sfactor, m_blend_dfactor;
+		GLenum m_blend_sfactor, m_blend_dfactor;
 
 		bool m_depth;
 
@@ -19,7 +19,7 @@ namespace ignis
 	public:
 		RenderState();
 
-		void SetBlend(bool enable, uint sfactor, uint dfactor);
+		void SetBlend(bool enable, GLenum sfactor, GLenum dfactor);
 		void SetDepthTest(bool enable);
 		void SetCullFace(bool enable);
 

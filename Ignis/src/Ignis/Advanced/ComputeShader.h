@@ -9,6 +9,6 @@ namespace ignis
 	public:
 		ComputeShader(const std::string& path);
 
-		void Dispatch(uint num_groups_x, uint num_groups_y, uint num_groups_z, uint barrier_bits);
+		void Dispatch(GLuint num_groups_x, GLuint num_groups_y, GLuint num_groups_z, GLbitfield barriers);
 	};
 }

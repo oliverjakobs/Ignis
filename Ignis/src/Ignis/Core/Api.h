@@ -27,10 +27,6 @@ namespace ignis
 	const color CYAN	= { 0.0f, 1.0f, 1.0f, 1.0f };
 	const color MAGENTA = { 1.0f, 0.0f, 1.0f, 1.0f };
 	const color YELLOW	= { 1.0f, 1.0f, 0.0f, 1.0f };
-
-	// TODO: revert to gl types
-	typedef unsigned char byte;
-	typedef unsigned int uint;
 }
 
 enum class ignisErrorLevel

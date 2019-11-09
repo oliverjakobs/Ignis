@@ -4,7 +4,7 @@
 
 namespace ignis
 {
-	static uint s_activeProgram = 0;
+	static GLuint s_activeProgram = 0;
 
 	static std::string read_file(const std::string& path)
 	{
@@ -175,14 +175,14 @@ namespace ignis
 	}
 
 	// Shader utils
-	uint CreateShaderProgram(std::map<uint, const std::string&> sources)
+	GLuint CreateShaderProgram(std::map<GLenum, const std::string&> sources)
 	{
-		uint program = glCreateProgram();
-		std::vector<uint> attachedShader;
+		GLuint program = glCreateProgram();
+		std::vector<GLuint> attachedShader;
 
 		for (auto& [type, src] : sources)
 		{
-			uint shader = CompileShader(type, src);
+			GLuint shader = CompileShader(type, src);
 
 			if (shader == 0)
 			{
@@ -228,7 +228,7 @@ namespace ignis
 		return program;
 	}
 
-	uint CompileShader(uint type, const std::string& source)
+	GLuint CompileShader(GLenum type, const std::string& source)
 	{
 		if (source.empty())
 		{
@@ -236,7 +236,7 @@ namespace ignis
 			return 0;
 		}
 
-		uint shader = glCreateShader(type);
+		GLuint shader = glCreateShader(type);
 
 		const char* data = source.c_str();
 		glShaderSource(shader, 1, &data, nullptr);
@@ -256,7 +256,7 @@ namespace ignis
 		return shader;
 	}
 
-	std::string GetShaderLog(uint object)
+	std::string GetShaderLog(GLuint object)
 	{
 		GLint logLength = 0;
 
@@ -272,7 +272,7 @@ namespace ignis
 		return std::string(&log[0], logLength - 1);
 	}
 
-	std::string GetProgramLog(uint object)
+	std::string GetProgramLog(GLuint object)
 	{
 		GLint logLength = 0;
 
@@ -288,7 +288,7 @@ namespace ignis
 		return std::string(&log[0], logLength - 1);
 	}
 
-	std::string GetShaderType(uint type)
+	std::string GetShaderType(GLenum type)
 	{
 		switch (type)
 		{

@@ -16,8 +16,8 @@ namespace ignis
 		m_vao.Bind();
 
 		m_vbo.BufferData(sizeof(vertices), vertices, GL_STATIC_DRAW);
-		m_vbo.VertexAttribPointer(0, 2, false, 4, 0);
-		m_vbo.VertexAttribPointer(1, 2, false, 4, 2);
+		m_vbo.VertexAttribPointer(0, 2, GL_FALSE, 4, 0);
+		m_vbo.VertexAttribPointer(1, 2, GL_FALSE, 4, (void*)2);
 
 		glGenFramebuffers(1, &m_name);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_name);

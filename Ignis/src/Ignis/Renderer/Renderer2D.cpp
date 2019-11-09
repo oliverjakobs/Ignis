@@ -35,7 +35,7 @@ namespace ignis
 
 		s_renderData->VertexArray->LoadElementBuffer({ 0, 1, 2, 2, 3, 0 }, GL_STATIC_DRAW);
 
-		uint blankTextureData = 0xffffffff;
+		GLuint blankTextureData = 0xffffffff;
 		s_renderData->Blank = std::make_shared<Texture>(1, 1, &blankTextureData);
 
 		s_renderData->Shader = std::make_shared<Shader>("res/shaders/renderer2D.vert", "res/shaders/renderer2D.frag");

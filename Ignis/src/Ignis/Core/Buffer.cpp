@@ -2,7 +2,7 @@
 
 namespace ignis
 {
-	Buffer::Buffer(uint target)
+	Buffer::Buffer(GLenum target)
 		: m_target(target)
 	{
 		glGenBuffers(1, &m_name);
@@ -27,30 +27,30 @@ namespace ignis
 
 	ArrayBuffer::ArrayBuffer() : Buffer(GL_ARRAY_BUFFER) { }
 
-	ArrayBuffer::ArrayBuffer(uint size, const void* data, uint usage) : Buffer(GL_ARRAY_BUFFER)
+	ArrayBuffer::ArrayBuffer(GLsizeiptr size, const void* data, GLenum usage) : Buffer(GL_ARRAY_BUFFER)
 	{
 		BufferData(size, data, usage);
 	}
 
-	void ArrayBuffer::BufferData(uint size, const void* data, uint usage)
+	void ArrayBuffer::BufferData(GLsizeiptr size, const void* data, GLenum usage)
 	{
 		Bind();
-		glBufferData(m_target, size, data, (GLenum)usage);
+		glBufferData(m_target, size, data, usage);
 	}
 
-	void ArrayBuffer::BufferSubData(uint offset, uint size, const void* data)
+	void ArrayBuffer::BufferSubData(GLintptr offset, GLsizeiptr size, const void* data)
 	{
 		Bind();
 		glBufferSubData(m_target, offset, size, data);
 	}
 
-	void* ArrayBuffer::MapBuffer(uint access)
+	void* ArrayBuffer::MapBuffer(GLenum access)
 	{
 		Bind();
 		return glMapBuffer(m_target, access);
 	}
 
-	void* ArrayBuffer::MapBufferRange(uint offset, uint length, uint access)
+	void* ArrayBuffer::MapBufferRange(GLintptr offset, GLsizeiptr length, GLbitfield access)
 	{
 		Bind();
 		return glMapBufferRange(m_target, offset, length, access);
@@ -61,38 +61,38 @@ namespace ignis
 		glUnmapBuffer(m_target);
 	}
 
-	void ArrayBuffer::VertexAttribPointer(uint index, uint size, bool normalized, uint stride, uint offset)
+	void ArrayBuffer::VertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride, (void*)offset);
+		glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride, offset);
 	}
 
-	void ArrayBuffer::VertexAttribIPointer(uint index, uint size, uint stride, uint offset)
+	void ArrayBuffer::VertexAttribIPointer(GLuint index, GLint size, GLsizei stride, const void* offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride, (void*)offset);
+		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride, offset);
 	}
 
-	void ArrayBuffer::VertexAttribDivisor(uint index, uint divisor)
+	void ArrayBuffer::VertexAttribDivisor(GLuint index, GLuint divisor)
 	{
 		glVertexAttribDivisor(index, divisor);
 	}
 
 	ElementBuffer::ElementBuffer() : Buffer(GL_ELEMENT_ARRAY_BUFFER), m_count(0) { }
 
-	ElementBuffer::ElementBuffer(uint count, const uint* data, uint usage) : Buffer(GL_ELEMENT_ARRAY_BUFFER), m_count(count)
+	ElementBuffer::ElementBuffer(GLsizei count, const GLuint* data, GLenum usage) : Buffer(GL_ELEMENT_ARRAY_BUFFER), m_count(count)
 	{
 		BufferData(count, data, usage);
 	}
 
-	void ElementBuffer::BufferData(uint count, const uint* data, uint usage)
+	void ElementBuffer::BufferData(GLsizei count, const GLuint* data, GLenum usage)
 	{
 		Bind();
-		glBufferData(m_target, count * sizeof(uint), data, (GLenum)usage);
+		glBufferData(m_target, count * sizeof(GLuint), data, usage);
 		m_count = count;
 	}
 
-	TextureBuffer::TextureBuffer(uint format, uint buffer) : m_format(format)
+	TextureBuffer::TextureBuffer(GLenum format, GLuint buffer) : m_format(format)
 	{
 		glGenTextures(1, &m_texture);
 		glBindTexture(GL_TEXTURE_BUFFER, m_texture);
@@ -104,7 +104,7 @@ namespace ignis
 		glDeleteTextures(1, &m_texture);
 	}
 
-	void TextureBuffer::BindImageTexture(uint unit, uint access)
+	void TextureBuffer::BindImageTexture(GLuint unit, GLenum access)
 	{
 		glBindImageTexture(unit, m_texture, 0, GL_FALSE, 0, access, m_format);
 	}
@@ -129,7 +129,7 @@ namespace ignis
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 
-	void RenderBuffer::RenderbufferStorage(uint format, int width, int height)
+	void RenderBuffer::RenderbufferStorage(GLenum format, GLsizei width, GLsizei height)
 	{
 		Bind();
 		glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
@@ -182,7 +182,7 @@ namespace ignis
 		m_arrayBuffers.push_back(buffer);
 	}
 
-	void VertexArray::LoadElementBuffer(std::vector<uint> indices, uint usage)
+	void VertexArray::LoadElementBuffer(std::vector<GLuint> indices, GLenum usage)
 	{
 		m_elementBuffer = std::make_shared<ElementBuffer>(indices.size(), indices.data(), usage);
 	}

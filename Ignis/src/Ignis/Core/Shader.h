@@ -9,7 +9,7 @@ namespace ignis
 	class Shader
 	{
 	protected:
-		uint m_program;
+		GLuint m_program;
 
 		Shader() : m_program(0) {};
 
@@ -42,10 +42,10 @@ namespace ignis
 	};
 
 	// Shader utils
-	uint CreateShaderProgram(std::map<uint, const std::string&> sources);
-	uint CompileShader(uint type, const std::string& source);
+	GLuint CreateShaderProgram(std::map<GLenum, const std::string&> sources);
+	GLuint CompileShader(GLenum type, const std::string& source);
 
-	std::string GetShaderLog(uint object);
-	std::string GetProgramLog(uint object);
-	std::string GetShaderType(uint type);
+	std::string GetShaderLog(GLuint object);
+	std::string GetProgramLog(GLuint object);
+	std::string GetShaderType(GLenum type);
 }

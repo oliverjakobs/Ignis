@@ -24,7 +24,7 @@ namespace ignis
 
 		int bpp = 0;
 
-		byte* pixels = stbi_load(path.c_str(), &m_width, &m_height, &bpp, 4);
+		unsigned char* pixels = stbi_load(path.c_str(), &m_width, &m_height, &bpp, 4);
 
 		// check if bpp and format matches
 		if (bpp == 4)
@@ -56,7 +56,7 @@ namespace ignis
 		m_name = 0;
 	}
 
-	void Texture::Bind(uint slot)
+	void Texture::Bind(GLuint slot)
 	{
 		glBindTextureUnit(slot, m_name);
 		m_activeSlot = slot;
@@ -68,9 +68,9 @@ namespace ignis
 		m_activeSlot = 0;
 	}
 
-	uint CreateTexture2D(int width, int height, void* pixels, TextureConfig config)
+	GLuint CreateTexture2D(int width, int height, void* pixels, TextureConfig config)
 	{
-		uint name;
+		GLuint name;
 		glGenTextures(1, &name);
 		glBindTexture(GL_TEXTURE_2D, name);
 

@@ -126,7 +126,7 @@ namespace ignis
 
 		// create indicies and eliminate duplicates
 		std::vector<Vertex> indexedVert;
-		std::vector<uint> indices;
+		std::vector<GLuint> indices;
 
 		for (auto& v : vertices) 
 		{
@@ -146,7 +146,7 @@ namespace ignis
 				indexedVert[index].Tangent += v.Tangent;
 				indexedVert[index].Bitangent += v.Bitangent;
 				// set index
-				indices.push_back((uint)index);
+				indices.push_back((GLuint)index);
 			}
 			else // If not, it needs to be added in the output data.
 			{
@@ -161,10 +161,10 @@ namespace ignis
 		m_vertexArray.AddArrayBuffer(vbo);
 
 		vbo->VertexAttribPointer(0, 3, false, sizeof(Vertex), 0);
-		vbo->VertexAttribPointer(1, 2, false, sizeof(Vertex), offsetof(Vertex, TexCoord));
-		vbo->VertexAttribPointer(2, 3, false, sizeof(Vertex), offsetof(Vertex, Normal));
-		vbo->VertexAttribPointer(3, 3, false, sizeof(Vertex), offsetof(Vertex, Tangent));
-		vbo->VertexAttribPointer(4, 3, false, sizeof(Vertex), offsetof(Vertex, Bitangent));
+		vbo->VertexAttribPointer(1, 2, false, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+		vbo->VertexAttribPointer(2, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+		vbo->VertexAttribPointer(3, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+		vbo->VertexAttribPointer(4, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 		m_vertexArray.LoadElementBuffer(indices, GL_STATIC_DRAW);
 
@@ -181,7 +181,7 @@ namespace ignis
 		return m_vertexArray;
 	}
 
-	uint Mesh::ElementCount()
+	GLsizei Mesh::ElementCount()
 	{
 		return m_vertexArray.GetElementBuffer()->GetCount();
 	}

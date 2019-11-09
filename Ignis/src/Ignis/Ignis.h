@@ -15,17 +15,17 @@
 
 namespace ignis
 {
-	bool ignisInit(uint width, uint height);
+	bool ignisInit(int width, int height);
 	bool ignisLoadGL(bool debug = false);
-	void ignisViewport(uint x, uint y, uint w, uint h);
+	void ignisViewport(int x, int y, int w, int h);
 
 	const glm::mat4& ignisScreenMat();
 
 	struct Ignis
 	{
-		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count);
-		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
-		static void RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices);
+		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, GLsizei count);
+		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices);
+		static void RenderTextureInstanced(Texture& tex, GLsizei instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices);
 
 		static void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
 		static void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);

@@ -12,11 +12,11 @@ namespace ignis
 	private:
 		struct FontData
 		{
-			uint FirstChar;
-			uint NumChars;
+			int FirstChar;
+			size_t NumChars;
 
-			uint BitmapWidth;
-			uint BitmapHeight;
+			int BitmapWidth;
+			int BitmapHeight;
 
 			stbtt_bakedchar* CharData;
 		} m_fontData;

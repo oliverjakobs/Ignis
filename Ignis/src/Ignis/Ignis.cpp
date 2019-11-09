@@ -48,7 +48,7 @@ namespace ignis
 
 	static glm::mat4 s_screenMat = glm::mat4(1.0f);
 
-	bool ignisInit(uint width, uint height)
+	bool ignisInit(int width, int height)
 	{
 		s_screenMat = glm::ortho(0.0f, (float)width, (float)height, 0.0f);
 
@@ -88,7 +88,7 @@ namespace ignis
 		return true;
 	}
 
-	void ignisViewport(uint x, uint y, uint w, uint h)
+	void ignisViewport(int x, int y, int w, int h)
 	{
 		s_screenMat = glm::ortho((float)x, (float)w, (float)h, (float)y);
 
@@ -100,7 +100,7 @@ namespace ignis
 		return s_screenMat;
 	}
 
-	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, uint count)
+	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, GLsizei count)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -112,7 +112,7 @@ namespace ignis
 		glDrawArrays(GL_TRIANGLES, first, count);
 	}
 
-	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
+	void Ignis::RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices)
 	{
 		glm::mat4 mvp = proj * view * model;
 
@@ -125,7 +125,7 @@ namespace ignis
 		tex.Unbind();
 	}
 
-	void Ignis::RenderTextureInstanced(Texture& tex, uint instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<uint> indices)
+	void Ignis::RenderTextureInstanced(Texture& tex, GLsizei instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices)
 	{
 		glm::mat4 mvp = proj * view * model;
 

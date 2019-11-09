@@ -11,7 +11,7 @@ namespace ignis
 		m_depth = false;
 	}
 
-	void RenderState::SetBlend(bool enable, uint sfactor, uint dfactor)
+	void RenderState::SetBlend(bool enable, GLenum sfactor, GLenum dfactor)
 	{
 		m_blend = enable;
 		m_blend_sfactor = sfactor;

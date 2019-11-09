@@ -16,8 +16,8 @@
 using namespace ignis;
 
 // settings
-uint WIDTH = 1280;
-uint HEIGHT = 720;
+int WIDTH = 1280;
+int HEIGHT = 720;
 
 glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
 float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
@@ -34,7 +34,7 @@ float cameraZoom = 1.0f;
 
 OrthographicCamera camera = OrthographicCamera(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO* cameraZoom, -cameraZoom, cameraZoom);
 
-GLFWwindow* Init(const char* title, uint width, uint height);
+GLFWwindow* Init(const char* title, int width, int height);
 
 int main()
 {
@@ -141,7 +141,7 @@ int main()
 	return 0;
 }
 
-GLFWwindow* Init(const char* title, uint width, uint height)
+GLFWwindow* Init(const char* title, int width, int height)
 {
 	// ingis initialization
 	if (!ignisInit(width, height))

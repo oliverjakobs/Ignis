@@ -16,7 +16,7 @@ namespace ignis
 		m_fontData.BitmapHeight = 512;
 
 		std::ifstream input(path, std::ios::binary);
-		std::vector<byte> buffer(std::istreambuf_iterator<char>(input), {});
+		std::vector<GLubyte> buffer(std::istreambuf_iterator<char>(input), {});
 
 		m_fontData.CharData = (stbtt_bakedchar*)malloc(sizeof(stbtt_bakedchar) * m_fontData.NumChars);
 
@@ -25,7 +25,7 @@ namespace ignis
 		config.INTERAL_FORMAT = GL_R8;
 		config.FORMAT = GL_RED;
 
-		byte* bitmap = (byte*)malloc(sizeof(byte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
+		GLubyte* bitmap = (GLubyte*)malloc(sizeof(GLubyte) * m_fontData.BitmapWidth * m_fontData.BitmapHeight);
 		stbtt_BakeFontBitmap(buffer.data(), 0, size, bitmap, m_fontData.BitmapWidth, m_fontData.BitmapHeight, m_fontData.FirstChar, m_fontData.NumChars, m_fontData.CharData); // no guarantee this fits!
 
 		m_texture = std::make_unique<Texture>(m_fontData.BitmapWidth, m_fontData.BitmapHeight, bitmap, config);
@@ -57,7 +57,7 @@ namespace ignis
 
 	bool Font::LoadCharQuad(char c, float* x, float* y)
 	{
-		if ((uint)c >= m_fontData.FirstChar && (uint)c < m_fontData.FirstChar + m_fontData.NumChars)
+		if ((GLchar)c >= m_fontData.FirstChar && (GLchar)c < m_fontData.FirstChar + m_fontData.NumChars)
 		{
 			stbtt_aligned_quad q;
 			stbtt_GetBakedQuad(m_fontData.CharData, m_fontData.BitmapWidth, m_fontData.BitmapHeight, c - m_fontData.FirstChar, x, y, &q, 1);
