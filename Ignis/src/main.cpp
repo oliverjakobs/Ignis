@@ -13,14 +13,17 @@
 
 #include "Ignis/Camera/FpsCamera.h"
 
+#include "Tile/TileRenderer.h"
+
 using namespace ignis;
 
+// #define ENABLE_MOVEMENT
+
 // settings
-int WIDTH = 1280;
-int HEIGHT = 720;
+int WIDTH = 1024;
+int HEIGHT = 800;
 
 glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
-float ASPECT_RATIO = (float)WIDTH / (float)HEIGHT;
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
@@ -28,11 +31,10 @@ glm::vec2 mouseOffset = glm::vec2();
 
 bool firstMouse = true;
 
-float cameraSpeed = 5.0f;
+float cameraSpeed = 50.0f;
 float cameraRotation = 180.0f;
-float cameraZoom = 1.0f;
 
-OrthographicCamera camera = OrthographicCamera(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO* cameraZoom, -cameraZoom, cameraZoom);
+OrthographicCamera camera = OrthographicCamera(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT);
 
 GLFWwindow* Init(const char* title, int width, int height);
 
@@ -60,6 +62,56 @@ int main()
 
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/checkerboard.png");
 
+	// load map
+	std::vector<int> tiles =
+	{
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+		0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,
+		0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+	};
+
+	std::map<unsigned int, TileType> typeMap = 
+	{
+		{ 1, TileType::TILE_SOLID},
+		{ 2, TileType::TILE_SLOPE_LEFT},
+		{ 3, TileType::TILE_SLOPE_RIGHT},
+		{ 4, TileType::TILE_PLATFORM},
+	};
+
+	std::shared_ptr<Texture> tileTexture = std::make_shared<Texture>("res/textures/tiles.png");
+
+	int mapWidth = 32;
+	int mapHeight = 25;
+	float tileSize = 32.0f;
+
+	int texRows = 1;
+	int texColumns = 5;
+
+	TileMap map = TileMap(tiles, mapWidth, mapHeight, tileSize, typeMap);
+	TileRenderer tileRenderer(map.GetTiles(), texRows, texColumns, map.GetTileSize());
+
 	while (!glfwWindowShouldClose(window))
 	{
 		timer.Start((float)glfwGetTime());
@@ -68,6 +120,7 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
+#ifdef ENABLE_MOVEMENT
 		// camera movement
 		glm::vec3 position = camera.GetPosition();
 		float rotation = camera.GetRotation();
@@ -107,15 +160,20 @@ int main()
 		camera.SetPosition(position);
 		camera.SetRotation(rotation);
 
+#endif 
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		Renderer2D::BeginScene(camera.GetViewProjection());
+		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection(), tileTexture);
 
-		Renderer2D::RenderQuad({ -1.0f, 0.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		Renderer2D::RenderQuad({ 0.5f, -0.5f, 0.0f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		Renderer2D::RenderQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, texture);
+		//Renderer2D::BeginScene(camera.GetViewProjection());
 
-		Renderer2D::EndScene();
+		//Renderer2D::RenderQuad({ -1.0f, 0.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
+		//Renderer2D::RenderQuad({ 0.5f, -0.5f, 0.0f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
+		//Renderer2D::RenderQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, texture);
+		//Renderer2D::RenderQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, tileTexture);
+
+		//Renderer2D::EndScene();
 
 		// gui
 		// ImGuiRenderer::Begin();
@@ -123,7 +181,8 @@ int main()
 
 		// debug info
 		fontShader.Use();
-		fontShader.SetUniformMat4("projection", ignisScreenMat());
+		fontShader.SetUniformMat4("u_Projection", ignisScreenMat());
+		fontShader.SetUniform4f("u_Color", WHITE);
 
 		FontRenderer::RenderText(font, obelisk::format("FPS: %d", timer.FPS), 0.0f, 32.0f);
 
@@ -203,8 +262,7 @@ GLFWwindow* Init(const char* title, int width, int height)
 
 		glm::vec2 SCREEN_CENTER = { width / 2.0f, height / 2.0f };
 
-		ASPECT_RATIO = (float)width / (float)height;
-		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
+		camera.SetProjection(0.0f, (float)width, 0.0f, (float)height);
 
 		ignisViewport(0, 0, width, height);
 	});
@@ -219,13 +277,6 @@ GLFWwindow* Init(const char* title, int width, int height)
 
 		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
 		mousePos = glm::vec2((float)xPos, (float)yPos);
-	});
-
-	glfwSetScrollCallback(window, [](GLFWwindow* window, double xOffset, double yOffset)
-	{
-		cameraZoom -= yOffset * 0.25f;
-		cameraZoom = max(cameraZoom, 0.25f);
-		camera.SetProjection(-ASPECT_RATIO * cameraZoom, ASPECT_RATIO * cameraZoom, -cameraZoom, cameraZoom);
 	});
 
 	bool debug = true;

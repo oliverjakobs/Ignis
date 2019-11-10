@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include <glad/glad.h>
 
 bool ImGuiBinding_Init(const char* glsl_version = nullptr);

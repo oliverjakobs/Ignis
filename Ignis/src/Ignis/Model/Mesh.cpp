@@ -160,11 +160,11 @@ namespace ignis
 
 		m_vertexArray.AddArrayBuffer(vbo);
 
-		vbo->VertexAttribPointer(0, 3, false, sizeof(Vertex), 0);
-		vbo->VertexAttribPointer(1, 2, false, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
-		vbo->VertexAttribPointer(2, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-		vbo->VertexAttribPointer(3, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
-		vbo->VertexAttribPointer(4, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+		vbo->VertexAttribPointerR(0, 3, false, sizeof(Vertex), 0);
+		vbo->VertexAttribPointerR(1, 2, false, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
+		vbo->VertexAttribPointerR(2, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+		vbo->VertexAttribPointerR(3, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+		vbo->VertexAttribPointerR(4, 3, false, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 		m_vertexArray.LoadElementBuffer(indices, GL_STATIC_DRAW);
 

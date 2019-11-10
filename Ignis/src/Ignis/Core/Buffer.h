@@ -32,8 +32,9 @@ namespace ignis
 		void BufferData(GLsizeiptr size, const void* data, GLenum usage);
 		void BufferSubData(GLintptr offset, GLsizeiptr size, const void* data);
 
-		void VertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset);
-		void VertexAttribIPointer(GLuint index, GLint size, GLsizei stride, const void* offset);
+		void VertexAttribPointerR(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset);
+		void VertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset);
+		void VertexAttribIPointer(GLuint index, GLint size, GLsizei stride, GLintptr offset);
 		void VertexAttribDivisor(GLuint index, GLuint divisor);
 
 		void* MapBuffer(GLenum access);

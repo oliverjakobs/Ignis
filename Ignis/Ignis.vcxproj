@@ -58,7 +58,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages\glm;packages\imgui;packages\glfw\include;packages\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -74,7 +74,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>src;packages;packages\glm;packages\stb;packages\imgui;packages\glfw\include;packages\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;packages\glm;packages\imgui;packages\glfw\include;packages\glad\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -96,10 +96,10 @@
     <ClInclude Include="src\Ignis\Camera\Camera.h" />
     <ClInclude Include="src\Ignis\Camera\FpsCamera.h" />
     <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h" />
+    <ClInclude Include="src\Ignis\Core\Api.h" />
     <ClInclude Include="src\Ignis\Core\Buffer.h" />
     <ClInclude Include="src\Ignis\Core\Shader.h" />
     <ClInclude Include="src\Ignis\Core\Texture.h" />
-    <ClInclude Include="src\Ignis\Core\Api.h" />
     <ClInclude Include="src\Ignis\Font.h" />
     <ClInclude Include="src\Ignis\Framebuffer.h" />
     <ClInclude Include="src\Ignis\Ignis.h" />
@@ -115,6 +115,10 @@
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
     <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
+    <ClInclude Include="src\Maths\Geometry.h" />
+    <ClInclude Include="src\Maths\Maths.h" />
+    <ClInclude Include="src\Maths\RayCast.h" />
+    <ClInclude Include="src\Maths\Visibility.h" />
     <ClInclude Include="src\Obelisk\Average.h" />
     <ClInclude Include="src\Obelisk\Debugger.h" />
     <ClInclude Include="src\Obelisk\FileUtility.h" />
@@ -125,6 +129,11 @@
     <ClInclude Include="src\Obelisk\Range.h" />
     <ClInclude Include="src\Obelisk\Singelton.h" />
     <ClInclude Include="src\Obelisk\Timer.h" />
+    <ClInclude Include="src\Tile\Body.h" />
+    <ClInclude Include="src\Tile\Tile.h" />
+    <ClInclude Include="src\Tile\TileConfig.h" />
+    <ClInclude Include="src\Tile\TileRenderer.h" />
+    <ClInclude Include="src\Tile\Tilemap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp" />
@@ -146,6 +155,10 @@
     <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
     <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Tile\Body.cpp" />
+    <ClCompile Include="src\Tile\Tile.cpp" />
+    <ClCompile Include="src\Tile\TileRenderer.cpp" />
+    <ClCompile Include="src\Tile\Tilemap.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>

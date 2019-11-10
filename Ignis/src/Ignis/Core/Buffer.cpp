@@ -61,16 +61,22 @@ namespace ignis
 		glUnmapBuffer(m_target);
 	}
 
-	void ArrayBuffer::VertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset)
+	void ArrayBuffer::VertexAttribPointerR(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset)
 	{
 		glEnableVertexAttribArray(index);
 		glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride, offset);
 	}
 
-	void ArrayBuffer::VertexAttribIPointer(GLuint index, GLint size, GLsizei stride, const void* offset)
+	void ArrayBuffer::VertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset)
 	{
 		glEnableVertexAttribArray(index);
-		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride, offset);
+		glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride * sizeof(GLfloat), (void*)(offset * sizeof(GLfloat)));
+	}
+
+	void ArrayBuffer::VertexAttribIPointer(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+	{
+		glEnableVertexAttribArray(index);
+		glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), (void*)(offset * sizeof(GLuint)));
 	}
 
 	void ArrayBuffer::VertexAttribDivisor(GLuint index, GLuint divisor)

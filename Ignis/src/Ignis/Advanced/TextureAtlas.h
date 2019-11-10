@@ -16,5 +16,8 @@ namespace ignis
 
 		const GLuint GetRows() const { return m_rows; }
 		const GLuint GetColumns() const { return m_columns; }
+
+		const float GetFrameWidth() const;
+		const float GetFrameHeight() const;
 	};
 }

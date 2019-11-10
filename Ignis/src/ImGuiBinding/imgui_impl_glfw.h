@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 
 #define GLFW_INCLUDE_NONE 
 #include <glfw/glfw3.h>
