@@ -165,6 +165,7 @@
     <ClInclude Include="src\Tile\Tilemap.h">
       <Filter>Tile</Filter>
     </ClInclude>
+    <ClInclude Include="src\Primitives\Primitives.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -237,5 +238,6 @@
       <Filter>Tile</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Primitives\Primitives.cpp" />
   </ItemGroup>
 </Project>

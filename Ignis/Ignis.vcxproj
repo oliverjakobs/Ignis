@@ -129,6 +129,7 @@
     <ClInclude Include="src\Obelisk\Range.h" />
     <ClInclude Include="src\Obelisk\Singelton.h" />
     <ClInclude Include="src\Obelisk\Timer.h" />
+    <ClInclude Include="src\Primitives\Primitives.h" />
     <ClInclude Include="src\Tile\Body.h" />
     <ClInclude Include="src\Tile\Tile.h" />
     <ClInclude Include="src\Tile\TileConfig.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
     <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\Primitives\Primitives.cpp" />
     <ClCompile Include="src\Tile\Body.cpp" />
     <ClCompile Include="src\Tile\Tile.cpp" />
     <ClCompile Include="src\Tile\TileRenderer.cpp" />

@@ -15,6 +15,9 @@
 
 #include "Tile/TileRenderer.h"
 
+#include "Maths/Visibility.h"
+#include "Primitives/Primitives.h"
+
 using namespace ignis;
 
 // #define ENABLE_MOVEMENT
@@ -27,9 +30,6 @@ glm::vec2 SCREEN_CENTER = { WIDTH / 2.0f, HEIGHT / 2.0f };
 
 // mouse input
 glm::vec2 mousePos = SCREEN_CENTER;
-glm::vec2 mouseOffset = glm::vec2();
-
-bool firstMouse = true;
 
 float cameraSpeed = 50.0f;
 float cameraRotation = 180.0f;
@@ -55,8 +55,8 @@ int main()
 	// configure render state
 	RenderState renderState;
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	renderState.SetDepthTest(true);
-	renderState.SetCullFace(true);
+	//renderState.SetDepthTest(true);
+	//renderState.SetCullFace(true);
 	
 	Renderer2D::Init();
 
@@ -94,10 +94,10 @@ int main()
 
 	std::map<unsigned int, TileType> typeMap = 
 	{
-		{ 1, TileType::TILE_SOLID},
-		{ 2, TileType::TILE_SLOPE_LEFT},
-		{ 3, TileType::TILE_SLOPE_RIGHT},
-		{ 4, TileType::TILE_PLATFORM},
+		{ 1, TileType::TILE_SOLID },
+		{ 2, TileType::TILE_SLOPE_LEFT },
+		{ 3, TileType::TILE_SLOPE_RIGHT },
+		{ 4, TileType::TILE_PLATFORM }
 	};
 
 	std::shared_ptr<Texture> tileTexture = std::make_shared<Texture>("res/textures/tiles.png");
@@ -110,7 +110,13 @@ int main()
 	int texColumns = 5;
 
 	TileMap map = TileMap(tiles, mapWidth, mapHeight, tileSize, typeMap);
-	TileRenderer tileRenderer(map.GetTiles(), texRows, texColumns, map.GetTileSize());
+	TileRenderer tileRenderer(map.GetTiles().size());
+
+	tileRenderer.LoadMap(map.GetTiles(), texRows, texColumns, map.GetTileSize());
+
+	auto edges = map.ToEdges();
+
+	Primitives::Init();
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -166,6 +172,24 @@ int main()
 
 		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection(), tileTexture);
 
+		// TODO: Move into compute shader
+		auto vertices = GetVisibilityPolygonPoints(mousePos, edges, 100.0f);
+
+		Primitives::Start(camera.GetViewProjection());
+
+		// Draw each triangle in fan
+		if (!vertices.empty())
+		{
+			for (size_t i = 0; i < vertices.size() - 1; i++)
+			{
+				Primitives::DrawPolygon({ mousePos, vertices[i].pos, vertices[i + 1].pos });
+
+			}
+			Primitives::DrawPolygon({ mousePos, vertices.back().pos, vertices.front().pos });
+		}
+
+		Primitives::Flush();
+
 		//Renderer2D::BeginScene(camera.GetViewProjection());
 
 		//Renderer2D::RenderQuad({ -1.0f, 0.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
@@ -192,6 +216,7 @@ int main()
 		timer.End((float)glfwGetTime());
 	}
 	
+	Primitives::Destroy();
 	ImGuiRenderer::Quit();
 
 	glfwDestroyWindow(window);
@@ -269,14 +294,7 @@ GLFWwindow* Init(const char* title, int width, int height)
 
 	glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xPos, double yPos)
 	{
-		if (firstMouse)
-		{
-			mousePos = glm::vec2((float)xPos, (float)yPos);
-			firstMouse = false;
-		}
-
-		mouseOffset = glm::vec2((float)xPos - mousePos.x, mousePos.y - (float)yPos);
-		mousePos = glm::vec2((float)xPos, (float)yPos);
+		mousePos = { (float)xPos, HEIGHT - (float)yPos };
 	});
 
 	bool debug = true;
