@@ -152,8 +152,8 @@
     <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Primitives\Primitives.cpp" />
-    <ClCompile Include="src\Tile\Math.cpp" />
-    <ClCompile Include="src\Tile\Math.h" />
+    <ClCompile Include="src\Tile\Algorithm.cpp" />
+    <ClCompile Include="src\Tile\Algorithm.h" />
     <ClCompile Include="src\Tile\TileRenderer.cpp" />
     <ClCompile Include="src\Tile\Tilemap.cpp" />
     <ClCompile Include="src\main.cpp" />

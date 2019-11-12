@@ -7,22 +7,48 @@ namespace tile
 	TileMap::TileMap(const std::vector<TileID>& tiles, int width, int height, float tileSize, const TypeMap& typeMap)
 		: m_width(width), m_height(height), m_tileSize(tileSize)
 	{
+		m_width = static_cast<int>(std::ceilf(static_cast<float>(width) / TILE_CHUNK_SIZE));
+		m_height = static_cast<int>(std::ceilf(static_cast<float>(height) / TILE_CHUNK_SIZE));
+
 		// nested loop iterating over the width and height of the map
-		for (size_t i = 0; i < m_height; i++)
+		for (size_t chunk_y = 0; chunk_y < m_height; chunk_y++)
 		{
-			for (size_t j = 0; j < m_width; j++)
+			for (size_t chunk_x = 0; chunk_x < m_width; chunk_x++)
 			{
-				Tile tile;
-				tile.Position = glm::vec2(j, m_height - (i + 1)) * m_tileSize;
-				tile.ID = tiles.at(i * m_width + j);
+				Chunk chunk;
+				chunk.Position = glm::vec2(chunk_x, chunk_y);
 
-				// Get the type for the id;
-				if (typeMap.find(tile.ID) != typeMap.end())
-					tile.Type = typeMap.at(tile.ID);
-				else
-					tile.Type = TileType::TILE_EMPTY;
+				// Loading tiles into the chunks
+				for (size_t tile_y = 0; tile_y < TILE_CHUNK_SIZE; tile_y++)
+				{
+					for (size_t tile_x = 0; tile_x < TILE_CHUNK_SIZE; tile_x++)
+					{
+						Tile tile;
+						tile.Position = glm::vec2(tile_x, tile_y) * m_tileSize;
 
-				m_tiles.push_back(tile);
+						size_t index_x = (tile_x + chunk_x * TILE_CHUNK_SIZE);
+						size_t index_y = (tile_y + chunk_y * TILE_CHUNK_SIZE);
+
+						size_t index = (height - (index_y + 1)) * width + index_x;
+
+						if (index >= tiles.size())
+							break;
+
+						OBELISK_TRACE("%d, %d", index_x, index_y);
+
+						tile.ID = tiles.at(index);
+						
+						// Get the type for the id;
+						if (typeMap.find(tile.ID) != typeMap.end())
+							tile.Type = typeMap.at(tile.ID);
+						else
+							tile.Type = TileType::TILE_EMPTY;
+
+						chunk.Tiles.push_back(tile);
+					}
+				}
+
+				m_chunks.push_back(chunk);
 			}
 		}
 	}
@@ -80,11 +106,6 @@ namespace tile
 	const Tile& TileMap::operator[](size_t index) const
 	{
 		return m_tiles[index];
-	}
-
-	std::vector<Tile> TileMap::GetTiles() const
-	{
-		return m_tiles;
 	}
 
 	std::vector<Line> TileMap::ToEdges() const

@@ -1,10 +1,18 @@
 #pragma once
 
 #include "Tile.h"
-#include "Math.h"
+#include "Algorithm.h"
 
 namespace tile
 {
+	struct Chunk
+	{
+		glm::vec2 Position;
+		std::vector<Tile> Tiles;
+
+		glm::vec2 GetOffset(float tilesize) const { return Position * (float)TILE_CHUNK_SIZE * tilesize; }
+	};
+
 	class TileMap
 	{
 	private:
@@ -15,6 +23,7 @@ namespace tile
 		float m_tileSize;
 
 		std::vector<Tile> m_tiles;
+		std::vector<Chunk> m_chunks;
 
 	public:
 		TileMap(const std::vector<TileID>& tiles, int width, int height, float tileSize, const TypeMap& typeMap);
@@ -24,6 +33,9 @@ namespace tile
 		const int GetHeight() const { return m_height; }
 		const float GetTileSize() const { return m_tileSize; }
 		const glm::vec2 GetDimension() const { return glm::vec2(m_width, m_height); }
+
+		std::vector<Tile> GetTiles() const { return m_tiles; }
+		std::vector<Chunk> GetChunks() const { return m_chunks; }
 
 		// calculate map coords from world coords
 		glm::ivec2 GetTilePos(float x, float y) const;
@@ -42,7 +54,6 @@ namespace tile
 		Tile& operator[](size_t index);
 		const Tile& operator[](size_t index) const;
 
-		std::vector<Tile> GetTiles() const;
 		std::vector<Line> ToEdges() const;
 	};
 }

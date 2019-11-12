@@ -9,3 +9,5 @@
 
 // 
 #define TILE_SLOPE_GRIP 100.0f
+
+#define TILE_CHUNK_SIZE 16

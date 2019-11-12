@@ -218,8 +218,8 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Primitives\Primitives.cpp" />
-    <ClCompile Include="src\Tile\Math.h" />
-    <ClCompile Include="src\Tile\Math.cpp" />
+    <ClCompile Include="src\Tile\Algorithm.h" />
+    <ClCompile Include="src\Tile\Algorithm.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\visibility.comp" />

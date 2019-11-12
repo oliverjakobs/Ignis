@@ -18,10 +18,11 @@ namespace tile
 		std::shared_ptr<ignis::Shader> m_shader;
 
 		size_t m_instanceCount;
+		float m_tileSize;
 	public:
-		TileRenderer(size_t tiles);
+		TileRenderer(size_t chunks, int rows, int columns, float tileSize);
 
-		void LoadMap(const std::vector<Tile>& tiles, int rows, int columns, float tileSize);
+		void LoadChunk(const Chunk& chunk, int index);
 
 		void RenderMap(const glm::vec3& offset, const glm::mat4& viewProjection, const std::shared_ptr<ignis::Texture>& texture);
 	};
