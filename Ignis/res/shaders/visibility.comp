@@ -1,0 +1,19 @@
+#version 430
+
+layout (local_size_x = 1) in;
+
+layout (rgba32f, binding = 0) uniform imageBuffer buffer_rays;
+
+uniform vec2 u_MousePos;
+
+void main () 
+{
+	// loading 
+	//vec4 edge = imageLoad(buffer_edges, int(gl_GlobalInvocationID.x));
+
+	vec4 ray = vec4(u_MousePos, 0.0, 0.0);
+	
+	
+	// storing
+	imageStore(buffer_rays, int(gl_GlobalInvocationID.x), ray);
+}

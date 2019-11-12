@@ -15,12 +15,10 @@
 
 #include "Tile/TileRenderer.h"
 
-#include "Maths/Visibility.h"
 #include "Primitives/Primitives.h"
 
 using namespace ignis;
-
-// #define ENABLE_MOVEMENT
+using namespace tile;
 
 // settings
 int WIDTH = 1024;
@@ -55,15 +53,12 @@ int main()
 	// configure render state
 	RenderState renderState;
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//renderState.SetDepthTest(true);
-	//renderState.SetCullFace(true);
 	
 	Renderer2D::Init();
-
-	std::shared_ptr<Texture> texture = std::make_shared<Texture>("res/textures/checkerboard.png");
+	Primitives::Init();
 
 	// load map
-	std::vector<int> tiles =
+	std::vector<TileID> tiles =
 	{
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
@@ -92,7 +87,7 @@ int main()
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
 	};
 
-	std::map<unsigned int, TileType> typeMap = 
+	TypeMap typeMap =
 	{
 		{ 1, TileType::TILE_SOLID },
 		{ 2, TileType::TILE_SLOPE_LEFT },
@@ -116,8 +111,6 @@ int main()
 
 	auto edges = map.ToEdges();
 
-	Primitives::Init();
-
 	while (!glfwWindowShouldClose(window))
 	{
 		timer.Start((float)glfwGetTime());
@@ -126,54 +119,12 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-#ifdef ENABLE_MOVEMENT
-		// camera movement
-		glm::vec3 position = camera.GetPosition();
-		float rotation = camera.GetRotation();
-
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		{
-			position.x -= cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-			position.y -= sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-		}
-		else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		{
-			position.x += cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-			position.y += sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		{
-			position.x += -sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-			position.y += cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-		}
-		else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		{
-			position.x -= -sin(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-			position.y -= cos(glm::radians(rotation)) * cameraSpeed * timer.DeltaTime;
-		}
-
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-			rotation += cameraRotation * timer.DeltaTime;
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-			rotation -= cameraRotation * timer.DeltaTime;
-
-		if (rotation > 180.0f)
-			rotation -= 360.0f;
-		else if (rotation <= -180.0f)
-			rotation += 360.0f;
-
-		camera.SetPosition(position);
-		camera.SetRotation(rotation);
-
-#endif 
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection(), tileTexture);
 
 		// TODO: Move into compute shader
-		auto vertices = GetVisibilityPolygonPoints(mousePos, edges, 100.0f);
+		auto vertices = Visibility(mousePos, edges);
 
 		Primitives::Start(camera.GetViewProjection());
 
@@ -182,22 +133,13 @@ int main()
 		{
 			for (size_t i = 0; i < vertices.size() - 1; i++)
 			{
-				Primitives::DrawPolygon({ mousePos, vertices[i].pos, vertices[i + 1].pos });
+				Primitives::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
 
 			}
-			Primitives::DrawPolygon({ mousePos, vertices.back().pos, vertices.front().pos });
+			Primitives::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
 		}
 
 		Primitives::Flush();
-
-		//Renderer2D::BeginScene(camera.GetViewProjection());
-
-		//Renderer2D::RenderQuad({ -1.0f, 0.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-		//Renderer2D::RenderQuad({ 0.5f, -0.5f, 0.0f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-		//Renderer2D::RenderQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, texture);
-		//Renderer2D::RenderQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, tileTexture);
-
-		//Renderer2D::EndScene();
 
 		// gui
 		// ImGuiRenderer::Begin();

@@ -115,10 +115,6 @@
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h" />
     <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h" />
-    <ClInclude Include="src\Maths\Geometry.h" />
-    <ClInclude Include="src\Maths\Maths.h" />
-    <ClInclude Include="src\Maths\RayCast.h" />
-    <ClInclude Include="src\Maths\Visibility.h" />
     <ClInclude Include="src\Obelisk\Average.h" />
     <ClInclude Include="src\Obelisk\Debugger.h" />
     <ClInclude Include="src\Obelisk\FileUtility.h" />
@@ -130,7 +126,6 @@
     <ClInclude Include="src\Obelisk\Singelton.h" />
     <ClInclude Include="src\Obelisk\Timer.h" />
     <ClInclude Include="src\Primitives\Primitives.h" />
-    <ClInclude Include="src\Tile\Body.h" />
     <ClInclude Include="src\Tile\Tile.h" />
     <ClInclude Include="src\Tile\TileConfig.h" />
     <ClInclude Include="src\Tile\TileRenderer.h" />
@@ -157,8 +152,8 @@
     <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
     <ClCompile Include="src\Primitives\Primitives.cpp" />
-    <ClCompile Include="src\Tile\Body.cpp" />
-    <ClCompile Include="src\Tile\Tile.cpp" />
+    <ClCompile Include="src\Tile\Math.cpp" />
+    <ClCompile Include="src\Tile\Math.h" />
     <ClCompile Include="src\Tile\TileRenderer.cpp" />
     <ClCompile Include="src\Tile\Tilemap.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -173,6 +168,9 @@
     <ProjectReference Include="packages\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\visibility.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

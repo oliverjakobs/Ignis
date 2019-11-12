@@ -108,18 +108,6 @@
     <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h">
       <Filter>ImGuiBinding</Filter>
     </ClInclude>
-    <ClInclude Include="src\Maths\Geometry.h">
-      <Filter>Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Maths\Maths.h">
-      <Filter>Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Maths\RayCast.h">
-      <Filter>Maths</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Maths\Visibility.h">
-      <Filter>Maths</Filter>
-    </ClInclude>
     <ClInclude Include="src\Obelisk\Average.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
@@ -149,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile\Body.h">
-      <Filter>Tile</Filter>
     </ClInclude>
     <ClInclude Include="src\Tile\Tile.h">
       <Filter>Tile</Filter>
@@ -225,12 +210,6 @@
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp">
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tile\Body.cpp">
-      <Filter>Tile</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Tile\Tile.cpp">
-      <Filter>Tile</Filter>
-    </ClCompile>
     <ClCompile Include="src\Tile\TileRenderer.cpp">
       <Filter>Tile</Filter>
     </ClCompile>
@@ -239,5 +218,10 @@
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Primitives\Primitives.cpp" />
+    <ClCompile Include="src\Tile\Math.h" />
+    <ClCompile Include="src\Tile\Math.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\visibility.comp" />
   </ItemGroup>
 </Project>
