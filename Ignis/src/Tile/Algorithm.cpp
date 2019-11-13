@@ -110,6 +110,7 @@ namespace tile
 		unsigned int eastIndex = 2;
 		unsigned int westIndex = 3;
 
+		// TODO: fist and last tiles detection and border outside of this function
 		std::vector<Line> edges;
 		edges.push_back(Line(0.0f, 0.0f, width * tileSize, 0.0f));
 		edges.push_back(Line(width * tileSize, 0.0f, width * tileSize, height * tileSize));

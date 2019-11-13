@@ -124,20 +124,6 @@ int main()
 
 		Primitives::Start(camera.GetViewProjection());
 
-		//for (auto& tile : chunk.Tiles)
-		//{
-		//	if (tile.Type == TileType::TILE_SOLID)
-		//		Primitives::DrawRect(map.GetChunkOffset(chunk) + tile.Position, glm::vec2(map.GetTileSize()));
-		//}
-
-		//for (auto& edge : edges)
-		//{
-		//	Primitives::DrawLine(edge.Start, edge.End);
-		//}
-
-		//auto& activeChunk = map.at(map.GetIndex(mousePos));
-		//Primitives::DrawRect(activeChunk.Position * static_cast<float>(chunkSize) * tileSize, glm::vec2(chunkSize * tileSize));
-
 		//// TODO: Move into compute shader
 		auto vertices = Visibility(mousePos, edges);
 
