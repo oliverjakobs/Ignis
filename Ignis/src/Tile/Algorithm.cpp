@@ -193,7 +193,7 @@ namespace tile
 						{
 							// western neighbour does not have a northern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize));
+							edges.push_back(Line(x* tileSize, (y + 1)* tileSize, x* tileSize + tileSize, (y + 1)* tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[northIndex] = edgeID;
@@ -216,7 +216,7 @@ namespace tile
 						{
 							// western neighbour does not have a southern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, (y + 1) * tileSize, x * tileSize + tileSize, (y + 1) * tileSize));
+							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[southIndex] = edgeID;
