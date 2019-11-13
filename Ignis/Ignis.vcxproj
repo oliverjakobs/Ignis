@@ -127,7 +127,6 @@
     <ClInclude Include="src\Obelisk\Timer.h" />
     <ClInclude Include="src\Primitives\Primitives.h" />
     <ClInclude Include="src\Tile\Tile.h" />
-    <ClInclude Include="src\Tile\TileConfig.h" />
     <ClInclude Include="src\Tile\TileRenderer.h" />
     <ClInclude Include="src\Tile\Tilemap.h" />
   </ItemGroup>

@@ -2,16 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
-#include <glm/gtc/random.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp> 
-
 #include "Ignis/Advanced/ComputeShader.h"
 
 #include "Obelisk/Obelisk.h"
 #include "ImGuiBinding/ImGuiRenderer.h"
-
-#include "Ignis/Camera/FpsCamera.h"
 
 #include "Tile/TileRenderer.h"
 
@@ -57,8 +51,8 @@ int main()
 	Renderer2D::Init();
 	Primitives::Init();
 
-	// load map
-	std::vector<TileID> tiles =
+	// need to be loaded from file
+	std::vector<TileID> tileIDs =
 	{
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
@@ -95,26 +89,20 @@ int main()
 		{ 4, TileType::TILE_PLATFORM }
 	};
 
-	std::shared_ptr<Texture> tileTexture = std::make_shared<Texture>("res/textures/tiles.png");
-
 	int mapWidth = 32;
 	int mapHeight = 25;
 	float tileSize = 32.0f;
+	size_t chunkSize = 16;
 
 	int texRows = 1;
 	int texColumns = 5;
 
-	TileMap map = TileMap(tiles, mapWidth, mapHeight, tileSize, typeMap);
-	TileRenderer tileRenderer(4, texRows, texColumns, map.GetTileSize());
+	// load map
+	TileMap map = TileMap(tileIDs, mapWidth, mapHeight, tileSize, chunkSize, typeMap);
+	TileRenderer tileRenderer(map, std::make_shared<Texture>("res/textures/tiles.png"), texRows, texColumns);
 
-	//tileRenderer.LoadMap(map.GetTiles());
-	int i = 0;
-	for (auto& chunk : map.GetChunks())
-	{
-		tileRenderer.LoadChunk(chunk, i++);
-	}
-
-	auto edges = map.ToEdges();
+	auto edges = GetEdges(map[0].Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize());
+	auto tiles = GetTiles(map);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -126,12 +114,26 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection(), tileTexture);
+		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection());
+
+		Primitives::Start(camera.GetViewProjection());
+
+		//for (auto& tile : tiles)
+		//{
+		//	if (tile.Type == TileType::TILE_SOLID)
+		//		Primitives::DrawRect(tile.Position, glm::vec2(map.GetTileSize()));
+		//}
+
+		for (auto& edge : edges)
+		{
+			Primitives::DrawLine(edge.Start, edge.End);
+		}
+
+		//auto& activeChunk = map.at(map.GetIndex(mousePos));
+		//Primitives::DrawRect(activeChunk.Position * static_cast<float>(chunkSize) * tileSize, glm::vec2(chunkSize * tileSize));
 
 		//// TODO: Move into compute shader
 		//auto vertices = Visibility(mousePos, edges);
-
-		//Primitives::Start(camera.GetViewProjection());
 
 		//// Draw each triangle in fan
 		//if (!vertices.empty())
@@ -144,7 +146,7 @@ int main()
 		//	Primitives::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
 		//}
 
-		//Primitives::Flush();
+		Primitives::Flush();
 
 		// gui
 		// ImGuiRenderer::Begin();

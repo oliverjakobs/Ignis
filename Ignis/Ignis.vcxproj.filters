@@ -141,9 +141,6 @@
     <ClInclude Include="src\Tile\Tile.h">
       <Filter>Tile</Filter>
     </ClInclude>
-    <ClInclude Include="src\Tile\TileConfig.h">
-      <Filter>Tile</Filter>
-    </ClInclude>
     <ClInclude Include="src\Tile\TileRenderer.h">
       <Filter>Tile</Filter>
     </ClInclude>
