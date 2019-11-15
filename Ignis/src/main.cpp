@@ -1,15 +1,12 @@
 ﻿#include "Ignis/Ignis.h"
+#include "Ignis/Advanced/ComputeShader.h"
 
 #include <GLFW/glfw3.h>
-
-#include "Ignis/Advanced/ComputeShader.h"
 
 #include "Obelisk/Obelisk.h"
 #include "ImGuiBinding/ImGuiRenderer.h"
 
 #include "Tile/TileRenderer.h"
-
-#include "Primitives/Primitives.h"
 
 using namespace ignis;
 using namespace tile;
@@ -48,8 +45,8 @@ int main()
 	RenderState renderState;
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	Renderer2D::Init();
-	Primitives::Init();
+	Renderer2D::Init(std::make_shared<Shader>("res/shaders/renderer2D.vert", "res/shaders/renderer2D.frag"));
+	Primitives2D::Init(std::make_shared<Shader>("res/shaders/lines.vert", "res/shaders/lines.frag"));
 
 	// need to be loaded from file
 	std::vector<TileID> tileIDs =
@@ -101,14 +98,29 @@ int main()
 	TileMap map = TileMap(tileIDs, mapWidth, mapHeight, tileSize, chunkSize, typeMap);
 	TileRenderer tileRenderer(map, std::make_shared<Texture>("res/textures/tiles.png"), texRows, texColumns);
 
+	OBELISK_CHRONO();
+
 	auto tiles = GetTiles(map);
+
+	OBELISK_CHRONO_TRACE("Get Tiles: %fms");
+	OBELISK_CHRONO_RESET();
 
 	std::sort(tiles.begin(), tiles.end(), [&](const auto& t1, const auto& t2)
 	{
 		return t1.Position.y * map.GetWidth() + t1.Position.x < t2.Position.y * map.GetWidth() + t2.Position.x;
 	});
 
+	OBELISK_CHRONO_TRACE("Sort Tiles: %fms");
+	OBELISK_CHRONO_RESET();
+
 	auto edges = GetEdges(tiles, map.GetWidth(), map.GetHeight(), map.GetTileSize());
+
+	OBELISK_CHRONO_TRACE("Get Edges: %fms");
+	OBELISK_CHRONO_RESET();
+
+	auto test = Visibility(mousePos, edges);
+
+	OBELISK_CHRONO_TRACE("Visibility: %fms");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -122,7 +134,7 @@ int main()
 
 		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection());
 
-		Primitives::Start(camera.GetViewProjection());
+		Primitives2D::Start(camera.GetViewProjection());
 
 		//// TODO: Move into compute shader
 		auto vertices = Visibility(mousePos, edges);
@@ -132,13 +144,13 @@ int main()
 		{
 			for (size_t i = 0; i < vertices.size() - 1; i++)
 			{
-				Primitives::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
+				Primitives2D::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
 
 			}
-			Primitives::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
+			Primitives2D::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
 		}
 
-		Primitives::Flush();
+		Primitives2D::Flush();
 
 		// gui
 		// ImGuiRenderer::Begin();
@@ -157,7 +169,7 @@ int main()
 		timer.End((float)glfwGetTime());
 	}
 	
-	Primitives::Destroy();
+	Primitives2D::Destroy();
 	ImGuiRenderer::Quit();
 
 	glfwDestroyWindow(window);

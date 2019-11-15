@@ -25,9 +25,6 @@
     <Filter Include="ImGuiBinding">
       <UniqueIdentifier>{1B46C02E-07A9-4FD3-B02E-88899C701B56}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Maths">
-      <UniqueIdentifier>{028BA70D-6E9F-CFBE-3721-731EA3F4CBEF}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Obelisk">
       <UniqueIdentifier>{4E9CF2B0-BA7B-714C-C393-FC222FF2D7AD}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,9 @@
     <ClInclude Include="src\Ignis\Renderer\FontRenderer.h">
       <Filter>Ignis\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Ignis\Renderer\Primitives.h">
+      <Filter>Ignis\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Ignis\Renderer\RenderState.h">
       <Filter>Ignis\Renderer</Filter>
     </ClInclude>
@@ -138,6 +138,9 @@
     <ClInclude Include="src\Obelisk\Timer.h">
       <Filter>Obelisk</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tile\Algorithm.h">
+      <Filter>Tile</Filter>
+    </ClInclude>
     <ClInclude Include="src\Tile\Tile.h">
       <Filter>Tile</Filter>
     </ClInclude>
@@ -147,7 +150,6 @@
     <ClInclude Include="src\Tile\Tilemap.h">
       <Filter>Tile</Filter>
     </ClInclude>
-    <ClInclude Include="src\Primitives\Primitives.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
@@ -192,6 +194,9 @@
     <ClCompile Include="src\Ignis\Renderer\FontRenderer.cpp">
       <Filter>Ignis\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Ignis\Renderer\Primitives.cpp">
+      <Filter>Ignis\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Ignis\Renderer\RenderState.cpp">
       <Filter>Ignis\Renderer</Filter>
     </ClCompile>
@@ -207,6 +212,9 @@
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp">
       <Filter>ImGuiBinding</Filter>
     </ClCompile>
+    <ClCompile Include="src\Tile\Algorithm.cpp">
+      <Filter>Tile</Filter>
+    </ClCompile>
     <ClCompile Include="src\Tile\TileRenderer.cpp">
       <Filter>Tile</Filter>
     </ClCompile>
@@ -214,11 +222,5 @@
       <Filter>Tile</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Primitives\Primitives.cpp" />
-    <ClCompile Include="src\Tile\Algorithm.h" />
-    <ClCompile Include="src\Tile\Algorithm.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\visibility.comp" />
   </ItemGroup>
 </Project>

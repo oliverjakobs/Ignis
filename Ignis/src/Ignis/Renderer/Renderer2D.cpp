@@ -4,18 +4,18 @@
 
 namespace ignis
 {
-	struct Renderer2DStorage
+	struct RendererStorage
 	{
 		std::shared_ptr<VertexArray> VertexArray;
 		std::shared_ptr<Texture> Blank;
 		std::shared_ptr<Shader> Shader;
 	};
 
-	static Renderer2DStorage* s_renderData;
+	static RendererStorage* s_renderData;
 
-	void Renderer2D::Init()
+	void Renderer2D::Init(const std::shared_ptr<Shader>& shader)
 	{
-		s_renderData = new Renderer2DStorage();
+		s_renderData = new RendererStorage();
 
 		s_renderData->VertexArray = std::make_shared<VertexArray>();
 
@@ -38,7 +38,7 @@ namespace ignis
 		GLuint blankTextureData = 0xffffffff;
 		s_renderData->Blank = std::make_shared<Texture>(1, 1, &blankTextureData);
 
-		s_renderData->Shader = std::make_shared<Shader>("res/shaders/renderer2D.vert", "res/shaders/renderer2D.frag");
+		s_renderData->Shader = shader;
 		s_renderData->Shader->Use();
 		s_renderData->Shader->SetUniform1i("u_Texture", 0);
 	}
@@ -48,13 +48,13 @@ namespace ignis
 		delete s_renderData;
 	}
 
-	void Renderer2D::BeginScene(const glm::mat4& viewProjection)
+	void Renderer2D::Start(const glm::mat4& viewProjection)
 	{
 		s_renderData->Shader->Use();
 		s_renderData->Shader->SetUniformMat4("u_ViewProjection", viewProjection);
 	}
 
-	void Renderer2D::EndScene()
+	void Renderer2D::Flush()
 	{
 	}
 
