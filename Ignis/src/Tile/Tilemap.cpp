@@ -5,16 +5,16 @@ namespace tile
 	TileMap::TileMap(const std::vector<TileID>& tiles, int width, int height, float tileSize, size_t chunksize, const TypeMap& typeMap)
 		: m_width(width), m_height(height), m_tileSize(tileSize), m_chunkSize(chunksize)
 	{
-		size_t chunk_w = static_cast<int>(std::ceilf(static_cast<float>(width) / m_chunkSize));
-		size_t chunk_h = static_cast<int>(std::ceilf(static_cast<float>(height) / m_chunkSize));
+		m_chunkCountX = static_cast<int>(std::ceilf(static_cast<float>(width) / m_chunkSize));
+		m_chunkCountY = static_cast<int>(std::ceilf(static_cast<float>(height) / m_chunkSize));
 
 		// nested loop iterating over the width and height of the map
-		for (size_t chunk_y = 0; chunk_y < chunk_h; chunk_y++)
+		for (size_t chunk_y = 0; chunk_y < m_chunkCountY; chunk_y++)
 		{
-			for (size_t chunk_x = 0; chunk_x < chunk_w; chunk_x++)
+			for (size_t chunk_x = 0; chunk_x < m_chunkCountX; chunk_x++)
 			{
 				Chunk chunk;
-				chunk.Index = chunk_y * chunk_h + chunk_x;
+				chunk.Index = chunk_y * m_chunkCountX + chunk_x;
 				chunk.Position = glm::vec2(chunk_x, chunk_y);
 
 				// Loading tiles into the chunks

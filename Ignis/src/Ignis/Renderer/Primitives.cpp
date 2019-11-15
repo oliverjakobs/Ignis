@@ -4,7 +4,7 @@ namespace ignis
 {
 	static const int MAX_LINES = 2 * 1024;
 
-	struct RendererStorage
+	struct Primitives2DStorage
 	{
 		std::shared_ptr<VertexArray> VertexArray;
 		std::shared_ptr<Shader> Shader;
@@ -12,11 +12,11 @@ namespace ignis
 		std::vector<glm::vec2> Vertices;
 	};
 
-	static RendererStorage* s_renderData;
+	static Primitives2DStorage* s_renderData;
 
 	void Primitives2D::Init(const std::shared_ptr<Shader>& shader)
 	{
-		s_renderData = new RendererStorage();
+		s_renderData = new Primitives2DStorage();
 
 		s_renderData->VertexArray = std::make_shared<VertexArray>();
 

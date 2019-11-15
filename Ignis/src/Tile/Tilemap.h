@@ -14,6 +14,9 @@ namespace tile
 		float m_tileSize;
 		size_t m_chunkSize;
 
+		size_t m_chunkCountX;
+		size_t m_chunkCountY;
+
 		std::vector<Chunk> m_chunks;
 
 	public:
@@ -22,10 +25,13 @@ namespace tile
 
 		const int GetWidth() const { return m_width; }
 		const int GetHeight() const { return m_height; }
-		const float GetTileSize() const { return m_tileSize; }
-
-		const size_t GetChunkSize() const { return m_chunkSize; }
 		const glm::vec2 GetDimension() const { return glm::vec2(m_width, m_height); }
+
+		const float GetTileSize() const { return m_tileSize; }
+		const size_t GetChunkSize() const { return m_chunkSize; }
+
+		const size_t GetChunkCountX() const { return m_chunkCountX; }
+		const size_t GetChunkCountY() const { return m_chunkCountY; }
 
 		std::vector<Chunk> GetChunks() const { return m_chunks; }
 

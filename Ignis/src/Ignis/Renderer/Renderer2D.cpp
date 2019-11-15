@@ -4,18 +4,18 @@
 
 namespace ignis
 {
-	struct RendererStorage
+	struct Renderer2DStorage
 	{
 		std::shared_ptr<VertexArray> VertexArray;
 		std::shared_ptr<Texture> Blank;
 		std::shared_ptr<Shader> Shader;
 	};
 
-	static RendererStorage* s_renderData;
+	static Renderer2DStorage* s_renderData;
 
 	void Renderer2D::Init(const std::shared_ptr<Shader>& shader)
 	{
-		s_renderData = new RendererStorage();
+		s_renderData = new Renderer2DStorage();
 
 		s_renderData->VertexArray = std::make_shared<VertexArray>();
 
