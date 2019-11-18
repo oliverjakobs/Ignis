@@ -105,20 +105,12 @@ int main()
 	OBELISK_CHRONO_TRACE("Get Tiles: %fms");
 	OBELISK_CHRONO_RESET();
 
-	std::sort(tiles.begin(), tiles.end(), [&](const auto& t1, const auto& t2)
-	{
-		return t1.Position.y * map.GetWidth() + t1.Position.x < t2.Position.y * map.GetWidth() + t2.Position.x;
-	});
-
-	OBELISK_CHRONO_TRACE("Sort Tiles: %fms");
-	OBELISK_CHRONO_RESET();
-
-	auto edges = GetEdges(tiles, map.GetWidth(), map.GetHeight(), map.GetTileSize());
+	auto edges = GetEdges(map.at(0).Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize());
 
 	OBELISK_CHRONO_TRACE("Get Edges: %fms");
 	OBELISK_CHRONO_RESET();
 
-	auto test = Visibility(mousePos, edges);
+	//auto test = Visibility(mousePos, edges);
 
 	OBELISK_CHRONO_TRACE("Visibility: %fms");
 
@@ -136,16 +128,21 @@ int main()
 
 		Primitives2D::Start(camera.GetViewProjection());
 
-		//// TODO: Move into compute shader
-		auto vertices = Visibility(mousePos, edges);
+		for (auto& edge : edges)
+		{
+			Primitives2D::DrawLine(edge.Start, edge.End);
+		}
 
+		// TODO: Move into compute shader
+		auto vertices = Visibility(mousePos, edges);
+		
 		// Draw each triangle in fan
 		if (!vertices.empty())
 		{
 			for (size_t i = 0; i < vertices.size() - 1; i++)
 			{
 				Primitives2D::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
-
+		
 			}
 			Primitives2D::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
 		}

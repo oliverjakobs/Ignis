@@ -30,16 +30,22 @@ namespace tile
 
 						size_t index = (height - (index_y + 1)) * width + index_x;
 
-						if (index >= tiles.size())
-							break;
+						if (index < tiles.size())
+						{
+							tile.ID = tiles.at(index);
 
-						tile.ID = tiles.at(index);
-						
-						// Get the type for the id;
-						if (typeMap.find(tile.ID) != typeMap.end())
-							tile.Type = typeMap.at(tile.ID);
+							// Get the type for the id;
+							if (typeMap.find(tile.ID) != typeMap.end())
+								tile.Type = typeMap.at(tile.ID);
+							else
+								tile.Type = TileType::TILE_EMPTY;
+
+						}
 						else
+						{
+							tile.ID = 0;
 							tile.Type = TileType::TILE_EMPTY;
+						}
 
 						chunk.Tiles.push_back(tile);
 					}

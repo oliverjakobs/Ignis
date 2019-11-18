@@ -1,5 +1,7 @@
 #include "Algorithm.h"
 
+#include "Obelisk/Debugger.h"
+
 namespace tile
 {
 	std::vector<glm::vec3> Visibility(const glm::vec2& pos, std::vector<Line> edges)
@@ -83,14 +85,21 @@ namespace tile
 	std::vector<Tile> GetTiles(const TileMap& map)
 	{
 		std::vector<Tile> tiles;
-
-		for (auto& chunk : map.GetChunks())
+		//tiles.resize(map.GetChunkCountX() * map.GetChunkSize() + map.GetChunkCountY() * map.GetChunkSize());
+		
+		for (size_t y = 0; y < map.GetChunkSize(); y++)
 		{
-			for (auto& tile : chunk.Tiles)
+			for (size_t chunk_x = 0; chunk_x < map.GetChunkCountX(); chunk_x++)
 			{
-				Tile t = tile;
-				t.Position += map.GetChunkOffset(chunk);
-				tiles.push_back(t);
+				Chunk chunk = map.at(chunk_x);
+
+				glm::vec2 offset = map.GetChunkOffset(chunk);
+				for (size_t x = 0; x < map.GetChunkSize(); x++)
+				{
+					Tile& t = chunk.at(y * map.GetChunkSize() + x);
+					t.Position += offset;
+					tiles.push_back(t);
+				}
 			}
 		}
 
