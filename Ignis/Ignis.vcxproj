@@ -110,6 +110,7 @@
     <ClInclude Include="src\Ignis\Packages\stb_truetype.h" />
     <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h" />
     <ClInclude Include="src\Ignis\Renderer\FontRenderer.h" />
+    <ClInclude Include="src\Ignis\Renderer\Primitives.h" />
     <ClInclude Include="src\Ignis\Renderer\RenderState.h" />
     <ClInclude Include="src\Ignis\Renderer\Renderer2D.h" />
     <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h" />
@@ -125,9 +126,8 @@
     <ClInclude Include="src\Obelisk\Range.h" />
     <ClInclude Include="src\Obelisk\Singelton.h" />
     <ClInclude Include="src\Obelisk\Timer.h" />
-    <ClInclude Include="src\Primitives\Primitives.h" />
+    <ClInclude Include="src\Tile\Algorithm.h" />
     <ClInclude Include="src\Tile\Tile.h" />
-    <ClInclude Include="src\Tile\TileConfig.h" />
     <ClInclude Include="src\Tile\TileRenderer.h" />
     <ClInclude Include="src\Tile\Tilemap.h" />
   </ItemGroup>
@@ -146,14 +146,13 @@
     <ClCompile Include="src\Ignis\Model\Material.cpp" />
     <ClCompile Include="src\Ignis\Model\Mesh.cpp" />
     <ClCompile Include="src\Ignis\Renderer\FontRenderer.cpp" />
+    <ClCompile Include="src\Ignis\Renderer\Primitives.cpp" />
     <ClCompile Include="src\Ignis\Renderer\RenderState.cpp" />
     <ClCompile Include="src\Ignis\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp" />
     <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp" />
     <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp" />
-    <ClCompile Include="src\Primitives\Primitives.cpp" />
-    <ClCompile Include="src\Tile\Math.cpp" />
-    <ClCompile Include="src\Tile\Math.h" />
+    <ClCompile Include="src\Tile\Algorithm.cpp" />
     <ClCompile Include="src\Tile\TileRenderer.cpp" />
     <ClCompile Include="src\Tile\Tilemap.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -168,9 +167,6 @@
     <ProjectReference Include="packages\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\visibility.comp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

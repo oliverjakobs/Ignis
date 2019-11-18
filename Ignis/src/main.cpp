@@ -1,21 +1,12 @@
 ﻿#include "Ignis/Ignis.h"
+#include "Ignis/Advanced/ComputeShader.h"
 
 #include <GLFW/glfw3.h>
-
-#include <glm/gtc/random.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/rotate_vector.hpp> 
-
-#include "Ignis/Advanced/ComputeShader.h"
 
 #include "Obelisk/Obelisk.h"
 #include "ImGuiBinding/ImGuiRenderer.h"
 
-#include "Ignis/Camera/FpsCamera.h"
-
 #include "Tile/TileRenderer.h"
-
-#include "Primitives/Primitives.h"
 
 using namespace ignis;
 using namespace tile;
@@ -54,11 +45,11 @@ int main()
 	RenderState renderState;
 	renderState.SetBlend(true, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	Renderer2D::Init();
-	Primitives::Init();
+	Renderer2D::Init(std::make_shared<Shader>("res/shaders/renderer2D.vert", "res/shaders/renderer2D.frag"));
+	Primitives2D::Init(std::make_shared<Shader>("res/shaders/lines.vert", "res/shaders/lines.frag"));
 
-	// load map
-	std::vector<TileID> tiles =
+	// need to be loaded from file
+	std::vector<TileID> tileIDs =
 	{
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
@@ -95,21 +86,33 @@ int main()
 		{ 4, TileType::TILE_PLATFORM }
 	};
 
-	std::shared_ptr<Texture> tileTexture = std::make_shared<Texture>("res/textures/tiles.png");
-
 	int mapWidth = 32;
 	int mapHeight = 25;
 	float tileSize = 32.0f;
+	size_t chunkSize = 16;
 
 	int texRows = 1;
 	int texColumns = 5;
 
-	TileMap map = TileMap(tiles, mapWidth, mapHeight, tileSize, typeMap);
-	TileRenderer tileRenderer(map.GetTiles().size());
+	// load map
+	TileMap map = TileMap(tileIDs, mapWidth, mapHeight, tileSize, chunkSize, typeMap);
+	TileRenderer tileRenderer(map, std::make_shared<Texture>("res/textures/tiles.png"), texRows, texColumns);
 
-	tileRenderer.LoadMap(map.GetTiles(), texRows, texColumns, map.GetTileSize());
+	OBELISK_CHRONO();
 
-	auto edges = map.ToEdges();
+	auto tiles = GetTiles(map);
+
+	OBELISK_CHRONO_TRACE("Get Tiles: %fms");
+	OBELISK_CHRONO_RESET();
+
+	auto edges = GetEdges(map.at(0).Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize());
+
+	OBELISK_CHRONO_TRACE("Get Edges: %fms");
+	OBELISK_CHRONO_RESET();
+
+	//auto test = Visibility(mousePos, edges);
+
+	OBELISK_CHRONO_TRACE("Visibility: %fms");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -119,27 +122,32 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
-		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection(), tileTexture);
+		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection());
+
+		Primitives2D::Start(camera.GetViewProjection());
+
+		for (auto& edge : edges)
+		{
+			Primitives2D::DrawLine(edge.Start, edge.End);
+		}
 
 		// TODO: Move into compute shader
 		auto vertices = Visibility(mousePos, edges);
-
-		Primitives::Start(camera.GetViewProjection());
-
+		
 		// Draw each triangle in fan
 		if (!vertices.empty())
 		{
 			for (size_t i = 0; i < vertices.size() - 1; i++)
 			{
-				Primitives::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
-
+				Primitives2D::DrawPolygon({ mousePos, {vertices[i].x, vertices[i].y}, {vertices[i + 1].x, vertices[i + 1].y} });
+		
 			}
-			Primitives::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
+			Primitives2D::DrawPolygon({ mousePos, {vertices.back().x, vertices.back().y}, {vertices.front().x, vertices.front().y} });
 		}
 
-		Primitives::Flush();
+		Primitives2D::Flush();
 
 		// gui
 		// ImGuiRenderer::Begin();
@@ -158,7 +166,7 @@ int main()
 		timer.End((float)glfwGetTime());
 	}
 	
-	Primitives::Destroy();
+	Primitives2D::Destroy();
 	ImGuiRenderer::Quit();
 
 	glfwDestroyWindow(window);
