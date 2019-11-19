@@ -45,6 +45,13 @@ namespace tile
 			return lhs;
 		}
 
+		friend Line operator-(Line lhs, const glm::vec2& rhs)
+		{
+			lhs.Start -= rhs;
+			lhs.End -= rhs;
+			return lhs;
+		}
+
 		operator glm::vec4() const { return { Start, End }; }
 	};
 }
