@@ -124,11 +124,11 @@ namespace tile
 			for (size_t y = 0; y < height; y++)
 			{
 				// some convenient indices
-				int32_t i = y * width + x;			// this
-				int32_t n = (y + 1) * width + x;	// northern neighbour
-				int32_t s = (y - 1) * width + x;	// southern neighbour
-				int32_t w = y * width + (x - 1);	// western neighbour
-				int32_t e = y * width + (x + 1);	// eastern neighbour
+				int32_t i = static_cast<int32_t>(y * width + x);		// this
+				int32_t n = static_cast<int32_t>((y + 1) * width + x);	// northern neighbour
+				int32_t s = static_cast<int32_t>((y - 1) * width + x);	// southern neighbour
+				int32_t w = static_cast<int32_t>(y * width + (x - 1));	// western neighbour
+				int32_t e = static_cast<int32_t>(y * width + (x + 1));	// eastern neighbour
 
 				// if this tile is solid, check if it needs edges
 				if (GetTileType(tiles, i) == TileType::TILE_SOLID)
