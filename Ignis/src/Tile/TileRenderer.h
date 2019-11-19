@@ -23,8 +23,6 @@ namespace tile
 	public:
 		TileRenderer(const TileMap& map, const std::shared_ptr<ignis::Texture>& texture, size_t rows, size_t columns);
 
-		void LoadChunk(const Chunk& chunk, const TileMap& map);
-
 		void RenderMap(const glm::vec3& offset, const glm::mat4& viewProjection);
 	};
 }

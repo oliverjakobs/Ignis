@@ -15,5 +15,5 @@ namespace tile
 	TileType GetTileType(const std::vector<Tile>& tiles, int32_t index);
 
 	std::vector<Line> GetEdges(const TileMap& map);
-	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, size_t width, size_t height, float tileSize, const glm::vec2& offset = glm::vec2());
+	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, size_t width, size_t height, float tileSize);
 }

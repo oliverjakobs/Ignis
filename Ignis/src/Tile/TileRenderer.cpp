@@ -7,7 +7,7 @@ namespace tile
 	TileRenderer::TileRenderer(const TileMap& map, const std::shared_ptr<ignis::Texture>& texture, size_t rows, size_t columns)
 		: m_texture(texture)
 	{
-		m_tileCount = map.GetChunks().size() * map.GetChunkSize() * map.GetChunkSize();
+		m_tileCount = map.GetTiles().size();
 
 		float vertices[] =
 		{
@@ -45,27 +45,18 @@ namespace tile
 		// element buffer
 		m_vertexArray.LoadElementBuffer({ 0, 1, 2, 2, 3, 0 }, GL_STATIC_DRAW);
 
-		for (auto& chunk : map.GetChunks())
-		{
-			LoadChunk(chunk, map);
-		}
-	}
-
-	void TileRenderer::LoadChunk(const Chunk& chunk, const TileMap& map)
-	{
+		// fill the buffer
 		std::vector<glm::vec2> offsets;
 		std::vector<GLuint> frames;
 
-		for (auto& tile : chunk.Tiles)
+		for (auto& tile : map.GetTiles())
 		{
-			offsets.push_back(tile.Position + map.GetChunkOffset(chunk));
+			offsets.push_back(tile.Position);
 			frames.push_back(tile.ID);
 		}
 
-		size_t bufferOffset = chunk.Index * (map.GetChunkSize() * map.GetChunkSize());
-
-		m_bufferOffsets->BufferSubData(sizeof(glm::vec2) * bufferOffset, sizeof(glm::vec2) * offsets.size(), &offsets[0]);
-		m_bufferFrames->BufferSubData(sizeof(GLuint) * bufferOffset, sizeof(GLuint) * frames.size(), &frames[0]);
+		m_bufferOffsets->BufferSubData(0, sizeof(glm::vec2) * m_tileCount, &offsets[0]);
+		m_bufferFrames->BufferSubData(0, sizeof(GLuint) * m_tileCount, &frames[0]);
 	}
 
 	void TileRenderer::RenderMap(const glm::vec3& offset, const glm::mat4& viewProjection)

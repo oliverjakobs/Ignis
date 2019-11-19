@@ -92,13 +92,7 @@ namespace tile
 
 	std::vector<Line> GetEdges(const TileMap& map)
 	{
-		std::vector<Line> edges;
-
-		for (auto& chunk : map.GetChunks())
-		{
-			auto e = GetEdges(chunk.Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize(), map.GetChunkOffset(chunk));
-			edges.insert(edges.end(), e.begin(), e.end());
-		}
+		std::vector<Line> edges = GetEdges(map.GetTiles(), map.GetWidth(), map.GetHeight(), map.GetTileSize());
 
 		edges.push_back(Line(0.0f, 0.0f, map.GetWidth() * map.GetTileSize(), 0.0f));
 		edges.push_back(Line(map.GetWidth() * map.GetTileSize(), 0.0f, map.GetWidth() * map.GetTileSize(), map.GetHeight() * map.GetTileSize()));
@@ -108,7 +102,7 @@ namespace tile
 		return edges;
 	}
 
-	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, size_t width, size_t height, float tileSize, const glm::vec2& offset)
+	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, size_t width, size_t height, float tileSize)
 	{
 		struct EdgeData
 		{
@@ -154,7 +148,7 @@ namespace tile
 						{
 							// southern neighbour does not have a western edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize, y * tileSize + tileSize) + offset);
+							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize, y * tileSize + tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[westIndex] = edgeID;
@@ -177,7 +171,7 @@ namespace tile
 						{
 							// southern neighbour does not have a eastern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line((x + 1) * tileSize, y * tileSize, (x + 1) * tileSize, y * tileSize + tileSize) + offset);
+							edges.push_back(Line((x + 1) * tileSize, y * tileSize, (x + 1) * tileSize, y * tileSize + tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[eastIndex] = edgeID;
@@ -200,7 +194,7 @@ namespace tile
 						{
 							// western neighbour does not have a northern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, (y + 1) * tileSize, x * tileSize + tileSize, (y + 1) * tileSize) + offset);
+							edges.push_back(Line(x * tileSize, (y + 1) * tileSize, x * tileSize + tileSize, (y + 1) * tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[northIndex] = edgeID;
@@ -223,7 +217,7 @@ namespace tile
 						{
 							// western neighbour does not have a southern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize) + offset);
+							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize));
 
 							// update tile information with edge information
 							edgeData[i].edgeID[southIndex] = edgeID;

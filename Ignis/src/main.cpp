@@ -98,7 +98,16 @@ int main()
 	TileMap map = TileMap(tileIDs, mapWidth, mapHeight, tileSize, chunkSize, typeMap);
 	TileRenderer tileRenderer(map, std::make_shared<Texture>("res/textures/tiles.png"), texRows, texColumns);
 
-	//auto test = Visibility(mousePos, edges);
+	OBELISK_CHRONO();
+
+	auto edges = GetEdges(map);
+	
+	OBELISK_CHRONO_TRACE("Get edges: %fms");
+	OBELISK_CHRONO_RESET();
+
+	auto vertices = Visibility(mousePos, edges);
+
+	OBELISK_CHRONO_TRACE("Visibility: %fms");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -112,7 +121,7 @@ int main()
 
 		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection());
 
-		auto edges = GetEdges(map);
+		edges = GetEdges(map);
 
 		Primitives2D::Start(camera.GetViewProjection());
 
@@ -122,7 +131,7 @@ int main()
 		}
 
 		// TODO: Move into compute shader
-		auto vertices = Visibility(mousePos, edges);
+		vertices = Visibility(mousePos, edges);
 		
 		// Draw each triangle in fan
 		if (!vertices.empty())
