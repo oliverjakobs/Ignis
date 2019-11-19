@@ -29,19 +29,6 @@ namespace tile
 		TileType Type;
 	};
 
-	struct Chunk
-	{
-		size_t Index;
-		glm::vec2 Position;
-		std::vector<Tile> Tiles;
-
-		// access tile from an index
-		Tile& at(size_t index) { return Tiles.at(index); }
-		const Tile& at(size_t index) const { return Tiles.at(index); }
-		Tile& operator[](size_t index) { return Tiles[index]; }
-		const Tile& operator[](size_t index) const { return Tiles[index]; }
-	};
-
 	struct Line
 	{
 		glm::vec2 Start;
@@ -50,6 +37,13 @@ namespace tile
 		Line() : Start(glm::vec2()), End(glm::vec2()) {}
 		Line(const glm::vec2& s, const glm::vec2& e) : Start(s), End(e) {}
 		Line(float sx, float sy, float ex, float ey) : Start(glm::vec2(sx, sy)), End(glm::vec2(ex, ey)) {}
+
+		friend Line operator+(Line lhs, const glm::vec2& rhs) 
+		{
+			lhs.Start += rhs; 
+			lhs.End += rhs; 
+			return lhs;
+		}
 
 		operator glm::vec4() const { return { Start, End }; }
 	};

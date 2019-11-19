@@ -127,6 +127,7 @@
     <ClInclude Include="src\Obelisk\Singelton.h" />
     <ClInclude Include="src\Obelisk\Timer.h" />
     <ClInclude Include="src\Tile\Algorithm.h" />
+    <ClInclude Include="src\Tile\Chunk.h" />
     <ClInclude Include="src\Tile\Tile.h" />
     <ClInclude Include="src\Tile\TileRenderer.h" />
     <ClInclude Include="src\Tile\Tilemap.h" />

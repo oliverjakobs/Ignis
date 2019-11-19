@@ -82,31 +82,33 @@ namespace tile
 		return intersections;
 	}
 
-	std::vector<Tile> GetTiles(const TileMap& map)
+	TileType GetTileType(const std::vector<Tile>& tiles, int32_t index)
 	{
-		std::vector<Tile> tiles;
-		//tiles.resize(map.GetChunkCountX() * map.GetChunkSize() + map.GetChunkCountY() * map.GetChunkSize());
-		
-		for (size_t y = 0; y < map.GetChunkSize(); y++)
-		{
-			for (size_t chunk_x = 0; chunk_x < map.GetChunkCountX(); chunk_x++)
-			{
-				Chunk chunk = map.at(chunk_x);
+		if (index < 0 || index >= tiles.size())
+			return TileType::TILE_EMPTY;
 
-				glm::vec2 offset = map.GetChunkOffset(chunk);
-				for (size_t x = 0; x < map.GetChunkSize(); x++)
-				{
-					Tile& t = chunk.at(y * map.GetChunkSize() + x);
-					t.Position += offset;
-					tiles.push_back(t);
-				}
-			}
-		}
-
-		return tiles;
+		return tiles[index].Type;
 	}
 
-	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, int width, int height, float tileSize)
+	std::vector<Line> GetEdges(const TileMap& map)
+	{
+		std::vector<Line> edges;
+
+		for (auto& chunk : map.GetChunks())
+		{
+			auto e = GetEdges(chunk.Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize(), map.GetChunkOffset(chunk));
+			edges.insert(edges.end(), e.begin(), e.end());
+		}
+
+		edges.push_back(Line(0.0f, 0.0f, map.GetWidth() * map.GetTileSize(), 0.0f));
+		edges.push_back(Line(map.GetWidth() * map.GetTileSize(), 0.0f, map.GetWidth() * map.GetTileSize(), map.GetHeight() * map.GetTileSize()));
+		edges.push_back(Line(map.GetWidth() * map.GetTileSize(), map.GetHeight() * map.GetTileSize(), 0.0f, map.GetHeight() * map.GetTileSize()));
+		edges.push_back(Line(0.0f, map.GetHeight() * map.GetTileSize(), 0.0f, 0.0f));
+
+		return edges;
+	}
+
+	std::vector<Line> GetEdges(const std::vector<Tile>& tiles, size_t width, size_t height, float tileSize, const glm::vec2& offset)
 	{
 		struct EdgeData
 		{
@@ -121,32 +123,27 @@ namespace tile
 
 		// TODO: fist and last tiles detection and border outside of this function
 		std::vector<Line> edges;
-		edges.push_back(Line(0.0f, 0.0f, width * tileSize, 0.0f));
-		edges.push_back(Line(width * tileSize, 0.0f, width * tileSize, height * tileSize));
-		edges.push_back(Line(width * tileSize, height * tileSize, 0.0f, height * tileSize));
-		edges.push_back(Line(0.0f, height * tileSize, 0.0f, 0.0f));
-
 		std::vector<EdgeData> edgeData(tiles.size());
 
 		// iterate through all tiles from bottom left to top right
-		for (int x = 1; x < width - 1; x++)
-			for (int y = 1; y < height - 1; y++)
+		for (size_t x = 0; x < width; x++)
+			for (size_t y = 0; y < height; y++)
 			{
 				// some convenient indices
-				int i = y * width + x;			// this
-				int n = (y + 1) * width + x;	// northern neighbour
-				int s = (y - 1) * width + x;	// southern neighbour
-				int w = y * width + (x - 1);	// western neighbour
-				int e = y * width + (x + 1);	// eastern neighbour
+				int32_t i = y * width + x;			// this
+				int32_t n = (y + 1) * width + x;	// northern neighbour
+				int32_t s = (y - 1) * width + x;	// southern neighbour
+				int32_t w = y * width + (x - 1);	// western neighbour
+				int32_t e = y * width + (x + 1);	// eastern neighbour
 
 				// if this tile is solid, check if it needs edges
-				if (tiles[i].Type == TileType::TILE_SOLID)
+				if (GetTileType(tiles, i) == TileType::TILE_SOLID)
 				{
 					// if there is no western neighbour, it needs a western edge
-					if (tiles[w].Type != TileType::TILE_SOLID)
+					if (GetTileType(tiles, w) != TileType::TILE_SOLID)
 					{
 						// either extend it from its southern neighbour (if they have one) or start a new one
-						if (edgeData[s].edgeExist[westIndex])
+						if (s > 0 && edgeData[s].edgeExist[westIndex])
 						{
 							// southern neighbour has a western edge, so extend it upwards
 							edges[edgeData[s].edgeID[westIndex]].End.y += tileSize;
@@ -157,7 +154,7 @@ namespace tile
 						{
 							// southern neighbour does not have a western edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize, y * tileSize + tileSize));
+							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize, y * tileSize + tileSize) + offset);
 
 							// update tile information with edge information
 							edgeData[i].edgeID[westIndex] = edgeID;
@@ -166,10 +163,10 @@ namespace tile
 					}
 
 					// if there is no eastern neighbour, it needs a eastern edge
-					if (tiles[e].Type != TileType::TILE_SOLID)
+					if (GetTileType(tiles, e) != TileType::TILE_SOLID)
 					{
 						// either extend it from its southern neighbour (if they have one) or start a new one
-						if (edgeData[s].edgeExist[eastIndex])
+						if (s > 0 && edgeData[s].edgeExist[eastIndex])
 						{
 							// southern neighbour has a eastern edge, so extend it downwards
 							edges[edgeData[s].edgeID[eastIndex]].End.y += tileSize;
@@ -180,7 +177,7 @@ namespace tile
 						{
 							// southern neighbour does not have a eastern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line((x + 1) * tileSize, y * tileSize, (x + 1) * tileSize, y * tileSize + tileSize));
+							edges.push_back(Line((x + 1) * tileSize, y * tileSize, (x + 1) * tileSize, y * tileSize + tileSize) + offset);
 
 							// update tile information with edge information
 							edgeData[i].edgeID[eastIndex] = edgeID;
@@ -189,10 +186,10 @@ namespace tile
 					}
 
 					// if there is no northern neighbour, it needs a northern edge
-					if (tiles[n].Type != TileType::TILE_SOLID)
+					if (GetTileType(tiles, n) != TileType::TILE_SOLID)
 					{
 						// either extend it from its western neighbour (if they have one) or start a new one
-						if (edgeData[w].edgeExist[northIndex])
+						if (w > 0 && edgeData[w].edgeExist[northIndex])
 						{
 							// western neighbour has a northern edge, so extend it eastwards
 							edges[edgeData[w].edgeID[northIndex]].End.x += tileSize;
@@ -203,7 +200,7 @@ namespace tile
 						{
 							// western neighbour does not have a northern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x* tileSize, (y + 1)* tileSize, x* tileSize + tileSize, (y + 1)* tileSize));
+							edges.push_back(Line(x * tileSize, (y + 1) * tileSize, x * tileSize + tileSize, (y + 1) * tileSize) + offset);
 
 							// update tile information with edge information
 							edgeData[i].edgeID[northIndex] = edgeID;
@@ -212,10 +209,10 @@ namespace tile
 					}
 
 					// if there is no southern neighbour, it needs a southern edge
-					if (tiles[s].Type != TileType::TILE_SOLID)
+					if (GetTileType(tiles, s) != TileType::TILE_SOLID)
 					{
 						// either extend it from its western neighbour (if they have one) or start a new one
-						if (edgeData[w].edgeExist[southIndex])
+						if (w > 0 && edgeData[w].edgeExist[southIndex])
 						{
 							// western neighbour has a southern edge, so extend it eastwards
 							edges[edgeData[w].edgeID[southIndex]].End.x += tileSize;
@@ -226,7 +223,7 @@ namespace tile
 						{
 							// western neighbour does not have a southern edge, so create one and add it to the polygon pool
 							size_t edgeID = edges.size();
-							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize));
+							edges.push_back(Line(x * tileSize, y * tileSize, x * tileSize + tileSize, y * tileSize) + offset);
 
 							// update tile information with edge information
 							edgeData[i].edgeID[southIndex] = edgeID;

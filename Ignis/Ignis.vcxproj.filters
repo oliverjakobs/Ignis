@@ -150,6 +150,7 @@
     <ClInclude Include="src\Tile\Tilemap.h">
       <Filter>Tile</Filter>
     </ClInclude>
+    <ClInclude Include="src\Tile\Chunk.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">

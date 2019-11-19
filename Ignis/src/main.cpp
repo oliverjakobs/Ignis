@@ -98,21 +98,7 @@ int main()
 	TileMap map = TileMap(tileIDs, mapWidth, mapHeight, tileSize, chunkSize, typeMap);
 	TileRenderer tileRenderer(map, std::make_shared<Texture>("res/textures/tiles.png"), texRows, texColumns);
 
-	OBELISK_CHRONO();
-
-	auto tiles = GetTiles(map);
-
-	OBELISK_CHRONO_TRACE("Get Tiles: %fms");
-	OBELISK_CHRONO_RESET();
-
-	auto edges = GetEdges(map.at(0).Tiles, map.GetChunkSize(), map.GetChunkSize(), map.GetTileSize());
-
-	OBELISK_CHRONO_TRACE("Get Edges: %fms");
-	OBELISK_CHRONO_RESET();
-
 	//auto test = Visibility(mousePos, edges);
-
-	OBELISK_CHRONO_TRACE("Visibility: %fms");
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -125,6 +111,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		tileRenderer.RenderMap(glm::vec3(), camera.GetViewProjection());
+
+		auto edges = GetEdges(map);
 
 		Primitives2D::Start(camera.GetViewProjection());
 
