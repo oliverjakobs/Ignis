@@ -1,226 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Ignis">
-      <UniqueIdentifier>{DF59620D-4B6E-8ABE-14F0-2D1E80C386EF}</UniqueIdentifier>
+    <Filter Include="res">
+      <UniqueIdentifier>{4FA5880B-BBAE-887C-442A-9F7CB032947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Advanced">
-      <UniqueIdentifier>{C473F4F8-B041-E8FE-99D5-58258542C463}</UniqueIdentifier>
+    <Filter Include="res\fonts">
+      <UniqueIdentifier>{E81E0011-5489-B487-9DC7-652D097192DC}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Camera">
-      <UniqueIdentifier>{773DD060-63A0-5F05-0C26-98BBF8672B88}</UniqueIdentifier>
+    <Filter Include="res\shaders">
+      <UniqueIdentifier>{4841F028-B4F6-681E-3DEB-62F5A99F5F22}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Core">
-      <UniqueIdentifier>{97816961-8339-ABAE-EC40-840AD817469F}</UniqueIdentifier>
+    <Filter Include="res\textures">
+      <UniqueIdentifier>{227C1C83-0EDF-AB27-B764-E4DDA3A677AA}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Model">
-      <UniqueIdentifier>{5F6E4E8F-CB23-C784-5418-C15BC0CCBD88}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Packages">
-      <UniqueIdentifier>{ED173DBE-D9E5-30C4-C279-A1EAAEE60C29}</UniqueIdentifier>
+    <Filter Include="src\Application">
+      <UniqueIdentifier>{701253C7-DC9D-C08B-E5AE-438051B91C8C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Ignis\Renderer">
-      <UniqueIdentifier>{6528D6E3-51F6-C9E9-3A8A-3A1026F7A54E}</UniqueIdentifier>
+    <Filter Include="src\Camera">
+      <UniqueIdentifier>{054BA008-F102-E255-5A0A-BBB146E17C46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ImGuiBinding">
-      <UniqueIdentifier>{1B46C02E-07A9-4FD3-B02E-88899C701B56}</UniqueIdentifier>
+    <Filter Include="src\Graphics">
+      <UniqueIdentifier>{0D564864-F9B8-D708-A23E-10BF8E80A38B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Obelisk">
-      <UniqueIdentifier>{4E9CF2B0-BA7B-714C-C393-FC222FF2D7AD}</UniqueIdentifier>
+    <Filter Include="src\Ignis">
+      <UniqueIdentifier>{36681FB3-A2D2-D329-EB10-85CF57BAB17E}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tile">
-      <UniqueIdentifier>{53EC8C7C-3F23-8E0D-E80F-7410D4250A0F}</UniqueIdentifier>
+    <Filter Include="src\Ignis\Core">
+      <UniqueIdentifier>{4E1E7098-3AEC-639E-2380-D4C40FED3F03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ignis\glad">
+      <UniqueIdentifier>{FDCC8398-E99A-779E-D22E-E8C4BE9B5303}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Ignis\glad\KHR">
+      <UniqueIdentifier>{F111879F-DDF5-47F5-4656-424832593277}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\clib">
+      <UniqueIdentifier>{D6512ECF-C21E-89DA-EB37-7782D763BE68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\json">
+      <UniqueIdentifier>{164732CF-0214-8DDA-2B2D-7B821759C268}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\math">
+      <UniqueIdentifier>{46A033CF-326D-8EDA-5B86-7C8247B2C368}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Ignis\Advanced\ComputeShader.h">
-      <Filter>Ignis\Advanced</Filter>
+    <ClInclude Include="src\Application\Application.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Advanced\TextureAtlas.h">
-      <Filter>Ignis\Advanced</Filter>
+    <ClInclude Include="src\Application\ApplicationCallback.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Camera\Camera.h">
-      <Filter>Ignis\Camera</Filter>
+    <ClInclude Include="src\Application\Debugger.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Camera\FpsCamera.h">
-      <Filter>Ignis\Camera</Filter>
+    <ClInclude Include="src\Application\Event.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Camera\OrthographicCamera.h">
-      <Filter>Ignis\Camera</Filter>
+    <ClInclude Include="src\Application\EventHandler.h">
+      <Filter>src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Core\Api.h">
-      <Filter>Ignis\Core</Filter>
+    <ClInclude Include="src\Application\Input.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Application\Timer.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Application\defines.h">
+      <Filter>src\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Background.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\BatchRenderer2D.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\FontRenderer.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Primitives2D.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Renderer.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Renderer2D.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\ResourceManager.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\ComputeShader.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Buffer.h">
-      <Filter>Ignis\Core</Filter>
+      <Filter>src\Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Shader.h">
-      <Filter>Ignis\Core</Filter>
+      <Filter>src\Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Core\Texture.h">
-      <Filter>Ignis\Core</Filter>
+      <Filter>src\Ignis\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Font.h">
-      <Filter>Ignis</Filter>
+      <Filter>src\Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Framebuffer.h">
-      <Filter>Ignis</Filter>
+      <Filter>src\Ignis</Filter>
     </ClInclude>
     <ClInclude Include="src\Ignis\Ignis.h">
-      <Filter>Ignis</Filter>
+      <Filter>src\Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Model\Material.h">
-      <Filter>Ignis\Model</Filter>
+    <ClInclude Include="src\Ignis\Quad.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Model\Mesh.h">
-      <Filter>Ignis\Model</Filter>
+    <ClInclude Include="src\Ignis\VertexArray.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Packages\stb_image.h">
-      <Filter>Ignis\Packages</Filter>
+    <ClInclude Include="src\Ignis\glad\KHR\khrplatform.h">
+      <Filter>src\Ignis\glad\KHR</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Packages\stb_image_write.h">
-      <Filter>Ignis\Packages</Filter>
+    <ClInclude Include="src\Ignis\glad\glad.h">
+      <Filter>src\Ignis\glad</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Packages\stb_truetype.h">
-      <Filter>Ignis\Packages</Filter>
+    <ClInclude Include="src\Ignis\stb_image.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Packages\tiny_obj_loader.h">
-      <Filter>Ignis\Packages</Filter>
+    <ClInclude Include="src\Ignis\stb_truetype.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer\FontRenderer.h">
-      <Filter>Ignis\Renderer</Filter>
+    <ClInclude Include="src\clib\clib.h">
+      <Filter>src\clib</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer\Primitives.h">
-      <Filter>Ignis\Renderer</Filter>
+    <ClInclude Include="src\clib\hashmap.h">
+      <Filter>src\clib</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer\RenderState.h">
-      <Filter>Ignis\Renderer</Filter>
+    <ClInclude Include="src\clib\vector.h">
+      <Filter>src\clib</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\Renderer\Renderer2D.h">
-      <Filter>Ignis\Renderer</Filter>
+    <ClInclude Include="src\json\tb_json.h">
+      <Filter>src\json</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImGuiBinding\ImGuiBinding.h">
-      <Filter>ImGuiBinding</Filter>
+    <ClInclude Include="src\math\mat4.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImGuiBinding\ImGuiRenderer.h">
-      <Filter>ImGuiBinding</Filter>
+    <ClInclude Include="src\math\math.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImGuiBinding\imgui_impl_glfw.h">
-      <Filter>ImGuiBinding</Filter>
+    <ClInclude Include="src\math\vec2.h">
+      <Filter>src\math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Obelisk\Average.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Debugger.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\FileUtility.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Flags.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Logger.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Memory.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Obelisk.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Range.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Singelton.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Obelisk\Timer.h">
-      <Filter>Obelisk</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile\Algorithm.h">
-      <Filter>Tile</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile\Tile.h">
-      <Filter>Tile</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile\TileRenderer.h">
-      <Filter>Tile</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile\Tilemap.h">
-      <Filter>Tile</Filter>
+    <ClInclude Include="src\math\vec3.h">
+      <Filter>src\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Ignis\Advanced\ComputeShader.cpp">
-      <Filter>Ignis\Advanced</Filter>
+    <ClCompile Include="src\Application\Application.c">
+      <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Advanced\TextureAtlas.cpp">
-      <Filter>Ignis\Advanced</Filter>
+    <ClCompile Include="src\Application\ApplicationCallback.c">
+      <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Camera\FpsCamera.cpp">
-      <Filter>Ignis\Camera</Filter>
+    <ClCompile Include="src\Application\EventHandler.c">
+      <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Camera\OrthographicCamera.cpp">
-      <Filter>Ignis\Camera</Filter>
+    <ClCompile Include="src\Application\Input.c">
+      <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Api.cpp">
-      <Filter>Ignis\Core</Filter>
+    <ClCompile Include="src\Application\Timer.c">
+      <Filter>src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Buffer.cpp">
-      <Filter>Ignis\Core</Filter>
+    <ClCompile Include="src\Camera\Camera.c">
+      <Filter>src\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Shader.cpp">
-      <Filter>Ignis\Core</Filter>
+    <ClCompile Include="src\Graphics\Background.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Core\Texture.cpp">
-      <Filter>Ignis\Core</Filter>
+    <ClCompile Include="src\Graphics\BatchRenderer2D.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Font.cpp">
-      <Filter>Ignis</Filter>
+    <ClCompile Include="src\Graphics\FontRenderer.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Framebuffer.cpp">
-      <Filter>Ignis</Filter>
+    <ClCompile Include="src\Graphics\Primitives2D.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Ignis.cpp">
-      <Filter>Ignis</Filter>
+    <ClCompile Include="src\Graphics\Renderer.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Model\Material.cpp">
-      <Filter>Ignis\Model</Filter>
+    <ClCompile Include="src\Graphics\Renderer2D.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Model\Mesh.cpp">
-      <Filter>Ignis\Model</Filter>
+    <ClCompile Include="src\Graphics\ResourceManager.c">
+      <Filter>src\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer\FontRenderer.cpp">
-      <Filter>Ignis\Renderer</Filter>
+    <ClCompile Include="src\Ignis\ComputeShader.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer\Primitives.cpp">
-      <Filter>Ignis\Renderer</Filter>
+    <ClCompile Include="src\Ignis\Core\Buffer.c">
+      <Filter>src\Ignis\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer\RenderState.cpp">
-      <Filter>Ignis\Renderer</Filter>
+    <ClCompile Include="src\Ignis\Core\Shader.c">
+      <Filter>src\Ignis\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\Ignis\Renderer\Renderer2D.cpp">
-      <Filter>Ignis\Renderer</Filter>
+    <ClCompile Include="src\Ignis\Core\Texture.c">
+      <Filter>src\Ignis\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImGuiBinding\ImGuiBinding.cpp">
-      <Filter>ImGuiBinding</Filter>
+    <ClCompile Include="src\Ignis\Font.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImGuiBinding\ImGuiRenderer.cpp">
-      <Filter>ImGuiBinding</Filter>
+    <ClCompile Include="src\Ignis\Framebuffer.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImGuiBinding\imgui_impl_glfw.cpp">
-      <Filter>ImGuiBinding</Filter>
+    <ClCompile Include="src\Ignis\Ignis.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tile\Algorithm.cpp">
-      <Filter>Tile</Filter>
+    <ClCompile Include="src\Ignis\Quad.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tile\TileRenderer.cpp">
-      <Filter>Tile</Filter>
+    <ClCompile Include="src\Ignis\VertexArray.c">
+      <Filter>src\Ignis</Filter>
     </ClCompile>
-    <ClCompile Include="src\Tile\Tilemap.cpp">
-      <Filter>Tile</Filter>
+    <ClCompile Include="src\Ignis\glad\glad.c">
+      <Filter>src\Ignis\glad</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\clib\hashmap.c">
+      <Filter>src\clib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\clib\vector.c">
+      <Filter>src\clib</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\mat4.c">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\vec2.c">
+      <Filter>src\math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\vec3.c">
+      <Filter>src\math</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="config.json" />
+    <None Include="res\fonts\OpenSans.ttf">
+      <Filter>res\fonts</Filter>
+    </None>
+    <None Include="res\shaders\font.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\font.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\renderer2D.frag">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\renderer2D.vert">
+      <Filter>res\shaders</Filter>
+    </None>
+    <None Include="res\shaders\triangles.vert" />
+    <None Include="res\shaders\triangles.frag" />
   </ItemGroup>
 </Project>

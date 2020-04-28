@@ -1,51 +1,63 @@
-#pragma once
+#ifndef IGNIS_SHADER_H
+#define IGNIS_SHADER_H
 
-#include <glad/glad.h>
-
-#include "Api.h"
-
-namespace ignis
+#ifdef __cplusplus
+extern "C"
 {
-	class Shader
-	{
-	protected:
-		GLuint m_program;
+#endif
 
-		Shader() : m_program(0) {};
+#include "../glad/glad.h"
 
-	public:
-		Shader(const std::string& vert, const std::string& frag);
-		Shader(const std::string& vert, const std::string& geom, const std::string& frag);
-		virtual ~Shader();
+typedef struct
+{
+	GLuint program;
+} IgnisShader;
 
-		void Use();
+int ignisCreateShadervf(IgnisShader* shader, const char* vert, const char* frag);
+int ignisCreateShadervgf(IgnisShader* shader, const char* vert, const char* geom, const char* frag);
+int ignisCreateShaderSrcvf(IgnisShader* shader, const char* vert, const char* frag);
+int ignisCreateShaderSrcvgf(IgnisShader* shader, const char* vert, const char* geom, const char* frag);
+void ignisDeleteShader(IgnisShader* shader);
 
-		void SetUniform1i(const std::string& name, int value) const;
-		void SetUniform1f(const std::string& name, float value) const;
-		void SetUniform2f(const std::string& name, const glm::vec2& vector) const;
-		void SetUniform3f(const std::string& name, const glm::vec3& vector) const;
-		void SetUniform4f(const std::string& name, const glm::vec4& vector) const;
-		void SetUniformMat2(const std::string& name, const glm::mat4& matrix) const;
-		void SetUniformMat3(const std::string& name, const glm::mat4& matrix) const;
-		void SetUniformMat4(const std::string& name, const glm::mat4& matrix) const;
+void ignisUseShader(IgnisShader* shader);
 
-		int GetUniformLocation(const std::string& name) const;
+GLint ignisGetUniformLocation(const IgnisShader* shader, const char* name);
 
-		void SetUniform1i(int location, int value) const;
-		void SetUniform1f(int location, float value) const;
-		void SetUniform2f(int location, const glm::vec2& vector) const;
-		void SetUniform3f(int location, const glm::vec3& vector) const;
-		void SetUniform4f(int location, const glm::vec4& vector) const;
-		void SetUniformMat2(int location, const glm::mat4& matrix) const;
-		void SetUniformMat3(int location, const glm::mat4& matrix) const;
-		void SetUniformMat4(int location, const glm::mat4& matrix) const;
-	};
+void ignisSetUniform1i(const IgnisShader* shader, const char* name, int value);
+void ignisSetUniform1f(const IgnisShader* shader, const char* name, float value);
+void ignisSetUniform2f(const IgnisShader* shader, const char* name, const float* values);
+void ignisSetUniform3f(const IgnisShader* shader, const char* name, const float* values);
+void ignisSetUniform4f(const IgnisShader* shader, const char* name, const float* values);
+void ignisSetUniformMat2(const IgnisShader* shader, const char* name, const float* values);
+void ignisSetUniformMat3(const IgnisShader* shader, const char* name, const float* values);
+void ignisSetUniformMat4(const IgnisShader* shader, const char* name, const float* values);
 
-	// Shader utils
-	GLuint CreateShaderProgram(std::map<GLenum, const std::string&> sources);
-	GLuint CompileShader(GLenum type, const std::string& source);
+void ignisSetUniform1iv(const IgnisShader* shader, const char* name, GLsizei count, const int* values);
+void ignisSetUniform1fv(const IgnisShader* shader, const char* name, GLsizei count, const float* values);
 
-	std::string GetShaderLog(GLuint object);
-	std::string GetProgramLog(GLuint object);
-	std::string GetShaderType(GLenum type);
+/* unchecked location */
+void ignisSetUniform1il(const IgnisShader* shader, GLint location, int value);
+void ignisSetUniform1fl(const IgnisShader* shader, GLint location, float value);
+void ignisSetUniform2fl(const IgnisShader* shader, GLint location, const float* values);
+void ignisSetUniform3fl(const IgnisShader* shader, GLint location, const float* values);
+void ignisSetUniform4fl(const IgnisShader* shader, GLint location, const float* values);
+void ignisSetUniformMat2l(const IgnisShader* shader, GLint location, const float* values);
+void ignisSetUniformMat3l(const IgnisShader* shader, GLint location, const float* values);
+void ignisSetUniformMat4l(const IgnisShader* shader, GLint location, const float* values);
+
+void ignisSetUniform1ivl(const IgnisShader* shader, GLint location, GLsizei count, const int* values);
+void ignisSetUniform1fvl(const IgnisShader* shader, GLint location, GLsizei count, const float* values);
+
+GLuint ignisCreateShaderProgram(GLenum* types, const char** sources, size_t count);
+GLuint ignisCompileShader(GLenum type, const char* source);
+
+void ignisPrintShaderLog(GLuint shader);
+void ignisPrintProgramLog(GLuint program);
+
+const char* ignisGetShaderType(GLenum type);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !IGNIS_SHADER_H */

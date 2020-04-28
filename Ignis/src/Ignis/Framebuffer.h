@@ -1,30 +1,31 @@
-#pragma once
+#ifndef IGNIS_FRAMEBUFFER_H
+#define IGNIS_FRAMEBUFFER_H
 
-#include "Core/Texture.h"
-#include "Core/Buffer.h"
-
-namespace ignis
+#ifdef __cplusplus
+extern "C"
 {
-	class FrameBuffer
-	{
-	private:
-		GLuint m_name;
-		Texture m_texture;
+#endif
 
-		VertexArray m_vao;
-		ArrayBuffer m_vbo;
+#include "Core/Buffer.h"
+#include "Core/Texture.h"
 
-		int m_width, m_height;
-	public:
-		FrameBuffer(int w, int h);
-		~FrameBuffer();
+typedef struct
+{
+	GLuint name;
 
-		void Bind();
-		void Unbind();
+	IgnisTexture2D texture;
 
-		void BindVAO();
+	int width;
+	int height;
+} IgnisFrameBuffer;
 
-		VertexArray& VAO();
-		Texture& Texture();
-	};
+int ignisGenerateFrameBuffer(IgnisFrameBuffer* fbo, int width, int height);
+void ignisDeleteFrameBuffer(IgnisFrameBuffer* fbo);
+
+void ignisBindFrameBuffer(IgnisFrameBuffer* fbo);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !IGNIS_FRAMEBUFFER_H */

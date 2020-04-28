@@ -1,36 +1,81 @@
-#pragma once
+#ifndef IGNIS_H
+#define IGNIS_H
 
-#include "Core/Buffer.h"
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+
+/* You can #define IGNIS_ASSERT(x) before the #include to avoid using assert.h */
+#ifndef IGNIS_ASSERT
+#include <assert.h>
+#define IGNIS_ASSERT(x) assert(x)
+#endif
+
+/* defines */
+#define IGNIS_SUCCESS	1
+#define IGNIS_FAILURE	0
+
+/* Core */
 #include "Core/Texture.h"
 #include "Core/Shader.h"
+#include "Core/Buffer.h"
 
-#include "Model/Mesh.h"
+/* Font */
+#define IGNIS_FONT_FIRST_CHAR		32
+#define IGNIS_FONT_NUM_CHARS		96	/* ASCII 32..126 is 95 glyphs */
+#define IGNIS_FONT_BITMAP_WIDTH		512
+#define IGNIS_FONT_BITMAP_HEIGHT	512
+
 #include "Font.h"
 
-#include "Ignis/Camera/OrthographicCamera.h"
+/* Vertex Array */
+#define IGNIS_BUFFER_ARRAY_INITIAL_SIZE		4
+#define IGNIS_BUFFER_ARRAY_GROWTH_FACTOR	2
 
-#include "Renderer/RenderState.h"
+#include "VertexArray.h"
 
-// Renderer
-#include "Renderer/FontRenderer.h"
-#include "Renderer/Renderer2D.h"
-#include "Renderer/Primitives.h"
+int ignisInit(int debug);
 
-namespace ignis
+typedef enum
 {
-	bool ignisInit(int width, int height);
-	bool ignisLoadGL(bool debug = false);
-	void ignisViewport(int x, int y, int w, int h);
+	IGNIS_WARN = 0,
+	IGNIS_ERROR = 1,
+	IGNIS_CRITICAL = 2
+} ignisErrorLevel;
 
-	const glm::mat4& ignisScreenMat();
+void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*));
+void _ignisErrorCallback(ignisErrorLevel level, const char* fmt, ...);
 
-	struct Ignis
-	{
-		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, int first, GLsizei count);
-		static void RenderTexture(Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices);
-		static void RenderTextureInstanced(Texture& tex, GLsizei instances, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader, std::vector<GLuint> indices);
+GLuint ignisGetOpenGLTypeSize(GLenum type);
 
-		static void RenderMesh(Mesh& mesh, Texture& tex, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
-		static void RenderMesh(Mesh& mesh, Material& mtl, glm::mat4 proj, glm::mat4 view, glm::mat4 model, Shader& shader);
-	};
+/* Color */
+typedef struct
+{
+	float r, g, b, a;
+} IgnisColorRGBA;
+
+extern const IgnisColorRGBA IGNIS_WHITE;
+extern const IgnisColorRGBA IGNIS_BLACK;
+extern const IgnisColorRGBA IGNIS_RED;
+extern const IgnisColorRGBA IGNIS_GREEN;
+extern const IgnisColorRGBA IGNIS_BLUE;
+extern const IgnisColorRGBA IGNIS_CYAN;
+extern const IgnisColorRGBA IGNIS_MAGENTA;
+extern const IgnisColorRGBA IGNIS_YELLOW;
+
+IgnisColorRGBA* ignisBlendColorRGBA(IgnisColorRGBA* color, float alpha);
+
+void ignisClearColor(IgnisColorRGBA color);
+
+char* ignisReadFile(const char* path, size_t* sizeptr);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !IGNIS_H */

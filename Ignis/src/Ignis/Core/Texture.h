@@ -1,51 +1,51 @@
-#pragma once
+#ifndef IGNIS_TEXTURE_H
+#define IGNIS_TEXTURE_H
 
-#include <glad/glad.h>
-
-#include "Api.h"
-
-namespace ignis
+#ifdef __cplusplus
+extern "C"
 {
-	struct TextureConfig
-	{
-		GLint INTERAL_FORMAT;
-		GLenum FORMAT;
+#endif
 
-		GLint MIN_FILTER;
-		GLint MAG_FILTER;
+#include "../glad/glad.h"
 
-		GLint WRAP_S;
-		GLint WRAP_T;
-	};
+typedef struct
+{
+	GLint internal_format;
+	GLenum format;
 
-	constexpr TextureConfig DEFAULT_CONFIG{ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT };
+	GLint min_filter;
+	GLint mag_filter;
 
-	struct Texture
-	{
-	private:
-		GLuint m_name;
+	GLint wrap_s;
+	GLint wrap_t;
+} IgnisTextureConfig;
 
-		int m_width;
-		int m_height;
+GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, IgnisTextureConfig config);
 
-		GLuint m_activeSlot;
+#define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT }
 
-		TextureConfig m_config;
+typedef struct
+{
+	GLuint name;
 
-	public:
-		Texture(int width, int height, TextureConfig config = DEFAULT_CONFIG);
-		Texture(int width, int height, void* pixels, TextureConfig config = DEFAULT_CONFIG);
-		Texture(const std::string& path, bool flipOnLoad = true, TextureConfig config = DEFAULT_CONFIG);
-		~Texture();
+	int width;
+	int height;
 
-		void Bind(GLuint slot = 0);
-		void Unbind();
+	GLuint rows;
+	GLuint columns;
+} IgnisTexture2D;
 
-		const GLuint GetName() const { return m_name; }
+int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void* pixels, IgnisTextureConfig* config);
+int ignisGenerateTexStorage(IgnisTexture2D* texture, int width, int height, GLenum internal_format);
 
-		const int GetWidth() const { return m_width; }
-		const int GetHeight() const { return m_height; }
-	};
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows, GLuint columns, int flip_on_load, IgnisTextureConfig* config);
 
-	GLuint CreateTexture2D(int width, int height, void* pixels, TextureConfig config);
+void ignisDeleteTexture2D(IgnisTexture2D* texture);
+
+void ignisBindTexture2D(IgnisTexture2D* texture, GLuint slot);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !IGNIS_TEXTURE_H */

@@ -1,37 +1,38 @@
-#pragma once
+#ifndef IGNIS_FONT_H
+#define IGNIS_FONT_H
 
-#include "Core/Buffer.h"
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "Core/Texture.h"
 
-#include "Ignis/Packages/stb_truetype.h"
+#include "stb_truetype.h"
 
-namespace ignis
+typedef struct
 {
-	class Font
-	{
-	private:
-		struct FontData
-		{
-			int FirstChar;
-			size_t NumChars;
+	int first_char;
+	int num_chars;
 
-			int BitmapWidth;
-			int BitmapHeight;
+	stbtt_bakedchar* char_data;
 
-			stbtt_bakedchar* CharData;
-		} m_fontData;
-		
-		std::unique_ptr<Texture> m_texture;
+	IgnisTexture2D texture;
+} IgnisFont;
 
-		// buffer
-		VertexArray m_vertexArray;
-	public:
-		Font(const std::string& path, float size);
-		~Font();
+int ignisCreateFont(IgnisFont* font, const char* path, float size);
+int ignisCreateFontConfig(IgnisFont* font, const char* path, float size, int first, int num, int bitmap_width, int bitmap_height);
+void ignisDeleteFont(IgnisFont* font);
 
-		void Bind();
-		void Unbind();
+void ignisBindFont(IgnisFont* font, GLuint slot);
 
-		bool LoadCharQuad(char c, float* x, float* y);
-	};
+int ignisFontLoadCharQuad(IgnisFont* font, char c, float* x, float* y, float* vertices, size_t offset);
+
+float ignisFontGetTextWidth(IgnisFont* font, const char* text);
+float ignisFontGetTextHeight(IgnisFont* font, const char* text, float* y_offset);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* !IGNIS_FONT_H */

@@ -1,9 +1,3 @@
-[submodule "Ignis/packages/glm"]
-	path = Ignis/packages/glm
-	url = https://github.com/g-truc/glm
-[submodule "Ignis/packages/imgui"]
-	path = Ignis/packages/imgui
-	url = https://github.com/oliverjakobs/imgui
 [submodule "Ignis/packages/glfw"]
 	path = Ignis/packages/glfw
 	url = https://github.com/oliverjakobs/glfw

@@ -8,17 +8,15 @@ workspace "Ignis"
 		"Release"
 	}
 
-outputDir = "%{cfg.buildcfg}"   
+outputDir = "%{cfg.buildcfg}"
 
 include "Ignis/packages/glfw"
-include "Ignis/packages/glad"
-include "Ignis/packages/imgui"
 
 project "Ignis"
 	location "Ignis"
 	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++17"
+	language "C"
+	cdialect "C99"
 	staticruntime "On"
 	
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
@@ -27,26 +25,27 @@ project "Ignis"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/res/shader/*.vert",
-		"%{prj.name}/res/shader/*.frag"
+		"%{prj.name}/src/**.c",
+		--Config
+		"%{prj.name}/config.json",
+		--Resources
+		"%{prj.name}/res/fonts/**.ttf",
+		"%{prj.name}/res/shaders/**.vert",
+		"%{prj.name}/res/shaders/**.frag",
+		"%{prj.name}/res/templates/**.json",
+		"%{prj.name}/res/textures/**.png"
 	}
 
 	links
 	{
 		"GLFW",
-		"Glad",
-		"ImGui",
 		"opengl32"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/packages/glm",
-		"%{prj.name}/packages/imgui",
-		"%{prj.name}/packages/glfw/include",
-		"%{prj.name}/packages/glad/include"
+		"%{prj.name}/packages/glfw/include"
 	}
 
 	filter "system:windows"
