@@ -197,13 +197,13 @@ void ignisVertexAttribPointerR(GLuint index, GLint size, GLboolean normalized, G
 void ignisVertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset)
 {
 	glEnableVertexAttribArray(index);
-	glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride * sizeof(GLfloat), (void*)(offset * sizeof(GLfloat)));
+	glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride * sizeof(GLfloat), IGNIS_BUFFER_OFFSET(offset * sizeof(GLfloat)));
 }
 
 void ignisVertexAttribIPointer(GLuint index, GLint size, GLsizei stride, GLintptr offset)
 {
 	glEnableVertexAttribArray(index);
-	glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), (void*)(offset * sizeof(GLuint)));
+	glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
 }
 
 void ignisVertexAttribDivisor(GLuint index, GLuint divisor)

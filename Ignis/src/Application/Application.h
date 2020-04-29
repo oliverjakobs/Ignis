@@ -38,14 +38,16 @@ typedef struct Application
 
 	mat4 screen_projection;
 
-	void (*on_event)(struct Application*, const Event);
+	void (*on_init)(struct Application*);
+	void (*on_destroy)(struct Application*);
+	void (*on_event)(struct Application*, Event);
 	void (*on_update)(struct Application*, float);
 	void (*on_render)(struct Application*);
 	void (*on_render_debug)(struct Application*);
 	void (*on_render_gui)(struct Application*);
 } Application;
 
-int ApplicationLoad(Application* app, const char* title, int width, int height, int glMajor, int glMinor);
+int ApplicationLoad(Application* app, const char* title, int width, int height, int glMajor, int glMinor, const char* res);
 int ApplicationLoadConfig(Application* app, const char* path);
 void ApplicationDestroy(Application* app);
 
@@ -54,7 +56,9 @@ void ApplicationRun(Application* app);
 void ApplicationPause(Application* app);
 void ApplicationClose(Application* app);
 
-void ApplicationSetOnEventCallback(Application* app, void (*callback)(Application*, const Event));
+void ApplicationSetOnInitCallback(Application* app, void (*callback)(Application*));
+void ApplicationSetOnDestroyCallback(Application* app, void (*callback)(Application*));
+void ApplicationSetOnEventCallback(Application* app, void (*callback)(Application*, Event));
 void ApplicationSetOnUpdateCallback(Application* app, void (*callback)(Application*, float));
 void ApplicationSetOnRenderCallback(Application* app, void (*callback)(Application*));
 void ApplicationSetOnRenderDebugCallback(Application* app, void (*callback)(Application*));

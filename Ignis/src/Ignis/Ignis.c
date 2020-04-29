@@ -121,9 +121,9 @@ IgnisColorRGBA* ignisBlendColorRGBA(IgnisColorRGBA* color, float alpha)
 	return color;
 }
 
-void ignisClearColor(IgnisColorRGBA color)
+void ignisClearColorBuffer(IgnisColorRGBA color)
 {
-	glClearColor(color.r, color.g, color.b, color.a);
+	glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 
 char* ignisReadFile(const char* path, size_t* sizeptr)
