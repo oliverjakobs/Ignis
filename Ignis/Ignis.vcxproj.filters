@@ -129,12 +129,6 @@
     <ClInclude Include="src\Ignis\glad\glad.h">
       <Filter>src\Ignis\glad</Filter>
     </ClInclude>
-    <ClInclude Include="src\Ignis\stb_image.h">
-      <Filter>src\Ignis</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Ignis\stb_truetype.h">
-      <Filter>src\Ignis</Filter>
-    </ClInclude>
     <ClInclude Include="src\clib\clib.h">
       <Filter>src\clib</Filter>
     </ClInclude>
@@ -158,6 +152,12 @@
     </ClInclude>
     <ClInclude Include="src\math\vec3.h">
       <Filter>src\math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\stb\stb_truetype.h">
+      <Filter>src\Ignis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\stb\stb_image.h">
+      <Filter>src\Ignis</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

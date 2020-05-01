@@ -116,8 +116,8 @@
     <ClInclude Include="src\Ignis\VertexArray.h" />
     <ClInclude Include="src\Ignis\glad\KHR\khrplatform.h" />
     <ClInclude Include="src\Ignis\glad\glad.h" />
-    <ClInclude Include="src\Ignis\stb_image.h" />
-    <ClInclude Include="src\Ignis\stb_truetype.h" />
+    <ClInclude Include="src\Ignis\stb\stb_image.h" />
+    <ClInclude Include="src\Ignis\stb\stb_truetype.h" />
     <ClInclude Include="src\clib\clib.h" />
     <ClInclude Include="src\clib\hashmap.h" />
     <ClInclude Include="src\clib\vector.h" />
