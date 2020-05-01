@@ -41,9 +41,9 @@ void OnInit(Application* app)
 	};
 
 	ignisAddArrayBuffer(&vao, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	ignisVertexAttribPointer(0, 2, GL_FALSE, 0, 0);
+	ignisVertexAttribFloat(0, 2, GL_FALSE, 0, 0);
 
-	ignisCreateShadervf(&shader, "res/shaders/triangles.vert", "res/shaders/triangles.frag");
+	ignisCreateShadervf(&shader, "res/shaders/shader.vert", "res/shaders/shader.frag");
 }
 
 void OnDestroy(Application* app)

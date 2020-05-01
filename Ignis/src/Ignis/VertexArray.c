@@ -125,3 +125,66 @@ int ignisLoadElementBuffer(IgnisVertexArray* vao, GLuint* indices, GLsizei count
 	_ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to generate element buffer");
 	return IGNIS_FAILURE;
 }
+
+void ignisVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset)
+{
+	glEnableVertexAttribArray(index);
+	glVertexAttribPointer(index, size, type, normalized, stride, offset);
+}
+
+void ignisVertexAttribFloat(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribPointer(index, size, GL_FLOAT, normalized, stride * sizeof(GLfloat), IGNIS_BUFFER_OFFSET(offset * sizeof(GLfloat)));
+}
+
+void ignisVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void* offset)
+{
+	glEnableVertexAttribArray(index);
+	glVertexAttribIPointer(index, size, type, stride, offset);
+}
+
+void ignisVertexAttribLPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void* offset)
+{
+	glEnableVertexAttribArray(index);
+	glVertexAttribLPointer(index, size, type, stride, offset);
+}
+
+void ignisVertexAttribUnsignedByte(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribUnsignedShort(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_SHORT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribUnsignedInt(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribByte(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribShort(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribInt(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
+}
+
+void ignisVertexAttribDouble(GLuint index, GLint size, GLsizei stride, GLintptr offset)
+{
+	ignisVertexAttribLPointer(index, size, GL_DOUBLE, stride * sizeof(GLdouble), IGNIS_BUFFER_OFFSET(offset * sizeof(GLdouble)));
+}
+
+void ignisVertexAttribDivisor(GLuint index, GLuint divisor)
+{
+	glVertexAttribDivisor(index, divisor);
+}

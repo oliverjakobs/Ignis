@@ -266,7 +266,7 @@
     <None Include="res\shaders\renderer2D.vert">
       <Filter>res\shaders</Filter>
     </None>
-    <None Include="res\shaders\triangles.vert" />
-    <None Include="res\shaders\triangles.frag" />
+    <None Include="res\shaders\shader.vert" />
+    <None Include="res\shaders\shader.frag" />
   </ItemGroup>
 </Project>

@@ -185,28 +185,6 @@ void* ignisMapBufferRange(IgnisBuffer* buffer, GLintptr offset, GLsizeiptr lengt
 
 void ignisUnmapBuffer(IgnisBuffer* buffer)
 {
-	glUnmapBuffer(buffer->target);
-}
-
-void ignisVertexAttribPointerR(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset)
-{
-	glEnableVertexAttribArray(index);
-	glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride, offset);
-}
-
-void ignisVertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset)
-{
-	glEnableVertexAttribArray(index);
-	glVertexAttribPointer(index, size, GL_FLOAT, normalized ? GL_TRUE : GL_FALSE, stride * sizeof(GLfloat), IGNIS_BUFFER_OFFSET(offset * sizeof(GLfloat)));
-}
-
-void ignisVertexAttribIPointer(GLuint index, GLint size, GLsizei stride, GLintptr offset)
-{
-	glEnableVertexAttribArray(index);
-	glVertexAttribIPointer(index, size, GL_UNSIGNED_INT, stride * sizeof(GLuint), IGNIS_BUFFER_OFFSET(offset * sizeof(GLuint)));
-}
-
-void ignisVertexAttribDivisor(GLuint index, GLuint divisor)
-{
-	glVertexAttribDivisor(index, divisor);
+	if (glUnmapBuffer(buffer->target) == GL_FALSE)
+		_ignisErrorCallback(IGNIS_CRITICAL, "Buffer data has become corrupt");
 }

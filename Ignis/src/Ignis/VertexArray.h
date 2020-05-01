@@ -37,6 +37,24 @@ int ignisAddArrayBuffer(IgnisVertexArray* vao, GLsizeiptr size, const void* data
 int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void* data, GLenum usage, GLuint vertex_attrib_index, IgnisBufferElement* layout, size_t count);
 int ignisLoadElementBuffer(IgnisVertexArray* vao, GLuint* indices, GLsizei count, GLenum usage);
 
+/* vertex attrib pointer */
+void ignisVertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void* offset);
+void ignisVertexAttribIPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void* offset);
+void ignisVertexAttribLPointer(GLuint index, GLint size, GLenum type, GLsizei stride, const void* offset);
+
+void ignisVertexAttribFloat(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset);
+
+void ignisVertexAttribUnsignedByte(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+void ignisVertexAttribUnsignedShort(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+void ignisVertexAttribUnsignedInt(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+void ignisVertexAttribByte(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+void ignisVertexAttribShort(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+void ignisVertexAttribInt(GLuint index, GLint size, GLsizei stride, GLintptr offset); 
+
+void ignisVertexAttribDouble(GLuint index, GLint size, GLsizei stride, GLintptr offset);
+
+void ignisVertexAttribDivisor(GLuint index, GLuint divisor);
+
 #ifdef __cplusplus
 }
 #endif

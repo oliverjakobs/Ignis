@@ -43,12 +43,6 @@ void* ignisMapBuffer(IgnisBuffer* buffer, GLenum access);
 void* ignisMapBufferRange(IgnisBuffer* buffer, GLintptr offset, GLsizeiptr length, GLbitfield access);
 void ignisUnmapBuffer(IgnisBuffer* buffer);
 
-/* vertex attrib pointer */
-void ignisVertexAttribPointerR(GLuint index, GLint size, GLboolean normalized, GLsizei stride, const void* offset);
-void ignisVertexAttribPointer(GLuint index, GLint size, GLboolean normalized, GLsizei stride, GLintptr offset);
-void ignisVertexAttribIPointer(GLuint index, GLint size, GLsizei stride, GLintptr offset);
-void ignisVertexAttribDivisor(GLuint index, GLuint divisor);
-
 #ifdef __cplusplus
 }
 #endif
