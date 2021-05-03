@@ -17,6 +17,11 @@ extern "C"
 #define IGNIS_ASSERT(x) assert(x)
 #endif
 
+/* Ignis version numbers */
+#define IGNIS_VERSION_MAJOR       1
+#define IGNIS_VERSION_MINOR       0
+#define IGNIS_VERSION_REVISION    0
+
 /* defines */
 #define IGNIS_SUCCESS	1
 #define IGNIS_FAILURE	0
@@ -82,6 +87,8 @@ void ignisClearColorBuffer(IgnisColorRGBA color);
 char* ignisReadFile(const char* path, size_t* sizeptr);
 
 /* Infos */
+void IgnisGetVersion(int* major, int* minor, int* rev);
+const char* IgnisGetVersionString();
 const char* ignisGetGLVersion();
 const char* ignisGetGLVendor();
 const char* ignisGetGLRenderer();

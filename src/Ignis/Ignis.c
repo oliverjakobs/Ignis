@@ -133,7 +133,6 @@ const IgnisColorRGBA IGNIS_LIGHT_GREY = { 0.75f, 0.75f, 0.75f, 1.0f };
 IgnisColorRGBA* ignisBlendColorRGBA(IgnisColorRGBA* color, float alpha)
 {
 	color->a = alpha;
-
 	return color;
 }
 
@@ -187,6 +186,21 @@ char* ignisReadFile(const char* path, size_t* sizeptr)
 
 	fclose(file);
 	return buffer;
+}
+
+void IgnisGetVersion(int* major, int* minor, int* rev)
+{
+	if (major != NULL) *major = IGNIS_VERSION_MAJOR;
+	if (minor != NULL) *minor = IGNIS_VERSION_MINOR;
+	if (rev != NULL)   *rev = IGNIS_VERSION_REVISION;
+}
+
+#define IGNIS_CONCAT_VERSION(m, n, r) #m "." #n "." #r
+#define IGNIS_MAKE_VERSION_STR(m, n, r) IGNIS_CONCAT_VERSION(m, n, r)
+
+const char* IgnisGetVersionString(void)
+{
+	return IGNIS_MAKE_VERSION_STR(IGNIS_VERSION_MAJOR, IGNIS_VERSION_MINOR, IGNIS_VERSION_REVISION);
 }
 
 const char* ignisGetGLVersion()		{ return glGetString(GL_VERSION); }
