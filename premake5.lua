@@ -1,7 +1,6 @@
 project "Ignis"
 	kind "StaticLib"
 	language "C"
-	cdialect "C99"
 	
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputDir .. "/%{prj.name}")
@@ -24,6 +23,12 @@ project "Ignis"
 
 	filter "system:windows"
 		systemversion "latest"
+		staticruntime "On"
+
+		defines
+		{
+			"_CRT_SECURE_NO_WARNINGS"
+		}
 
 	filter "configurations:Debug"
 		runtime "Debug"

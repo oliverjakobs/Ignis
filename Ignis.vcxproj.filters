@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Core">
+      <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glad">
+      <UniqueIdentifier>{DD62977C-C999-980D-7286-7E105E9C140F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glad\KHR">
+      <UniqueIdentifier>{D19732ED-BD64-8DF8-E67D-7BA0D2A9C286}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb">
+      <UniqueIdentifier>{6EAB880B-DAB4-887C-6330-9F7CCF38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Ignis\ComputeShader.h" />
+    <ClInclude Include="src\Ignis\Core\Buffer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Shader.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Core\Texture.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\Font.h" />
+    <ClInclude Include="src\Ignis\Framebuffer.h" />
+    <ClInclude Include="src\Ignis\Ignis.h" />
+    <ClInclude Include="src\Ignis\Quad.h" />
+    <ClInclude Include="src\Ignis\VertexArray.h" />
+    <ClInclude Include="src\Ignis\glad\KHR\khrplatform.h">
+      <Filter>glad\KHR</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\glad\glad.h">
+      <Filter>glad</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\stb\stb_image.h">
+      <Filter>stb</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ignis\stb\stb_truetype.h">
+      <Filter>stb</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Ignis\ComputeShader.c" />
+    <ClCompile Include="src\Ignis\Core\Buffer.c">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Shader.c">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Core\Texture.c">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ignis\Font.c" />
+    <ClCompile Include="src\Ignis\Framebuffer.c" />
+    <ClCompile Include="src\Ignis\Ignis.c" />
+    <ClCompile Include="src\Ignis\Quad.c" />
+    <ClCompile Include="src\Ignis\VertexArray.c" />
+    <ClCompile Include="src\Ignis\glad\glad.c">
+      <Filter>glad</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
