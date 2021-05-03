@@ -2,8 +2,8 @@ project "Ignis"
 	kind "StaticLib"
 	language "C"
 	
-	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputDir .. "/%{prj.name}")
+	targetdir ("build/bin/" .. output_dir .. "/%{prj.name}")
+	objdir ("build/bin-int/" .. output_dir .. "/%{prj.name}")
 
 	files
 	{
