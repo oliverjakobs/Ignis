@@ -24,11 +24,7 @@ project "Ignis"
 	filter "system:windows"
 		systemversion "latest"
 		staticruntime "On"
-
-		defines
-		{
-			"_CRT_SECURE_NO_WARNINGS"
-		}
+		defines { "_CRT_SECURE_NO_WARNINGS" }
 
 	filter "configurations:Debug"
 		runtime "Debug"
