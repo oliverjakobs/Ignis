@@ -87,8 +87,8 @@ void ignisClearColorBuffer(IgnisColorRGBA color);
 char* ignisReadFile(const char* path, size_t* sizeptr);
 
 /* Infos */
-void IgnisGetVersion(int* major, int* minor, int* rev);
-const char* IgnisGetVersionString();
+void ignisGetVersion(int* major, int* minor, int* rev);
+const char* ignisGetVersionString();
 const char* ignisGetGLVersion();
 const char* ignisGetGLVendor();
 const char* ignisGetGLRenderer();

@@ -188,7 +188,7 @@ char* ignisReadFile(const char* path, size_t* sizeptr)
 	return buffer;
 }
 
-void IgnisGetVersion(int* major, int* minor, int* rev)
+void ignisGetVersion(int* major, int* minor, int* rev)
 {
 	if (major != NULL) *major = IGNIS_VERSION_MAJOR;
 	if (minor != NULL) *minor = IGNIS_VERSION_MINOR;
@@ -198,7 +198,7 @@ void IgnisGetVersion(int* major, int* minor, int* rev)
 #define IGNIS_CONCAT_VERSION(m, n, r) #m "." #n "." #r
 #define IGNIS_MAKE_VERSION_STR(m, n, r) IGNIS_CONCAT_VERSION(m, n, r)
 
-const char* IgnisGetVersionString(void)
+const char* ignisGetVersionString(void)
 {
 	return IGNIS_MAKE_VERSION_STR(IGNIS_VERSION_MAJOR, IGNIS_VERSION_MINOR, IGNIS_VERSION_REVISION);
 }
