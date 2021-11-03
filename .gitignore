@@ -4,5 +4,6 @@ build/
 
 #files
 *.user
+*.sln
 *.vcxproj
 *.vcxproj.filters
