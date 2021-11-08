@@ -42,8 +42,14 @@ bool ignisCheckValidationLayerSupport()
     return true;
 }
 
-const char* const* ignisGetEnabledLayerNames(uint32_t* layer_count)
+const char* const* ignisGetEnabledLayerNames(bool enable_validation, uint32_t* layer_count)
 {
+    if (!enable_validation)
+    {
+        *layer_count = 0;
+        return NULL;
+    }
+
     *layer_count = validationLayerCount;
     return validationLayers;
 }

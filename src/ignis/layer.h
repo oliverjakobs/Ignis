@@ -5,6 +5,6 @@
 
 bool ignisCheckValidationLayerSupport();
 
-const char* const* ignisGetEnabledLayerNames(uint32_t* layer_count);
+const char* const* ignisGetEnabledLayerNames(bool enable_validation, uint32_t* layer_count);
 
 #endif // !IGNIS_LAYER_H

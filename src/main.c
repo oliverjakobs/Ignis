@@ -8,9 +8,13 @@
 
 #include "ignis/layer.h"
 #include "ignis/debug.h"
+#include "ignis/device.h"
 
 GLFWwindow* window = NULL;
-VkInstance instance = NULL;
+VkInstance instance = VK_NULL_HANDLE;
+VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+VkDevice device = VK_NULL_HANDLE;
+VkQueue graphicsQueue = VK_NULL_HANDLE;
 
 VkDebugUtilsMessengerEXT debugMessenger;
 
@@ -79,27 +83,17 @@ bool appLoad(const char* title, uint32_t width, uint32_t height)
     appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.pEngineName = "No Engine";
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    appInfo.apiVersion = VK_API_VERSION_1_2;
+    appInfo.apiVersion = VK_API_VERSION_1_0;
 
     VkInstanceCreateInfo createInfo = { 0 };
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
     createInfo.ppEnabledExtensionNames = getRequiredExtensions(&createInfo.enabledExtensionCount);
+    createInfo.ppEnabledLayerNames = ignisGetEnabledLayerNames(enableValidationLayers, &createInfo.enabledLayerCount);
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = ignisGetDebugMessengerCreateInfo(debugCallback);
-    if (enableValidationLayers)
-    {
-        createInfo.ppEnabledLayerNames = ignisGetEnabledLayerNames(&createInfo.enabledLayerCount);
-        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
-    }
-    else
-    {
-        createInfo.ppEnabledLayerNames = NULL;
-        createInfo.enabledLayerCount = 0;
-
-        createInfo.pNext = NULL;
-    }
+    createInfo.pNext = enableValidationLayers ? (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo : NULL;
 
     if (vkCreateInstance(&createInfo, NULL, &instance) != VK_SUCCESS)
     {
@@ -117,6 +111,10 @@ bool appLoad(const char* title, uint32_t width, uint32_t height)
         }
     }
 
+    /* pick physical device */
+    physicalDevice = ignisPickPhysicalDevice(instance);
+    device = ignisCreateLogicalDevice(physicalDevice, &graphicsQueue);
+
     return true;
 }
 
@@ -130,6 +128,8 @@ void appRun()
 
 void appClose()
 {
+    if (device) vkDestroyDevice(device, NULL);
+
     if (enableValidationLayers) DestroyDebugUtilsMessengerEXT(instance, debugMessenger, NULL);
 
     if (extensions) free(extensions);
