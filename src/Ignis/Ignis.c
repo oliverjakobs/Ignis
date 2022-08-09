@@ -89,7 +89,8 @@ void _ignisErrorCallback(ignisErrorLevel level, const char* fmt, ...)
 	vsnprintf(buffer, buffer_size + 1, fmt, args);
 	va_end(args);
 
-	s_ignisErrorCallback(level, buffer);
+	if (s_ignisErrorCallback)
+		s_ignisErrorCallback(level, buffer);
 
 	ignisFree(buffer);
 }
