@@ -38,7 +38,7 @@ int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GL
 	return texture->name;
 }
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows, GLuint columns, int flip_on_load, IgnisTextureConfig* configptr)
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows, GLuint cols, int flip_on_load, IgnisTextureConfig* configptr)
 {
 	if (!texture) return IGNIS_FAILURE;
 
@@ -67,7 +67,9 @@ int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows,
 
 		texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
 		texture->rows = rows;
-		texture->cols = columns;
+		texture->cols = cols;
+		texture->width = texture->width / cols;
+		texture->height = texture->height / rows;
 
 		stbi_image_free(pixels);
 
