@@ -10,14 +10,14 @@ extern "C"
 
 typedef struct
 {
-	GLint internal_format;
-	GLenum format;
+    GLint internal_format;
+    GLenum format;
 
-	GLint min_filter;
-	GLint mag_filter;
+    GLint min_filter;
+    GLint mag_filter;
 
-	GLint wrap_s;
-	GLint wrap_t;
+    GLint wrap_s;
+    GLint wrap_t;
 } IgnisTextureConfig;
 
 GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, IgnisTextureConfig config);
@@ -26,13 +26,13 @@ GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, 
 
 typedef struct
 {
-	GLuint name;
+    GLuint name;
 
-	int width;
-	int height;
+    int width;
+    int height;
 
-	GLuint rows;
-	GLuint cols;
+    GLuint rows;
+    GLuint cols;
 } IgnisTexture2D;
 
 int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void* pixels, IgnisTextureConfig* config);

@@ -6,7 +6,7 @@ extern "C"
 {
 #endif
 
-#include "Core/Buffer.h"
+#include "core/buffer.h"
 
 typedef struct
 {

@@ -6,19 +6,19 @@ extern "C"
 {
 #endif
 
-#include "Core/Texture.h"
+#include "core/texture.h"
 
 #include "stb/stb_truetype.h"
 
 typedef struct
 {
-	int first_char;
-	int num_chars;
-	float height;
+    int first_char;
+    int num_chars;
+    float height;
 
-	stbtt_bakedchar* char_data;
+    stbtt_bakedchar* char_data;
 
-	IgnisTexture2D texture;
+    IgnisTexture2D texture;
 } IgnisFont;
 
 int ignisCreateFont(IgnisFont* font, const char* path, float size);

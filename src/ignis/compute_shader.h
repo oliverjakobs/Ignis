@@ -10,9 +10,9 @@ extern "C"
 
 typedef struct
 {
-	IgnisShader program;
+    IgnisShader program;
 
-	GLuint work_group_size[3];
+    GLuint work_group_size[3];
 } IgnisComputeShader;
 
 int ignisCreateComputeShader(IgnisComputeShader* shader, const char* path);

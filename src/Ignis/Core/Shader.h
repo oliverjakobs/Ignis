@@ -10,7 +10,7 @@ extern "C"
 
 typedef struct
 {
-	GLuint program;
+    GLuint program;
 } IgnisShader;
 
 int ignisCreateShadervf(IgnisShader* shader, const char* vert, const char* frag);

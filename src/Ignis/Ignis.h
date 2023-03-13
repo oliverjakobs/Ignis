@@ -27,31 +27,31 @@ extern "C"
 #define IGNIS_FAILURE	0
 
 /* Core */
-#include "Core/Texture.h"
-#include "Core/Shader.h"
-#include "Core/Buffer.h"
+#include "core/texture.h"
+#include "core/shader.h"
+#include "core/buffer.h"
 
 /* Font */
-#define IGNIS_FONT_FIRST_CHAR		32
-#define IGNIS_FONT_NUM_CHARS		96	/* ASCII 32..126 is 95 glyphs */
-#define IGNIS_FONT_BITMAP_WIDTH		512
-#define IGNIS_FONT_BITMAP_HEIGHT	512
+#define IGNIS_FONT_FIRST_CHAR       32
+#define IGNIS_FONT_NUM_CHARS        96  /* ASCII 32..126 is 95 glyphs */
+#define IGNIS_FONT_BITMAP_WIDTH     512
+#define IGNIS_FONT_BITMAP_HEIGHT    512
 
-#include "Font.h"
+#include "font.h"
 
 /* Vertex Array */
-#define IGNIS_BUFFER_ARRAY_INITIAL_SIZE		4
-#define IGNIS_BUFFER_ARRAY_GROWTH_FACTOR	2
+#define IGNIS_BUFFER_ARRAY_INITIAL_SIZE     4
+#define IGNIS_BUFFER_ARRAY_GROWTH_FACTOR    2
 
-#include "VertexArray.h"
+#include "vertex_array.h"
 
 int ignisInit(int debug);
 
 typedef enum
 {
-	IGNIS_WARN = 0,
-	IGNIS_ERROR = 1,
-	IGNIS_CRITICAL = 2
+    IGNIS_WARN = 0,
+    IGNIS_ERROR = 1,
+    IGNIS_CRITICAL = 2
 } ignisErrorLevel;
 
 void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*));
@@ -64,7 +64,7 @@ int ignisEnableBlend(GLenum sfactor, GLenum dfactor);
 /* Color */
 typedef struct
 {
-	float r, g, b, a;
+    float r, g, b, a;
 } IgnisColorRGBA;
 
 extern const IgnisColorRGBA IGNIS_WHITE;

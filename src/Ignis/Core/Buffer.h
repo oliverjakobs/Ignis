@@ -13,8 +13,8 @@ extern "C"
 /* Buffer */
 typedef struct
 {
-	GLuint name;
-	GLenum target;
+    GLuint name;
+    GLenum target;
 } IgnisBuffer;
 
 /* buffer generation */

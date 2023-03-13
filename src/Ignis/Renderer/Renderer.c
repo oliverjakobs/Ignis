@@ -1,4 +1,4 @@
-#include "Renderer.h"
+#include "renderer.h"
 
 /* ---------------------| shader |---------------------------------------------*/
 static const char* vert_src = "#version 330 core \n             \

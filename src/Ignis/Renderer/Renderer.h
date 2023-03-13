@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "../Ignis.h"
-#include "../VertexArray.h"
+#include "../ignis.h"
+#include "../vertex_array.h"
 
 #ifdef __cplusplus
 extern "C"
