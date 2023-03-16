@@ -7,14 +7,14 @@ int ignisCreateShadervf(IgnisShader* shader, const char* vert, const char* frag)
     char* vert_src = ignisReadFile(vert, NULL);
     if (!vert_src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", vert);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", vert);
         return IGNIS_FAILURE;
     }
 
     char* frag_src = ignisReadFile(frag, NULL);
     if (!frag_src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", frag);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", frag);
         return IGNIS_FAILURE;
     }
 
@@ -31,21 +31,21 @@ int ignisCreateShadervgf(IgnisShader* shader, const char* vert, const char* geom
     char* vert_src = ignisReadFile(vert, NULL);
     if (!vert_src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", vert);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", vert);
         return IGNIS_FAILURE;
     }
 
     char* geom_src = ignisReadFile(geom, NULL);
     if (!geom_src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", geom);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", geom);
         return IGNIS_FAILURE;
     }
 
     char* frag_src = ignisReadFile(frag, NULL);
     if (!frag_src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", frag);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", frag);
         return IGNIS_FAILURE;
     }
 
@@ -109,7 +109,7 @@ GLint ignisGetUniformLocation(const IgnisShader* shader, const char* name)
     GLint location = glGetUniformLocation(shader->program, name);
 
     if (location < 0) 
-        _ignisErrorCallback(IGNIS_WARN, "[SHADER] Uniform %s not found", name);
+        IGNIS_WARN("[SHADER] Uniform %s not found", name);
 
     return location;
 }
@@ -278,7 +278,7 @@ GLuint ignisCreateShaderProgram(GLenum* types, const char** sources, size_t coun
     glGetProgramiv(program, GL_LINK_STATUS, &result);
     if (result == GL_FALSE)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Linking Error");
+        IGNIS_ERROR("[SHADER] Linking Error");
         ignisPrintProgramLog(program);
         glDeleteProgram(program);
         return IGNIS_FAILURE;
@@ -290,7 +290,7 @@ GLuint ignisCreateShaderProgram(GLenum* types, const char** sources, size_t coun
     glGetProgramiv(program, GL_VALIDATE_STATUS, &result);
     if (result == GL_FALSE)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Validating Error");
+        IGNIS_ERROR("[SHADER] Validating Error");
         ignisPrintProgramLog(program);
         glDeleteProgram(program);
 
@@ -304,7 +304,7 @@ GLuint ignisCompileShader(GLenum type, const char* source)
 {
     if (source[0] == '\0')
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Shader source is missing for %s", ignisGetShaderType(type));
+        IGNIS_ERROR("[SHADER] Shader source is missing for %s", ignisGetShaderType(type));
         return IGNIS_FAILURE;
     }
 
@@ -317,7 +317,7 @@ GLuint ignisCompileShader(GLenum type, const char* source)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
     if (result == GL_FALSE)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Compiling Error (%s)", ignisGetShaderType(type));
+        IGNIS_ERROR("[SHADER] Compiling Error (%s)", ignisGetShaderType(type));
         ignisPrintShaderLog(shader);
         glDeleteShader(shader);
 
@@ -331,7 +331,7 @@ void ignisPrintShaderLog(GLuint shader)
 {
     if (!glIsShader(shader))
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to log: Object is not a shader");
+        IGNIS_ERROR("[SHADER] Failed to log: Object is not a shader");
         return;
     }
 
@@ -340,7 +340,7 @@ void ignisPrintShaderLog(GLuint shader)
     char* log_buffer = ignisMalloc(log_length);
     glGetShaderInfoLog(shader, log_length, &log_length, log_buffer);
 
-    _ignisErrorCallback(IGNIS_ERROR, "[SHADER] %.*s", log_length, log_buffer);
+    IGNIS_ERROR("[SHADER] %.*s", log_length, log_buffer);
 
     ignisFree(log_buffer);
 }
@@ -349,7 +349,7 @@ void ignisPrintProgramLog(GLuint program)
 {
     if (!glIsProgram(program))
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to log: Object is not a program");
+        IGNIS_ERROR("[SHADER] Failed to log: Object is not a program");
         return;
     }
 
@@ -358,7 +358,7 @@ void ignisPrintProgramLog(GLuint program)
     char* log_buffer = ignisMalloc(log_length);
     glGetShaderInfoLog(program, log_length, &log_length, log_buffer);
 
-    _ignisErrorCallback(IGNIS_ERROR, "[SHADER] %.*s", log_length, log_buffer);
+    IGNIS_ERROR("[SHADER] %.*s", log_length, log_buffer);
 
     ignisFree(log_buffer);
 }

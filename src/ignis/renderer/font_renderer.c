@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include "../ignis.h"
+
 /* ---------------------| shader |---------------------------------------------*/
 static const char* vert_src = "#version 330 core \n \
 layout(location = 0) in vec2 a_Pos;                 \
@@ -113,7 +115,7 @@ void ignisFontRendererRenderText(float x, float y, const char* text)
 {
     if (!render_data.font)
     {
-        _ignisErrorCallback(IGNIS_WARN, "[FontRenderer] No font bound");
+        IGNIS_WARN("[FontRenderer] No font bound");
         return;
     }
 
@@ -125,7 +127,7 @@ void ignisFontRendererRenderText(float x, float y, const char* text)
             ignisFontRendererFlush();
 
         if (!ignisFontLoadCharQuad(render_data.font, text[i], &x, &y, render_data.vertices, render_data.index))
-            _ignisErrorCallback(IGNIS_WARN, "[FontRenderer] Failed to load quad for %c", text[i]);
+            IGNIS_WARN("[FontRenderer] Failed to load quad for %c", text[i]);
 
         render_data.index += IGNIS_FONTRENDERER_QUAD_SIZE;
         render_data.quad_count++;

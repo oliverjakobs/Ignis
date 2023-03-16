@@ -61,9 +61,9 @@ int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows,
     {
         /* check if bpp and format matches */
         if (bpp == 4 && (config.format != GL_RGBA || config.internal_format != GL_RGBA8))
-            _ignisErrorCallback(IGNIS_WARN, "[Texture] Format mismatch for %s", path);
+            IGNIS_WARN("[Texture] Format mismatch for %s", path);
         else if (bpp == 3 && (config.format != GL_RGB || config.internal_format != GL_RGB8))
-            _ignisErrorCallback(IGNIS_WARN, "[Texture] Format mismatch for %s", path);
+            IGNIS_WARN("[Texture] Format mismatch for %s", path);
 
         texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
         texture->rows = rows;
@@ -76,7 +76,7 @@ int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows,
         return texture->name;
     }
 
-    _ignisErrorCallback(IGNIS_ERROR, "[Texture] Failed to load texture(%s): %s", path, stbi_failure_reason());
+    IGNIS_ERROR("[Texture] Failed to load texture(%s): %s", path, stbi_failure_reason());
 
     return IGNIS_FAILURE;
 }
@@ -120,7 +120,7 @@ GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, 
         glTexImage2D(target, 0, config.internal_format, width, height, 0, config.format, GL_UNSIGNED_BYTE, pixels);
         break;
     default:
-        _ignisErrorCallback(IGNIS_ERROR, "[Texture] Unsupported target (%d)", target);
+        IGNIS_ERROR("[Texture] Unsupported target (%d)", target);
         glDeleteTextures(1, &name);
         return IGNIS_FAILURE;
     }

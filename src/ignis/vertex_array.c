@@ -12,7 +12,7 @@ int ignisGenerateVertexArray(IgnisVertexArray* vao)
     vao->array_buffers = ignisMalloc(IGNIS_BUFFER_ARRAY_INITIAL_SIZE * sizeof(IgnisBuffer));
     if (!vao->array_buffers)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to allocate memeory for array buffers");
+        IGNIS_ERROR("[VertexArray] Failed to allocate memeory for array buffers");
         return IGNIS_FAILURE;
     }
 
@@ -57,7 +57,7 @@ int _ignisInsertArrayBuffer(IgnisVertexArray* vao, IgnisBuffer* buffer)
 
         if (!temp)
         {
-            _ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to grow dynamic buffer array");
+            IGNIS_ERROR("[VertexArray] Failed to grow dynamic buffer array");
             return IGNIS_FAILURE;
         }
 
@@ -76,7 +76,7 @@ int ignisAddArrayBuffer(IgnisVertexArray* vao, GLsizeiptr size, const void* data
     if (ignisGenerateArrayBuffer(&buffer, size, data, usage) == IGNIS_SUCCESS)
         return _ignisInsertArrayBuffer(vao, &buffer);
 
-    _ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to generate array buffer");
+    IGNIS_ERROR("[VertexArray] Failed to generate array buffer");
 
     return IGNIS_FAILURE;
 }
@@ -89,7 +89,7 @@ int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void
 
     if (ignisGenerateArrayBuffer(&buffer, size, data, usage) == IGNIS_FAILURE)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to generate array buffer");
+        IGNIS_ERROR("[VertexArray] Failed to generate array buffer");
         return IGNIS_FAILURE;
     }
 
@@ -122,7 +122,7 @@ int ignisLoadElementBuffer(IgnisVertexArray* vao, GLuint* indices, GLsizei count
         vao->element_count = count;
         return IGNIS_SUCCESS;
     }
-    _ignisErrorCallback(IGNIS_ERROR, "[VertexArray] Failed to generate element buffer");
+    IGNIS_ERROR("[VertexArray] Failed to generate element buffer");
     return IGNIS_FAILURE;
 }
 

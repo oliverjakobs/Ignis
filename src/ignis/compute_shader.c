@@ -7,7 +7,7 @@ int ignisCreateComputeShader(IgnisComputeShader* shader, const char* path)
     char* src = ignisReadFile(path, NULL);
     if (!src)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[SHADER] Failed to read file: %s", path);
+        IGNIS_ERROR("[SHADER] Failed to read file: %s", path);
         return IGNIS_FAILURE;
     }
 
@@ -20,8 +20,7 @@ int ignisCreateComputeShader(IgnisComputeShader* shader, const char* path)
 
 int ignisCreateComputeShaderSrc(IgnisComputeShader* shader, const char* src)
 {
-    if (!(shader && src))
-        return IGNIS_FAILURE;
+    if (!(shader && src)) return IGNIS_FAILURE;
 
     GLenum types[] = { GL_COMPUTE_SHADER };
     const char* sources[] = { src };

@@ -22,16 +22,35 @@ extern "C"
 #define IGNIS_VERSION_MINOR       0
 #define IGNIS_VERSION_REVISION    0
 
-/* defines */
-#define IGNIS_SUCCESS	1
-#define IGNIS_FAILURE	0
+/*
+ * --------------------------------------------------------------
+ *                          defines
+ * --------------------------------------------------------------
+ */
+#define IGNIS_SUCCESS   1
+#define IGNIS_FAILURE   0
 
-/* Core */
+#define IGNIS_PI        3.14159265359f
+
+#define IGNIS_VERTICES_PER_QUAD  4
+#define IGNIS_INDICES_PER_QUAD   6
+
+#define IGNIS_FILE_BUFFER_SIZE  1024
+
+/*
+ * --------------------------------------------------------------
+ *                          core
+ * --------------------------------------------------------------
+ */
 #include "core/texture.h"
 #include "core/shader.h"
 #include "core/buffer.h"
 
-/* Font */
+/*
+ * --------------------------------------------------------------
+ *                          font
+ * --------------------------------------------------------------
+ */
 #define IGNIS_FONT_FIRST_CHAR       32
 #define IGNIS_FONT_NUM_CHARS        96  /* ASCII 32..126 is 95 glyphs */
 #define IGNIS_FONT_BITMAP_WIDTH     512
@@ -39,54 +58,69 @@ extern "C"
 
 #include "font.h"
 
-/* Vertex Array */
+/*
+ * --------------------------------------------------------------
+ *                          vertex array
+ * --------------------------------------------------------------
+ */
 #define IGNIS_BUFFER_ARRAY_INITIAL_SIZE     4
 #define IGNIS_BUFFER_ARRAY_GROWTH_FACTOR    2
 
 #include "vertex_array.h"
 
+/*
+ * --------------------------------------------------------------
+ *                          renderer
+ * --------------------------------------------------------------
+ */
+
+/* batch renderer */
+#define IGNIS_BATCH2D_MAX_QUADS   32
+#define IGNIS_BATCH2D_VERTEX_SIZE (3 + 2 + 1)
+
+#define IGNIS_BATCH2D_QUAD_SIZE   (IGNIS_VERTICES_PER_QUAD * IGNIS_BATCH2D_VERTEX_SIZE)
+#define IGNIS_BATCH2D_INDEX_COUNT (IGNIS_BATCH2D_MAX_QUADS * IGNIS_INDICES_PER_QUAD)
+#define IGNIS_BATCH2D_BUFFER_SIZE (IGNIS_BATCH2D_MAX_QUADS * IGNIS_BATCH2D_QUAD_SIZE)
+
+#define IGNIS_BATCH2D_TEXTURES    8
+
+/* font renderer */
+#define IGNIS_FONTRENDERER_MAX_QUADS    32
+#define IGNIS_FONTRENDERER_VERTEX_SIZE  (2 + 2) /* 2f: vec; 2f: tex */
+
+#define IGNIS_FONTRENDERER_QUAD_SIZE    (IGNIS_VERTICES_PER_QUAD * IGNIS_FONTRENDERER_VERTEX_SIZE)
+#define IGNIS_FONTRENDERER_INDEX_COUNT  (IGNIS_FONTRENDERER_MAX_QUADS * IGNIS_INDICES_PER_QUAD)
+#define IGNIS_FONTRENDERER_BUFFER_SIZE  (IGNIS_FONTRENDERER_MAX_QUADS * IGNIS_FONTRENDERER_QUAD_SIZE)
+
+#define IGNIS_FONTRENDERER_MAX_LINE_LENGTH    128
+
+/* primitives */
+#define IGNIS_PRIMITIVES2D_MAX_VERTICES   3 * 1024
+#define IGNIS_PRIMITIVES2D_VERTEX_SIZE    (2 + 4) /* 2f: position; 4f color */
+#define IGNIS_PRIMITIVES2D_BUFFER_SIZE    (IGNIS_PRIMITIVES2D_VERTEX_SIZE * IGNIS_PRIMITIVES2D_MAX_VERTICES)
+
+ /* primitives circle */
+#define IGNIS_PRIMITIVES2D_PI             3.14159265359f
+#define IGNIS_PRIMITIVES2D_K_SEGMENTS     36
+#define IGNIS_PRIMITIVES2D_K_INCREMENT    2.0f * IGNIS_PRIMITIVES2D_PI / IGNIS_PRIMITIVES2D_K_SEGMENTS
+
+#include "renderer/renderer.h"
+
+/*
+ * --------------------------------------------------------------
+ *                          setup + utility
+ * --------------------------------------------------------------
+ */
 int ignisInit(int debug);
 
-typedef enum
-{
-    IGNIS_WARN = 0,
-    IGNIS_ERROR = 1,
-    IGNIS_CRITICAL = 2
-} ignisErrorLevel;
-
-void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*));
-void _ignisErrorCallback(ignisErrorLevel level, const char* fmt, ...);
-
-GLuint ignisGetOpenGLTypeSize(GLenum type);
-
 int ignisEnableBlend(GLenum sfactor, GLenum dfactor);
-
-/* Color */
-typedef struct
-{
-    float r, g, b, a;
-} IgnisColorRGBA;
-
-extern const IgnisColorRGBA IGNIS_WHITE;
-extern const IgnisColorRGBA IGNIS_BLACK;
-extern const IgnisColorRGBA IGNIS_RED;
-extern const IgnisColorRGBA IGNIS_GREEN;
-extern const IgnisColorRGBA IGNIS_BLUE;
-extern const IgnisColorRGBA IGNIS_CYAN;
-extern const IgnisColorRGBA IGNIS_MAGENTA;
-extern const IgnisColorRGBA IGNIS_YELLOW;
-
-extern const IgnisColorRGBA IGNIS_DARK_GREY;
-extern const IgnisColorRGBA IGNIS_LIGHT_GREY;
-
-IgnisColorRGBA* ignisBlendColorRGBA(IgnisColorRGBA* color, float alpha);
 
 void ignisSetClearColor(IgnisColorRGBA color);
 void ignisClearColorBuffer(IgnisColorRGBA color);
 
+GLuint ignisGetOpenGLTypeSize(GLenum type);
 char* ignisReadFile(const char* path, size_t* sizeptr);
 
-/* Infos */
 void ignisGetVersion(int* major, int* minor, int* rev);
 const char* ignisGetVersionString();
 const char* ignisGetGLVersion();
@@ -94,12 +128,45 @@ const char* ignisGetGLVendor();
 const char* ignisGetGLRenderer();
 const char* ignisGetGLSLVersion();
 
-/* Memory */
-typedef void* (*ignisMallocCallback) (void* allocator, size_t size);
-typedef void* (*ignisReallocCallback)(void* allocator, void* block, size_t size);
-typedef void  (*ignisFreeCallback)   (void* allocator, void* block);
+/*
+ * --------------------------------------------------------------
+ *                          logging
+ * --------------------------------------------------------------
+ */
+#ifndef IGNIS_DISABLE_LOGGING
 
-void ignisSetAllocator(void* allocator, ignisMallocCallback malloc, ignisReallocCallback realloc, ignisFreeCallback free);
+#define IGNIS_CRITICAL(s, ...)  _ignisError(IGNIS_LVL_CRITICAL, s, __VA_ARGS__)
+#define IGNIS_ERROR(s, ...)     _ignisError(IGNIS_LVL_CRITICAL, s, __VA_ARGS__)
+#define IGNIS_WARN(s, ...)      _ignisError(IGNIS_LVL_WARN, s, __VA_ARGS__)
+
+#else
+
+#define IGNIS_CRITICAL(s, ...)
+#define IGNIS_ERROR(s, ...)
+#define IGNIS_WARN(s, ...)
+
+#endif
+
+typedef enum
+{
+    IGNIS_LVL_WARN,
+    IGNIS_LVL_ERROR,
+    IGNIS_LVL_CRITICAL
+} ignisErrorLevel;
+
+void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*));
+void _ignisError(ignisErrorLevel level, const char* fmt, ...);
+
+/*
+ * --------------------------------------------------------------
+ *                          memory
+ * --------------------------------------------------------------
+ */
+typedef void* (*ignisMallocCb) (void* allocator, size_t size);
+typedef void* (*ignisReallocCb)(void* allocator, void* block, size_t size);
+typedef void  (*ignisFreeCb)   (void* allocator, void* block);
+
+void ignisSetAllocator(void* allocator, ignisMallocCb malloc, ignisReallocCb realloc, ignisFreeCb free);
 
 void* ignisMalloc(size_t size);
 void* ignisRealloc(void* block, size_t size);

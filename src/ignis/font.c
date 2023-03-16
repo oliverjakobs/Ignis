@@ -19,14 +19,14 @@ int ignisCreateFontConfig(IgnisFont* font, const char* path, float size, int fir
     char* buffer = ignisReadFile(path, NULL);
     if (!buffer)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[Font] Failed to read file: %s", path);
+        IGNIS_ERROR("[Font] Failed to read file: %s", path);
         return 0;
     }
 
     GLubyte* bitmap = ignisMalloc(sizeof(GLubyte) * bitmap_width * bitmap_height);
     if (!bitmap)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[Font] Failed to allocate memory for bitmap");
+        IGNIS_ERROR("[Font] Failed to allocate memory for bitmap");
         ignisFree(buffer);
         return 0;
     }
@@ -35,7 +35,7 @@ int ignisCreateFontConfig(IgnisFont* font, const char* path, float size, int fir
     stbtt_fontinfo info;
     if (!stbtt_InitFont(&info, buffer, 0))
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[Font] Failed to load font info: %s", path);
+        IGNIS_ERROR("[Font] Failed to load font info: %s", path);
         ignisFree(bitmap);
         ignisFree(buffer);
         return 0;
@@ -48,7 +48,7 @@ int ignisCreateFontConfig(IgnisFont* font, const char* path, float size, int fir
     font->char_data = ignisMalloc(sizeof(stbtt_bakedchar) * font->num_chars);
     if (!font->char_data)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[Font] Failed to allocate memory for char data");
+        IGNIS_ERROR("[Font] Failed to allocate memory for char data");
         ignisFree(bitmap);
         ignisFree(buffer);
         return 0;
@@ -73,7 +73,7 @@ int ignisCreateFontConfig(IgnisFont* font, const char* path, float size, int fir
     int tex_name = ignisGenerateTexture2D(&font->texture, bitmap_width, bitmap_height, bitmap, &config);
     if (tex_name == 0)
     {
-        _ignisErrorCallback(IGNIS_ERROR, "[Font] Failed to create texture");
+        IGNIS_ERROR("[Font] Failed to create texture");
         ignisFree(font->char_data);
     }
 

@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include "../ignis.h"
+
 typedef struct
 {
     IgnisShader shader;

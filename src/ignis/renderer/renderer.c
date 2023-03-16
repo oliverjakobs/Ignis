@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include "../ignis.h"
+
 /* ---------------------| shader |---------------------------------------------*/
 static const char* vert_src = "#version 330 core \n             \
 layout(location = 0) in vec2 a_Pos;                             \
@@ -104,36 +106,7 @@ void ignisRenderer2DRenderTextureModel(const IgnisTexture2D* texture, const floa
     ignisDrawQuadElements(&render_data.quad, GL_TRIANGLES);
 }
 
-/* ---------------------| utility |--------------------------------------------*/
-void ignisGenerateQuadIndices(GLuint* indices, size_t max)
-{
-    GLuint offset = 0;
-    for (size_t i = 0; i < max - 6; i += 6)
-    {
-        indices[i + 0] = offset + 0;
-        indices[i + 1] = offset + 1;
-        indices[i + 2] = offset + 2;
-
-        indices[i + 3] = offset + 2;
-        indices[i + 4] = offset + 3;
-        indices[i + 5] = offset + 0;
-
-        offset += 4;
-    }
-}
-
-
-IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t frame)
-{
-    IgnisRect src;
-    src.w = 1.0f / texture->cols;
-    src.h = 1.0f / texture->rows;
-    src.x = (frame % texture->cols) * src.w;
-    src.y = 1 - src.h - ((frame / texture->cols) * src.h);
-    return src;
-}
-/* ---------------------| !utility |-------------------------------------------*/
-
+/* ---------------------| quad |-----------------------------------------------*/
 int ignisCreateQuad(IgnisQuad* quad, GLfloat* vertices, size_t vertex_count, GLenum usage, IgnisBufferElement* layout, size_t layout_size, GLuint* indices, GLsizei element_count)
 {
     if (ignisGenerateVertexArray(&quad->vao) == IGNIS_SUCCESS)
@@ -169,6 +142,23 @@ int ignisCreateQuadTextured(IgnisQuad* quad, GLenum usage)
     return ignisCreateQuad(quad, vertices, 4 * 4, usage, layout, 2, indices, 6);
 }
 
+void ignisGenerateQuadIndices(GLuint* indices, size_t max)
+{
+    GLuint offset = 0;
+    for (size_t i = 0; i < max - 6; i += 6)
+    {
+        indices[i + 0] = offset + 0;
+        indices[i + 1] = offset + 1;
+        indices[i + 2] = offset + 2;
+
+        indices[i + 3] = offset + 2;
+        indices[i + 4] = offset + 3;
+        indices[i + 5] = offset + 0;
+
+        offset += 4;
+    }
+}
+
 void ignisDeleteQuad(IgnisQuad* quad)
 {
     ignisDeleteVertexArray(&quad->vao);
@@ -189,4 +179,34 @@ void ignisDrawQuadElementsInstanced(IgnisQuad* quad, GLenum mode, GLsizei primco
 {
     ignisBindQuad(quad);
     glDrawElementsInstanced(mode, quad->vao.element_count, GL_UNSIGNED_INT, NULL, primcount);
+}
+
+/* ---------------------| rect |-----------------------------------------------*/
+IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t frame)
+{
+    IgnisRect src;
+    src.w = 1.0f / texture->cols;
+    src.h = 1.0f / texture->rows;
+    src.x = (frame % texture->cols) * src.w;
+    src.y = 1 - src.h - ((frame / texture->cols) * src.h);
+    return src;
+}
+
+/* ---------------------| color |----------------------------------------------*/
+const IgnisColorRGBA IGNIS_WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
+const IgnisColorRGBA IGNIS_BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
+const IgnisColorRGBA IGNIS_RED = { 1.0f, 0.0f, 0.0f, 1.0f };
+const IgnisColorRGBA IGNIS_GREEN = { 0.0f, 1.0f, 0.0f, 1.0f };
+const IgnisColorRGBA IGNIS_BLUE = { 0.0f, 0.0f, 1.0f, 1.0f };
+const IgnisColorRGBA IGNIS_CYAN = { 0.0f, 1.0f, 1.0f, 1.0f };
+const IgnisColorRGBA IGNIS_MAGENTA = { 1.0f, 0.0f, 1.0f, 1.0f };
+const IgnisColorRGBA IGNIS_YELLOW = { 1.0f, 1.0f, 0.0f, 1.0f };
+
+const IgnisColorRGBA IGNIS_DARK_GREY = { 0.2f, 0.2f, 0.2f, 1.0f };
+const IgnisColorRGBA IGNIS_LIGHT_GREY = { 0.75f, 0.75f, 0.75f, 1.0f };
+
+IgnisColorRGBA* ignisBlendColorRGBA(IgnisColorRGBA* color, float alpha)
+{
+    color->a = alpha;
+    return color;
 }

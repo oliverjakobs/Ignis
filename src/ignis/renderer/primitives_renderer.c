@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include "../ignis.h"
+
 #include <math.h>
 
 /* ---------------------| shader |---------------------------------------------*/
@@ -168,18 +170,6 @@ void ignisPrimitives2DRenderCircle(float x, float y, float radius, IgnisColorRGB
         v1x = v2x;
         v1y = v2y;
     }
-}
-
-void ignisPrimitives2DRenderRhombus(float x, float y, float width, float height, IgnisColorRGBA color)
-{
-    const float vertices[] = {
-        x,               y - height * .5f,
-        x - width * .5f, y,
-        x,               y + height * .5f,
-        x + width * .5f, y
-    };
-
-    ignisPrimitives2DRenderPoly(vertices, 8, 0.0f, 0.0f, color);
 }
 
 void ignisPrimitives2DFillTriangle(float x0, float y0, float x1, float y1, float x2, float y2, IgnisColorRGBA color)
