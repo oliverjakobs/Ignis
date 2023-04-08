@@ -65,15 +65,15 @@ void ignisFontRendererInit()
     render_data.font = NULL;
     render_data.color = IGNIS_WHITE;
 
-    ignisCreateShaderSrcvf(&render_data.shader, vert_src, frag_src);
+    render_data.shader = ignisCreateShaderSrcvf(vert_src, frag_src);
 
-    render_data.uniform_location_proj = ignisGetUniformLocation(&render_data.shader, "u_Proj");
-    render_data.uniform_location_color = ignisGetUniformLocation(&render_data.shader, "u_Color");
+    render_data.uniform_location_proj = ignisGetUniformLocation(render_data.shader, "u_Proj");
+    render_data.uniform_location_color = ignisGetUniformLocation(render_data.shader, "u_Color");
 }
 
 void ignisFontRendererDestroy()
 {
-    ignisDeleteShader(&render_data.shader);
+    ignisDeleteShader(render_data.shader);
     ignisDeleteVertexArray(&render_data.vao);
 }
 
@@ -87,12 +87,12 @@ void ignisFontRendererBindFontColor(IgnisFont* font, IgnisColorRGBA color)
     render_data.font = font;
     render_data.color = color;
 
-    ignisSetUniform4fl(&render_data.shader, render_data.uniform_location_color, &render_data.color.r);
+    ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, &render_data.color.r);
 }
 
 void ignisFontRendererSetProjection(const float* proj)
 {
-    ignisSetUniformMat4l(&render_data.shader, render_data.uniform_location_proj, proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_proj, proj);
 }
 
 void ignisFontRendererFlush()
@@ -103,7 +103,7 @@ void ignisFontRendererFlush()
     ignisBindVertexArray(&render_data.vao);
     ignisBufferSubData(&render_data.vao.array_buffers[0], 0, render_data.index * sizeof(float), render_data.vertices);
 
-    ignisUseShader(&render_data.shader);
+    ignisUseShader(render_data.shader);
 
     glDrawElements(GL_TRIANGLES, IGNIS_INDICES_PER_QUAD * render_data.quad_count, GL_UNSIGNED_INT, NULL);
 

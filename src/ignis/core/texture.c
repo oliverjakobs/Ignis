@@ -16,8 +16,6 @@ int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void*
     texture->name = ignisGenerateTexture(GL_TEXTURE_2D, width, height, pixels, config);
     texture->width = width;
     texture->height = height;
-    texture->rows = 1;
-    texture->cols = 1;
 
     return texture->name;
 }
@@ -32,13 +30,11 @@ int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GL
 
     texture->width = width;
     texture->height = height;
-    texture->rows = 1;
-    texture->cols = 1;
 
     return texture->name;
 }
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows, GLuint cols, int flip_on_load, IgnisTextureConfig* configptr)
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, int flip_on_load, IgnisTextureConfig* configptr)
 {
     if (!texture) return IGNIS_FAILURE;
 
@@ -66,10 +62,8 @@ int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows,
             IGNIS_WARN("[Texture] Format mismatch for %s", path);
 
         texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
-        texture->rows = rows;
-        texture->cols = cols;
-        texture->width = texture->width / cols;
-        texture->height = texture->height / rows;
+        texture->width = texture->width;
+        texture->height = texture->height;
 
         stbi_image_free(pixels);
 

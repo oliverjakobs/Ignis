@@ -32,7 +32,7 @@ typedef struct
     IgnisQuad quad;
 
     IgnisShader default_shader;
-    IgnisShader* shader;
+    IgnisShader shader;
 
     GLint uniform_location_view_proj;
     GLint uniform_location_color;
@@ -45,20 +45,20 @@ void ignisRenderer2DInit()
 {
     ignisCreateQuadTextured(&render_data.quad, GL_STATIC_DRAW);
 
-    ignisCreateShaderSrcvf(&render_data.default_shader, vert_src, frag_src);
-    ignisRenderer2DSetShader(NULL);
+    render_data.default_shader = ignisCreateShaderSrcvf(vert_src, frag_src);
+    ignisRenderer2DSetShader(0);
 }
 
 void ignisRenderer2DDestroy()
 {
-    ignisDeleteShader(&render_data.default_shader);
+    ignisDeleteShader(render_data.default_shader);
     ignisDeleteQuad(&render_data.quad);
 }
 
-void ignisRenderer2DSetShader(IgnisShader* shader)
+void ignisRenderer2DSetShader(IgnisShader shader)
 {
     if (shader) render_data.shader = shader;
-    else        render_data.shader = &render_data.default_shader;
+    else        render_data.shader = render_data.default_shader;
 
     render_data.uniform_location_view_proj = ignisGetUniformLocation(render_data.shader, "u_ViewProj");
     render_data.uniform_location_color = ignisGetUniformLocation(render_data.shader, "u_Color");
@@ -182,13 +182,13 @@ void ignisDrawQuadElementsInstanced(IgnisQuad* quad, GLenum mode, GLsizei primco
 }
 
 /* ---------------------| rect |-----------------------------------------------*/
-IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t frame)
+IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t cols, uint32_t rows, uint32_t frame)
 {
     IgnisRect src;
-    src.w = 1.0f / texture->cols;
-    src.h = 1.0f / texture->rows;
-    src.x = (frame % texture->cols) * src.w;
-    src.y = 1 - src.h - ((frame / texture->cols) * src.h);
+    src.w = 1.0f / cols;
+    src.h = 1.0f / rows;
+    src.x = (frame % cols) * src.w;
+    src.y = 1 - src.h - ((frame / cols) * src.h);
     return src;
 }
 

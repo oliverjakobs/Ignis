@@ -37,16 +37,16 @@ void ignisBatch2DInit(const char* vert, const char* frag)
 
     ignisLoadElementBuffer(&render_data.vao, indices, IGNIS_BATCH2D_INDEX_COUNT, GL_STATIC_DRAW);
 
-    ignisCreateShadervf(&render_data.shader, vert, frag);
+    render_data.shader = ignisCreateShadervf(vert, frag);
 
-    ignisUseShader(&render_data.shader);
+    ignisUseShader(render_data.shader);
     int samplers[IGNIS_BATCH2D_TEXTURES];
     for (int i = 0; i < IGNIS_BATCH2D_TEXTURES; i++)
         samplers[i] = i;
 
-    ignisSetUniform1iv(&render_data.shader, "u_Textures", IGNIS_BATCH2D_TEXTURES, samplers);
+    ignisSetUniform1iv(render_data.shader, "u_Textures", IGNIS_BATCH2D_TEXTURES, samplers);
 
-    render_data.uniform_location_view_proj = ignisGetUniformLocation(&render_data.shader, "u_ViewProjection");
+    render_data.uniform_location_view_proj = ignisGetUniformLocation(render_data.shader, "u_ViewProjection");
 
     render_data.vertex_index = 0;
     render_data.quad_count = 0;
@@ -56,13 +56,13 @@ void ignisBatch2DInit(const char* vert, const char* frag)
 
 void ignisBatch2DDestroy()
 {
-    ignisDeleteShader(&render_data.shader);
+    ignisDeleteShader(render_data.shader);
     ignisDeleteVertexArray(&render_data.vao);
 }
 
 void ignisBatch2DSetViewProjection(const float* view_proj)
 {
-    ignisSetUniformMat4l(&render_data.shader, render_data.uniform_location_view_proj, view_proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, view_proj);
 }
 
 void ignisBatch2DFlush()
@@ -72,7 +72,7 @@ void ignisBatch2DFlush()
     ignisBindVertexArray(&render_data.vao);
     ignisBufferSubData(&render_data.vao.array_buffers[0], 0, render_data.vertex_index * sizeof(float), render_data.vertices);
 
-    ignisUseShader(&render_data.shader);
+    ignisUseShader(render_data.shader);
 
     /* bind textures */
     for (size_t i = 0; i < render_data.texture_slot_index; i++)
@@ -122,7 +122,7 @@ void ignisBatch2DRenderTexture(const IgnisTexture2D* texture, IgnisRect rect)
 
 void ignisBatch2DRenderTextureFrame(const IgnisTexture2D* texture, IgnisRect rect, uint32_t frame)
 {
-    ignisBatch2DRenderTextureSrc(texture, rect, ignisGetTexture2DSrcRect(texture, frame));
+    ignisBatch2DRenderTextureSrc(texture, rect, ignisGetTexture2DSrcRect(texture, 1, 1, frame));
 }
 
 void ignisBatch2DRenderTextureSrc(const IgnisTexture2D* texture, IgnisRect rect, IgnisRect src)

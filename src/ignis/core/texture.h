@@ -27,18 +27,13 @@ GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, 
 typedef struct
 {
     GLuint name;
-
-    int width;
-    int height;
-
-    GLuint rows;
-    GLuint cols;
+    int width, height;
 } IgnisTexture2D;
 
 int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void* pixels, IgnisTextureConfig* config);
 int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GLenum internal_format);
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, GLuint rows, GLuint cols, int flip_on_load, IgnisTextureConfig* config);
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, int flip_on_load, IgnisTextureConfig* config);
 
 void ignisDeleteTexture2D(IgnisTexture2D* texture);
 

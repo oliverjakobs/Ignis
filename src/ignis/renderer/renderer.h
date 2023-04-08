@@ -46,7 +46,7 @@ typedef struct
     float x, y, w, h;
 } IgnisRect;
 
-IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t frame);
+IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t cols, uint32_t rows, uint32_t frame);
 
 /*
  * --------------------------------------------------------------
@@ -139,7 +139,7 @@ void ignisPrimitives2DFillCircle(float x, float y, float radius, IgnisColorRGBA 
 void ignisRenderer2DInit();
 void ignisRenderer2DDestroy();
 
-void ignisRenderer2DSetShader(IgnisShader* shader);
+void ignisRenderer2DSetShader(IgnisShader shader);
 void ignisRenderer2DSetViewProjection(const float* view_proj);
 
 void ignisRenderer2DRenderTexture(const IgnisTexture2D* texture, float x, float y);

@@ -61,7 +61,7 @@ static void ignisPrimitivesDataFlush(IgnisPrimitives2D* prim, GLenum mode)
     ignisBindVertexArray(&prim->vao);
     ignisBufferSubData(&prim->vao.array_buffers[0], 0, prim->index * sizeof(float), prim->vertices);
 
-    ignisUseShader(&render_data.shader);
+    ignisUseShader(render_data.shader);
 
     glDrawArrays(mode, 0, prim->index / IGNIS_PRIMITIVES2D_VERTEX_SIZE);
 
@@ -84,20 +84,20 @@ void ignisPrimitives2DInit()
     ignisPrimitivesDataCreate(&render_data.lines);
     ignisPrimitivesDataCreate(&render_data.triangles);
 
-    ignisCreateShaderSrcvf(&render_data.shader, vert_src, frag_src);
-    render_data.uniform_location_view_proj = ignisGetUniformLocation(&render_data.shader, "u_ViewProj");
+    render_data.shader = ignisCreateShaderSrcvf(vert_src, frag_src);
+    render_data.uniform_location_view_proj = ignisGetUniformLocation(render_data.shader, "u_ViewProj");
 }
 
 void ignisPrimitives2DDestroy()
 {
     ignisDeleteVertexArray(&render_data.lines.vao);
     ignisDeleteVertexArray(&render_data.triangles.vao);
-    ignisDeleteShader(&render_data.shader);
+    ignisDeleteShader(render_data.shader);
 }
 
 void ignisPrimitives2DSetViewProjection(const float* view_proj)
 {
-    ignisSetUniformMat4l(&render_data.shader, render_data.uniform_location_view_proj, view_proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, view_proj);
 }
 
 void ignisPrimitives2DFlush()

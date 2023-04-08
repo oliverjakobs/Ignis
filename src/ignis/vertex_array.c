@@ -29,15 +29,12 @@ int ignisGenerateVertexArray(IgnisVertexArray* vao)
 void ignisDeleteVertexArray(IgnisVertexArray* vao)
 {
     for (size_t i = 0; i < vao->array_buffer_count; i++)
-    {
         ignisDeleteBuffer(&vao->array_buffers[i]);
-    }
 
     ignisFree(vao->array_buffers);
     vao->array_buffer_count = vao->array_buffer_capacity = 0;
 
-    if (vao->element_buffer.target == GL_ELEMENT_ARRAY_BUFFER)
-        ignisDeleteBuffer(&vao->element_buffer);
+    if (vao->element_buffer.name) ignisDeleteBuffer(&vao->element_buffer);
 
     glDeleteVertexArrays(1, &vao->name);
     glBindVertexArray(0);
@@ -77,7 +74,6 @@ int ignisAddArrayBuffer(IgnisVertexArray* vao, GLsizeiptr size, const void* data
         return _ignisInsertArrayBuffer(vao, &buffer);
 
     IGNIS_ERROR("[VertexArray] Failed to generate array buffer");
-
     return IGNIS_FAILURE;
 }
 
@@ -96,17 +92,17 @@ int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void
     if (_ignisInsertArrayBuffer(vao, &buffer) == IGNIS_FAILURE)
         return IGNIS_FAILURE;
 
-    unsigned int stride = 0;
+    GLsizei stride = 0;
     for (size_t i = 0; i < count; i++)
     {
         stride += ignisGetOpenGLTypeSize(layout[i].type) * layout[i].count;
     }
 
-    unsigned offset = 0;
+    GLsizei offset = 0;
     for (size_t i = 0; i < count; i++)
     {
         glEnableVertexAttribArray(vertex_attrib_index);
-        glVertexAttribPointer(vertex_attrib_index, layout[i].count, layout[i].type, layout[i].normalized ? GL_TRUE : GL_FALSE, stride, IGNIS_BUFFER_OFFSET((intptr_t)offset));
+        glVertexAttribPointer(vertex_attrib_index, layout[i].count, layout[i].type, layout[i].normalized, stride, IGNIS_BUFFER_OFFSET(offset));
 
         offset += ignisGetOpenGLTypeSize(layout[i].type) * layout[i].count;
         vertex_attrib_index++;
@@ -115,7 +111,7 @@ int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void
     return IGNIS_SUCCESS;
 }
 
-int ignisLoadElementBuffer(IgnisVertexArray* vao, GLuint* indices, GLsizei count, GLenum usage)
+int ignisLoadElementBuffer(IgnisVertexArray* vao, const GLuint* indices, GLsizei count, GLenum usage)
 {
     if (ignisGenerateElementBuffer(&vao->element_buffer, count, indices, usage) == IGNIS_SUCCESS)
     {

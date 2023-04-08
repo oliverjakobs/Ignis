@@ -25,17 +25,17 @@ int ignisCreateComputeShaderSrc(IgnisComputeShader* shader, const char* src)
     GLenum types[] = { GL_COMPUTE_SHADER };
     const char* sources[] = { src };
 
-    shader->program.program = ignisCreateShaderProgram(types, sources, 1);
+    shader->program = ignisCreateGLShaderProgram(types, sources, 1);
 
     /* set shader info */
-    glGetProgramiv(shader->program.program, GL_COMPUTE_WORK_GROUP_SIZE, shader->work_group_size);
+    glGetProgramiv(shader->program, GL_COMPUTE_WORK_GROUP_SIZE, shader->work_group_size);
 
     return IGNIS_SUCCESS;
 }
 
 void ignisDeleteComputeShader(IgnisComputeShader* shader)
 {
-    ignisDeleteShader(&shader->program);
+    ignisDeleteShader(shader->program);
 }
 
 void ignisDispatchCompute(IgnisComputeShader* shader, GLuint groups_x, GLuint groups_y, GLuint groups_z)
