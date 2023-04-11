@@ -70,7 +70,19 @@ int ignisInit(int debug)
         }
     }
 
+    /* set up default texture */
+    unsigned char default_pixels[4] = { 255, 255, 255, 255 };
+    if (!ignisGenerateTexture2D(&IGNIS_DEFAULT_TEXTURE2D, 1, 1, default_pixels, NULL))
+    {
+        IGNIS_WARN("[Ignis] Failed to create default texture2D");
+    }
+
     return 1;
+}
+
+void ignisDestroy()
+{
+    ignisDeleteTexture2D(&IGNIS_DEFAULT_TEXTURE2D);
 }
 
 static void (*s_ignisErrorCb)(ignisErrorLevel level, const char* fmt);
@@ -168,6 +180,24 @@ char* ignisReadFile(const char* path, size_t* sizeptr)
     return buffer;
 }
 
+const char* ignisTextFormat(const char* fmt, ...)
+{
+    static char buffers[IGNIS_TEXTFORMAT_BUFFERS][IGNIS_FORMAT_BUFFER_LENGTH] = { 0 };
+    static uint8_t index = 0;
+
+    char* current = buffers[index++];
+    memset(current, 0, IGNIS_FORMAT_BUFFER_LENGTH);
+
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(current, IGNIS_FORMAT_BUFFER_LENGTH, fmt, args);
+    va_end(args);
+
+    // reset index after IGNIS_TEXTFORMAT_BUFFERS calls
+    if (index >= IGNIS_TEXTFORMAT_BUFFERS) index = 0;
+    return current;
+}
+
 void ignisGetVersion(int* major, int* minor, int* rev)
 {
     if (major != NULL) *major = IGNIS_VERSION_MAJOR;
@@ -216,3 +246,5 @@ void ignisFree(void* block)
     if (ignis_free) ignis_free(ignis_allocator, block);
     else            free(block);
 }
+
+IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D = { 0 };

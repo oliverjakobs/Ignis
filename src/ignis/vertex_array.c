@@ -101,8 +101,7 @@ int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void
     GLsizei offset = 0;
     for (size_t i = 0; i < count; i++)
     {
-        glEnableVertexAttribArray(vertex_attrib_index);
-        glVertexAttribPointer(vertex_attrib_index, layout[i].count, layout[i].type, layout[i].normalized, stride, IGNIS_BUFFER_OFFSET(offset));
+        ignisVertexAttribPointer(vertex_attrib_index, layout[i].count, layout[i].type, layout[i].normalized, stride, IGNIS_BUFFER_OFFSET(offset));
 
         offset += ignisGetOpenGLTypeSize(layout[i].type) * layout[i].count;
         vertex_attrib_index++;
