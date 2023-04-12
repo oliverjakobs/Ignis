@@ -39,6 +39,10 @@ void ignisDeleteTexture2D(IgnisTexture2D* texture);
 
 void ignisBindTexture2D(const IgnisTexture2D* texture, GLuint slot);
 
+/* default texture */
+extern IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D;
+int ignisIsDefaultTexture2D(IgnisTexture2D tex);
+
 #ifdef __cplusplus
 }
 #endif

@@ -246,5 +246,3 @@ void ignisFree(void* block)
     if (ignis_free) ignis_free(ignis_allocator, block);
     else            free(block);
 }
-
-IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D = { 0 };

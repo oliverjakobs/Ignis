@@ -46,8 +46,6 @@ extern "C"
 #include "core/shader.h"
 #include "core/buffer.h"
 
-extern IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D;
-
 /*
  * --------------------------------------------------------------
  *                          font
@@ -125,7 +123,6 @@ int ignisEnableBlend(GLenum sfactor, GLenum dfactor);
 
 void ignisSetClearColor(IgnisColorRGBA color);
 void ignisClearColorBuffer(IgnisColorRGBA color);
-
 
 GLuint ignisGetOpenGLTypeSize(GLenum type);
 char* ignisReadFile(const char* path, size_t* sizeptr);

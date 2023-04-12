@@ -129,3 +129,10 @@ void ignisBindTexture2D(const IgnisTexture2D* texture, GLuint slot)
     glBindTexture(GL_TEXTURE_2D, (texture) ? texture->name : 0);
 }
 
+IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D = { 0 };
+
+int ignisIsDefaultTexture2D(IgnisTexture2D tex)
+{
+    return IGNIS_DEFAULT_TEXTURE2D.name == tex.name;
+}
+
