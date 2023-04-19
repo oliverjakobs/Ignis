@@ -64,12 +64,12 @@ void ignisRenderer2DSetShader(IgnisShader shader)
     render_data.uniform_location_color = ignisGetUniformLocation(render_data.shader, "u_Color");
     render_data.uniform_location_model = ignisGetUniformLocation(render_data.shader, "u_Model");
 
-    ignisSetUniform1i(render_data.shader, "u_Texture", 0);
+    ignisSetUniformi(render_data.shader, "u_Texture", 0);
 }
 
 void ignisRenderer2DSetViewProjection(const float* view_proj)
 {
-    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, view_proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, 1, view_proj);
 }
 
 void ignisRenderer2DRenderTexture(const IgnisTexture2D* texture, float x, float y)
@@ -98,8 +98,8 @@ void ignisRenderer2DRenderTextureModel(const IgnisTexture2D* texture, const floa
 {
     ignisUseShader(render_data.shader);
 
-    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_model, model);
-    ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, &color.r);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_model, 1, model);
+    ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, 1, &color.r);
 
     ignisBindTexture2D(texture, 0);
 

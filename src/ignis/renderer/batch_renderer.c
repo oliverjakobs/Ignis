@@ -44,7 +44,7 @@ void ignisBatch2DInit(const char* vert, const char* frag)
     for (int i = 0; i < IGNIS_BATCH2D_TEXTURES; i++)
         samplers[i] = i;
 
-    ignisSetUniform1iv(render_data.shader, "u_Textures", IGNIS_BATCH2D_TEXTURES, samplers);
+    ignisSetUniform1i(render_data.shader, "u_Textures", IGNIS_BATCH2D_TEXTURES, samplers);
 
     render_data.uniform_location_view_proj = ignisGetUniformLocation(render_data.shader, "u_ViewProjection");
 
@@ -62,7 +62,7 @@ void ignisBatch2DDestroy()
 
 void ignisBatch2DSetViewProjection(const float* view_proj)
 {
-    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, view_proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, 1, view_proj);
 }
 
 void ignisBatch2DFlush()

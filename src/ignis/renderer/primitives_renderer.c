@@ -97,7 +97,7 @@ void ignisPrimitives2DDestroy()
 
 void ignisPrimitives2DSetViewProjection(const float* view_proj)
 {
-    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, view_proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_view_proj, 1, view_proj);
 }
 
 void ignisPrimitives2DFlush()

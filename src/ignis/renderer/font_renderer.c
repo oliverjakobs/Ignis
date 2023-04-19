@@ -87,12 +87,12 @@ void ignisFontRendererBindFontColor(IgnisFont* font, IgnisColorRGBA color)
     render_data.font = font;
     render_data.color = color;
 
-    ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, &render_data.color.r);
+    ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, 1, &render_data.color.r);
 }
 
 void ignisFontRendererSetProjection(const float* proj)
 {
-    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_proj, proj);
+    ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_proj, 1, proj);
 }
 
 void ignisFontRendererFlush()
