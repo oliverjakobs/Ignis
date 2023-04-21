@@ -96,7 +96,7 @@ extern "C"
 
 /* primitives */
 #define IGNIS_PRIMITIVES2D_MAX_VERTICES   3 * 1024
-#define IGNIS_PRIMITIVES2D_VERTEX_SIZE    (2 + 4) /* 2f: position; 4f color */
+#define IGNIS_PRIMITIVES2D_VERTEX_SIZE    (3 + 4) /* 2f: position; 4f color */
 #define IGNIS_PRIMITIVES2D_BUFFER_SIZE    (IGNIS_PRIMITIVES2D_VERTEX_SIZE * IGNIS_PRIMITIVES2D_MAX_VERTICES)
 
  /* primitives circle */
