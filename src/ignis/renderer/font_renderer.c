@@ -48,11 +48,11 @@ static IgnisFontRendererStorage render_data;
 
 void ignisFontRendererInit()
 {
-    ignisGenerateVertexArray(&render_data.vao);
+    ignisGenerateVertexArray(&render_data.vao, 1);
 
     size_t size = IGNIS_FONTRENDERER_BUFFER_SIZE * sizeof(float);
     IgnisBufferElement layout[] = { {GL_FLOAT, 2, GL_FALSE}, {GL_FLOAT, 2, GL_FALSE} };
-    ignisAddArrayBufferLayout(&render_data.vao, size, NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
+    ignisLoadArrayBufferLayout(&render_data.vao, 0, size, NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
 
     GLuint indices[IGNIS_FONTRENDERER_INDEX_COUNT];
     ignisGenerateQuadIndices(indices, IGNIS_FONTRENDERER_INDEX_COUNT);

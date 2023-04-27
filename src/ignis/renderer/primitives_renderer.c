@@ -46,10 +46,10 @@ static IgnisPrimitivesRendererStorage render_data;
 
 static void ignisPrimitivesDataCreate(IgnisPrimitivesData* prim)
 {
-    IgnisBufferElement layout[] = { {GL_FLOAT, 3, GL_FALSE}, {GL_FLOAT, 4, GL_FALSE} };
+    ignisGenerateVertexArray(&prim->vao, 1);
 
-    ignisGenerateVertexArray(&prim->vao);
-    ignisAddArrayBufferLayout(&prim->vao, IGNIS_PRIMITIVES2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
+    IgnisBufferElement layout[] = { {GL_FLOAT, 3, GL_FALSE}, {GL_FLOAT, 4, GL_FALSE} };
+    ignisLoadArrayBufferLayout(&prim->vao, 0, IGNIS_PRIMITIVES2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
 
     prim->index = 0;
 }

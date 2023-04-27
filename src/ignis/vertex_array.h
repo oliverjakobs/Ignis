@@ -22,19 +22,18 @@ typedef struct
     /* dynamic buffer array */
     IgnisBuffer* array_buffers;
     size_t array_buffer_count;
-    size_t array_buffer_capacity;
 
     IgnisBuffer element_buffer;
-    GLsizei element_count;
+    size_t element_count;
 } IgnisVertexArray;
 
-int ignisGenerateVertexArray(IgnisVertexArray* vao);
+int ignisGenerateVertexArray(IgnisVertexArray* vao, size_t buffer_count);
 void ignisDeleteVertexArray(IgnisVertexArray* vao);
 
 void ignisBindVertexArray(IgnisVertexArray* vao);
 
-int ignisAddArrayBuffer(IgnisVertexArray* vao, GLsizeiptr size, const void* data, GLenum usage);
-int ignisAddArrayBufferLayout(IgnisVertexArray* vao, GLsizeiptr size, const void* data, GLenum usage, GLuint vertex_attrib_index, IgnisBufferElement* layout, size_t count);
+int ignisLoadArrayBuffer(IgnisVertexArray* vao, size_t index, GLsizeiptr size, const void* data, GLenum usage);
+int ignisLoadArrayBufferLayout(IgnisVertexArray* vao, size_t index, GLsizeiptr size, const void* data, GLenum usage, GLuint vertex_attrib_index, IgnisBufferElement* layout, size_t count);
 int ignisLoadElementBuffer(IgnisVertexArray* vao, const GLuint* indices, GLsizei count, GLenum usage);
 
 /* vertex attrib pointer */

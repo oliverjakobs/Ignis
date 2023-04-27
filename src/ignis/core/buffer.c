@@ -76,6 +76,12 @@ int ignisGenerateRenderBuffer(IgnisBuffer* buffer)
 
 void ignisDeleteBuffer(IgnisBuffer* buffer)
 {
+    if (!buffer->name)
+    {
+        IGNIS_WARN("[Buffer] Trying to delete uninitialized buffer");
+        return;
+    }
+
     switch (buffer->target)
     {
     case GL_TEXTURE_BUFFER:

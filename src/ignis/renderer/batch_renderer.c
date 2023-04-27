@@ -21,7 +21,7 @@ static IgnisBatch2DStorage render_data;
 
 void ignisBatch2DInit(const char* vert, const char* frag)
 {
-    ignisGenerateVertexArray(&render_data.vao);
+    ignisGenerateVertexArray(&render_data.vao, 1);
 
     IgnisBufferElement layout[] =
     {
@@ -30,7 +30,7 @@ void ignisBatch2DInit(const char* vert, const char* frag)
         {GL_FLOAT, 1, GL_FALSE}     /* Texture index */
     };
 
-    ignisAddArrayBufferLayout(&render_data.vao, IGNIS_BATCH2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 3);
+    ignisLoadArrayBufferLayout(&render_data.vao, 0, IGNIS_BATCH2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 3);
 
     GLuint indices[IGNIS_BATCH2D_INDEX_COUNT];
     ignisGenerateQuadIndices(indices, IGNIS_BATCH2D_INDEX_COUNT);
