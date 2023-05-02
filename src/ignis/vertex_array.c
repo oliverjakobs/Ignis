@@ -100,7 +100,11 @@ int ignisLoadArrayBufferLayout(IgnisVertexArray* vao, size_t index, GLsizeiptr s
 
 int ignisLoadElementBuffer(IgnisVertexArray* vao, const GLuint* indices, GLsizei count, GLenum usage)
 {
-    if (vao->element_buffer.name) return IGNIS_FAILURE;
+    if (vao->element_buffer.name)
+    {
+        IGNIS_ERROR("[VertexArray] Element buffer already loaded");
+        return IGNIS_FAILURE;
+    }
 
     ignisBindVertexArray(vao);
 
