@@ -8,71 +8,74 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb/stb_image.h"
 
-int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void* pixels, IgnisTextureConfig* configptr)
+int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* configptr)
 {
     if (!texture) return IGNIS_FAILURE;
 
     IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
-    texture->name = ignisGenerateTexture(GL_TEXTURE_2D, width, height, pixels, config);
-    texture->width = width;
-    texture->height = height;
+    texture->name = ignisGenerateTexture(GL_TEXTURE_2D, w, h, pixels, config);
+    texture->width = w;
+    texture->height = h;
 
     return texture->name;
 }
 
-int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GLenum internal_format)
+int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int w, int h, GLenum internal_format)
 {
     if (!texture) return IGNIS_FAILURE;
 
     glGenTextures(1, &texture->name);
     glBindTexture(GL_TEXTURE_2D, texture->name);
-    glTexStorage2D(GL_TEXTURE_2D, 8, internal_format, width, height);
+    glTexStorage2D(GL_TEXTURE_2D, 8, internal_format, w, h);
 
-    texture->width = width;
-    texture->height = height;
+    texture->width = w;
+    texture->height = h;
 
     return texture->name;
 }
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, int flip_on_load, IgnisTextureConfig* configptr)
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* configptr)
 {
     if (!texture) return IGNIS_FAILURE;
-
-    IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
-
-    stbi_set_flip_vertically_on_load(flip_on_load);
-
-    int bpp = 0;
 
     size_t buffer_len;
     char* buffer = ignisReadFile(path, &buffer_len);
 
     if (!buffer) return IGNIS_FAILURE;
 
-    unsigned char* pixels = stbi_load_from_memory(buffer, (int)buffer_len, &texture->width, &texture->height, &bpp, 4);
+    int result = ignisCreateTexture2DSrc(texture, buffer, buffer_len, configptr);
 
     ignisFree(buffer);
 
-    if (pixels)
+    return result;
+}
+
+int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* configptr)
+{
+    IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
+
+    stbi_set_flip_vertically_on_load(config.flip_on_load);
+
+    int bpp = 0;
+    uint8_t* pixels = stbi_load_from_memory(data, (int)size, &texture->width, &texture->height, &bpp, 4);
+
+    if (!pixels)
     {
-        /* check if bpp and format matches */
-        if (bpp == 4 && (config.format != GL_RGBA || config.internal_format != GL_RGBA8))
-            IGNIS_WARN("[Texture] Format mismatch for %s", path);
-        else if (bpp == 3 && (config.format != GL_RGB || config.internal_format != GL_RGB8))
-            IGNIS_WARN("[Texture] Format mismatch for %s", path);
-
-        texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
-        texture->width = texture->width;
-        texture->height = texture->height;
-
-        stbi_image_free(pixels);
-
-        return texture->name;
+        IGNIS_ERROR("[Texture] Failed to load texture: %s", stbi_failure_reason());
+        return IGNIS_FAILURE;
     }
 
-    IGNIS_ERROR("[Texture] Failed to load texture(%s): %s", path, stbi_failure_reason());
+    texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
 
-    return IGNIS_FAILURE;
+    /* check if bpp and format matches */
+    if (bpp == 4 && (config.format != GL_RGBA || config.internal_format != GL_RGBA8))
+        IGNIS_WARN("[Texture] Format mismatch for texture %d", texture->name);
+    else if (bpp == 3 && (config.format != GL_RGB || config.internal_format != GL_RGB8))
+        IGNIS_WARN("[Texture] Format mismatch for texture %d", texture->name);
+
+    stbi_image_free(pixels);
+
+    return texture->name;
 }
 
 void ignisDeleteTexture2D(IgnisTexture2D* texture)
@@ -80,7 +83,7 @@ void ignisDeleteTexture2D(IgnisTexture2D* texture)
     glDeleteTextures(1, &texture->name);
 }
 
-GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, IgnisTextureConfig config)
+GLuint ignisGenerateTexture(GLuint target, int w, int h, const void* pixels, IgnisTextureConfig config)
 {
     GLuint name;
     glGenTextures(1, &name);
@@ -96,7 +99,7 @@ GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, 
     {
     case GL_TEXTURE_1D:
     case GL_PROXY_TEXTURE_1D:
-        glTexImage1D(target, 0, config.internal_format, width, 0, config.format, GL_UNSIGNED_BYTE, pixels);
+        glTexImage1D(target, 0, config.internal_format, w, 0, config.format, GL_UNSIGNED_BYTE, pixels);
         break;
     case GL_TEXTURE_2D:
     case GL_PROXY_TEXTURE_2D:
@@ -111,7 +114,7 @@ GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, 
     case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
     case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
     case GL_PROXY_TEXTURE_CUBE_MAP:
-        glTexImage2D(target, 0, config.internal_format, width, height, 0, config.format, GL_UNSIGNED_BYTE, pixels);
+        glTexImage2D(target, 0, config.internal_format, w, h, 0, config.format, GL_UNSIGNED_BYTE, pixels);
         break;
     default:
         IGNIS_ERROR("[Texture] Unsupported target (%d)", target);

@@ -8,6 +8,8 @@ extern "C"
 
 #include "../glad/glad.h"
 
+#include <stdint.h>
+
 typedef struct
 {
     GLint internal_format;
@@ -18,11 +20,13 @@ typedef struct
 
     GLint wrap_s;
     GLint wrap_t;
+
+    uint8_t flip_on_load;
 } IgnisTextureConfig;
 
-GLuint ignisGenerateTexture(GLuint target, int width, int height, void* pixels, IgnisTextureConfig config);
+GLuint ignisGenerateTexture(GLuint target, int w, int h, const void* pixels, IgnisTextureConfig config);
 
-#define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT }
+#define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT, 0 }
 
 typedef struct
 {
@@ -30,10 +34,11 @@ typedef struct
     int width, height;
 } IgnisTexture2D;
 
-int ignisGenerateTexture2D(IgnisTexture2D* texture, int width, int height, void* pixels, IgnisTextureConfig* config);
+int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* config);
 int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GLenum internal_format);
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, int flip_on_load, IgnisTextureConfig* config);
+int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* config);
+int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* config);
 
 void ignisDeleteTexture2D(IgnisTexture2D* texture);
 
