@@ -7,26 +7,25 @@ extern "C"
 #endif
 
 #include "../glad/glad.h"
-
-#include <stdint.h>
+#include "types.h"
 
 typedef struct
 {
     GLint internal_format;
-    GLenum format;
+    IgnisTextureFormat format;
 
-    GLint min_filter;
-    GLint mag_filter;
+    IgnisTextureFilter min_filter;
+    IgnisTextureFilter mag_filter;
 
-    GLint wrap_s;
-    GLint wrap_t;
+    IgnisTextureWrap wrap_s;
+    IgnisTextureWrap wrap_t;
 
     uint8_t flip_on_load;
 } IgnisTextureConfig;
 
-GLuint ignisGenerateTexture(GLuint target, int w, int h, const void* pixels, IgnisTextureConfig config);
+GLuint ignisGenerateTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config);
 
-#define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, GL_RGBA, GL_LINEAR, GL_NEAREST, GL_REPEAT, GL_REPEAT, 0 }
+#define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, IGNIS_RGBA, IGNIS_LINEAR, IGNIS_LINEAR, IGNIS_REPEAT, IGNIS_REPEAT, 0 }
 
 typedef struct
 {

@@ -22,7 +22,7 @@ int ignisCreateComputeShaderSrc(IgnisComputeShader* shader, const char* src)
 {
     if (!(shader && src)) return IGNIS_FAILURE;
 
-    GLenum types[] = { GL_COMPUTE_SHADER };
+    IgnisShaderType types[] = { IGNIS_COMPUTE_SHADER };
     const char* sources[] = { src };
 
     shader->program = ignisCreateGLShaderProgram(types, sources, 1);

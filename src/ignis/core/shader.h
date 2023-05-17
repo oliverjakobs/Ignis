@@ -7,6 +7,7 @@ extern "C"
 #endif
 
 #include "../glad/glad.h"
+#include "types.h"
 
 typedef GLuint IgnisShader;
 
@@ -43,13 +44,11 @@ void ignisSetUniformMat2l(IgnisShader shader, GLint location, GLsizei count, con
 void ignisSetUniformMat3l(IgnisShader shader, GLint location, GLsizei count, const float* values);
 void ignisSetUniformMat4l(IgnisShader shader, GLint location, GLsizei count, const float* values);
 
-GLuint ignisCreateGLShaderProgram(GLenum* types, const char** sources, size_t count);
-GLuint ignisCompileGLShader(GLenum type, const char* source);
+GLuint ignisCreateGLShaderProgram(IgnisShaderType* types, const char** sources, size_t count);
+GLuint ignisCompileGLShader(IgnisShaderType type, const char* source);
 
 void ignisPrintShaderLog(GLuint shader);
 void ignisPrintProgramLog(GLuint program);
-
-const char* ignisGetShaderType(GLenum type);
 
 #ifdef __cplusplus
 }

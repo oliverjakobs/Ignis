@@ -129,19 +129,20 @@ void ignisClearColorBuffer(IgnisColorRGBA color)
     glClearBufferfv(GL_COLOR, 0, &color.r);
 }
 
-GLuint ignisGetOpenGLTypeSize(GLenum type)
+size_t ignisGetTypeSize(IgnisType type)
 {
     switch (type)
     {
-    case GL_FLOAT:          return sizeof(GLfloat);
-    case GL_INT:            return sizeof(GLint);
-    case GL_UNSIGNED_INT:   return sizeof(GLuint);
-    case GL_UNSIGNED_SHORT: return sizeof(GLushort);
+    case IGNIS_INT8:    return sizeof(int8_t);
+    case IGNIS_UINT8:   return sizeof(uint8_t);
+    case IGNIS_INT16:   return sizeof(int16_t);
+    case IGNIS_UINT16:  return sizeof(uint16_t);
+    case IGNIS_INT32:   return sizeof(int32_t);
+    case IGNIS_UINT32:  return sizeof(uint32_t);
+    case IGNIS_FLOAT:   return sizeof(float);
     default: return 0;
     }
 }
-
-static char ignis_file_buffer[IGNIS_FILE_BUFFER_SIZE];
 
 char* ignisReadFile(const char* path, size_t* sizeptr)
 {

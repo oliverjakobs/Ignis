@@ -35,7 +35,7 @@ extern "C"
 #define IGNIS_VERTICES_PER_QUAD  4
 #define IGNIS_INDICES_PER_QUAD   6
 
-#define IGNIS_FILE_BUFFER_SIZE  1024
+#define IGNIS_PATH_LEN  64
 
 /*
  * --------------------------------------------------------------
@@ -96,7 +96,7 @@ extern "C"
 
 /* primitives */
 #define IGNIS_PRIMITIVES2D_MAX_VERTICES   3 * 1024
-#define IGNIS_PRIMITIVES2D_VERTEX_SIZE    (3 + 4) /* 2f: position; 4f color */
+#define IGNIS_PRIMITIVES2D_VERTEX_SIZE    (3 + 4) /* 3f: position; 4f color */
 #define IGNIS_PRIMITIVES2D_BUFFER_SIZE    (IGNIS_PRIMITIVES2D_VERTEX_SIZE * IGNIS_PRIMITIVES2D_MAX_VERTICES)
 
  /* primitives circle */
@@ -124,7 +124,7 @@ int ignisEnableBlend(GLenum sfactor, GLenum dfactor);
 void ignisSetClearColor(IgnisColorRGBA color);
 void ignisClearColorBuffer(IgnisColorRGBA color);
 
-GLuint ignisGetOpenGLTypeSize(GLenum type);
+size_t ignisGetTypeSize(IgnisType type);
 char* ignisReadFile(const char* path, size_t* sizeptr);
 
 const char* ignisTextFormat(const char* fmt, ...);

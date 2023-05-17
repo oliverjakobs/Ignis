@@ -109,17 +109,20 @@ void ignisRenderer2DRenderTextureModel(const IgnisTexture2D* texture, const floa
 /* ---------------------| quad |-----------------------------------------------*/
 int ignisCreateQuad(IgnisQuad* quad, GLfloat* vertices, size_t vertex_count, GLenum usage, IgnisBufferElement* layout, size_t layout_size, GLuint* indices, GLsizei element_count)
 {
-    if (ignisGenerateVertexArray(&quad->vao, 1) == IGNIS_SUCCESS)
-    {
-        GLsizeiptr size = sizeof(GLfloat) * vertex_count;
-        if (ignisLoadArrayBufferLayout(&quad->vao, 0, size, vertices, usage, 0, layout, layout_size) == IGNIS_SUCCESS)
-        {
-            quad->vertex_count = vertex_count;
-            return ignisLoadElementBuffer(&quad->vao, indices, element_count, GL_STATIC_DRAW);
-        }
-    }
+    if (ignisGenerateVertexArray(&quad->vao, 2) != IGNIS_SUCCESS) return IGNIS_FAILURE;
 
-    return IGNIS_FAILURE;
+    GLsizeiptr size = sizeof(GLfloat) * vertex_count;
+    if (ignisLoadArrayBuffer(&quad->vao, 0, size, vertices, usage) != IGNIS_SUCCESS)
+        return IGNIS_FAILURE;
+
+    ignisSetVertexLayout(&quad->vao, 0, layout, layout_size);
+    quad->vertex_count = vertex_count;
+
+    if (ignisLoadElementBuffer(&quad->vao, 1, indices, element_count, GL_STATIC_DRAW) != IGNIS_SUCCESS)
+        return IGNIS_FAILURE;
+
+    quad->element_count = element_count;
+    return IGNIS_SUCCESS;
 }
 
 int ignisCreateQuadTextured(IgnisQuad* quad, GLenum usage)
@@ -172,13 +175,13 @@ void ignisBindQuad(IgnisQuad* quad)
 void ignisDrawQuadElements(IgnisQuad* quad, GLenum mode)
 {
     ignisBindQuad(quad);
-    glDrawElements(mode, quad->vao.element_count, GL_UNSIGNED_INT, NULL);
+    glDrawElements(mode, quad->element_count, GL_UNSIGNED_INT, NULL);
 }
 
 void ignisDrawQuadElementsInstanced(IgnisQuad* quad, GLenum mode, GLsizei primcount)
 {
     ignisBindQuad(quad);
-    glDrawElementsInstanced(mode, quad->vao.element_count, GL_UNSIGNED_INT, NULL, primcount);
+    glDrawElementsInstanced(mode, quad->element_count, GL_UNSIGNED_INT, NULL, primcount);
 }
 
 /* ---------------------| rect |-----------------------------------------------*/

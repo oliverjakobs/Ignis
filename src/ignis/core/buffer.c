@@ -2,20 +2,20 @@
 
 #include "../Ignis.h"
 
-int ignisGenerateBuffer(IgnisBuffer* buffer, GLenum target)
+int ignisGenerateBuffer(IgnisBuffer* buffer, IgnisBufferTarget target)
 {
     GLuint name = 0;
 
     switch (target)
     {
-    case GL_TEXTURE_BUFFER:
+    case IGNIS_TEXTURE_BUFFER:
         glGenTextures(1, &name);
         break;
-    case GL_RENDERBUFFER:
+    case IGNIS_RENDERBUFFER:
         glGenRenderbuffers(1, &name);
         break;
-    case GL_ARRAY_BUFFER:
-    case GL_ELEMENT_ARRAY_BUFFER:
+    case IGNIS_ARRAY_BUFFER:
+    case IGNIS_ELEMENT_ARRAY_BUFFER:
         glGenBuffers(1, &name);
         break;
     default:
@@ -32,9 +32,9 @@ int ignisGenerateBuffer(IgnisBuffer* buffer, GLenum target)
     return name;
 }
 
-int ignisGenerateArrayBuffer(IgnisBuffer* buffer, GLsizeiptr size, const void* data, GLenum usage)
+int ignisGenerateArrayBuffer(IgnisBuffer* buffer, GLsizeiptr size, const void* data, IgnisUsage usage)
 {
-    if (buffer && ignisGenerateBuffer(buffer, GL_ARRAY_BUFFER))
+    if (buffer && ignisGenerateBuffer(buffer, IGNIS_ARRAY_BUFFER))
     {
         ignisBufferData(buffer, size, data, usage);
         return IGNIS_SUCCESS;
@@ -43,9 +43,9 @@ int ignisGenerateArrayBuffer(IgnisBuffer* buffer, GLsizeiptr size, const void* d
     return IGNIS_FAILURE;
 }
 
-int ignisGenerateElementBuffer(IgnisBuffer* buffer, GLsizei count, const GLuint* data, GLenum usage)
+int ignisGenerateElementBuffer(IgnisBuffer* buffer, GLsizei count, const GLuint* data, IgnisUsage usage)
 {
-    if (buffer && ignisGenerateBuffer(buffer, GL_ELEMENT_ARRAY_BUFFER))
+    if (buffer && ignisGenerateBuffer(buffer, IGNIS_ELEMENT_ARRAY_BUFFER))
     {
         ignisElementBufferData(buffer, count, data, usage);
         return IGNIS_SUCCESS;
@@ -68,7 +68,7 @@ int ignisGenerateTextureBuffer(IgnisBuffer* tex_buffer, GLenum format, GLuint bu
 
 int ignisGenerateRenderBuffer(IgnisBuffer* buffer)
 {
-    if (buffer && ignisGenerateBuffer(buffer, GL_RENDERBUFFER))
+    if (buffer && ignisGenerateBuffer(buffer, IGNIS_RENDERBUFFER))
         return IGNIS_SUCCESS;
 
     return IGNIS_FAILURE;
@@ -84,15 +84,15 @@ void ignisDeleteBuffer(IgnisBuffer* buffer)
 
     switch (buffer->target)
     {
-    case GL_TEXTURE_BUFFER:
+    case IGNIS_TEXTURE_BUFFER:
         glDeleteTextures(1, &buffer->name);
         break;
-    case GL_RENDERBUFFER:
+    case IGNIS_RENDERBUFFER:
         glBindRenderbuffer(buffer->target, 0);
         glDeleteRenderbuffers(1, &buffer->name);
         break;
-    case GL_ARRAY_BUFFER:
-    case GL_ELEMENT_ARRAY_BUFFER:
+    case IGNIS_ARRAY_BUFFER:
+    case IGNIS_ELEMENT_ARRAY_BUFFER:
         glBindBuffer(buffer->target, 0);
         glDeleteBuffers(1, &buffer->name);
         break;
@@ -104,7 +104,7 @@ void ignisDeleteBuffer(IgnisBuffer* buffer)
     buffer->target = 0;
 }
 
-void ignisBindBuffer(IgnisBuffer* buffer, GLenum target)
+void ignisBindBuffer(IgnisBuffer* buffer, IgnisBufferTarget target)
 {
     if (buffer && buffer->target != target)
     {
@@ -113,16 +113,15 @@ void ignisBindBuffer(IgnisBuffer* buffer, GLenum target)
     }
 
     GLuint name = buffer ? buffer->name : 0;
-
     switch (target)
     {
-    case GL_RENDERBUFFER: 
+    case IGNIS_RENDERBUFFER:
         glBindRenderbuffer(target, name);
         return;
-    case GL_TEXTURE_BUFFER:
+    case IGNIS_TEXTURE_BUFFER:
         glBindTexture(target, name);
-    case GL_ARRAY_BUFFER:
-    case GL_ELEMENT_ARRAY_BUFFER:
+    case IGNIS_ARRAY_BUFFER:
+    case IGNIS_ELEMENT_ARRAY_BUFFER:
         glBindBuffer(target, name);
         return;
     }
@@ -130,7 +129,7 @@ void ignisBindBuffer(IgnisBuffer* buffer, GLenum target)
     IGNIS_ERROR("[Buffer] Unsupported buffer target (%d)", target);
 }
 
-void ignisBufferData(IgnisBuffer* buffer, GLsizeiptr size, const void* data, GLenum usage)
+void ignisBufferData(IgnisBuffer* buffer, GLsizeiptr size, const void* data, IgnisUsage usage)
 {
     ignisBindBuffer(buffer, buffer->target);
     glBufferData(buffer->target, size, data, usage);
@@ -142,11 +141,11 @@ void ignisBufferSubData(IgnisBuffer* buffer, GLintptr offset, GLsizeiptr size, c
     glBufferSubData(buffer->target, offset, size, data);
 }
 
-void ignisElementBufferData(IgnisBuffer* buffer, GLsizei count, const GLuint* data, GLenum usage)
+void ignisElementBufferData(IgnisBuffer* buffer, GLsizei count, const GLuint* data, IgnisUsage usage)
 {
-    if (buffer->target != GL_ELEMENT_ARRAY_BUFFER)
+    if (buffer->target != IGNIS_ELEMENT_ARRAY_BUFFER)
     {
-        IGNIS_ERROR("[Buffer] Buffer target is not GL_ELEMENT_ARRAY_BUFFER");
+        IGNIS_ERROR("[Buffer] Buffer target is not IGNIS_ELEMENT_ARRAY_BUFFER");
         return;
     }
 
@@ -156,7 +155,7 @@ void ignisElementBufferData(IgnisBuffer* buffer, GLsizei count, const GLuint* da
 
 void ignisBindImageTexture(IgnisBuffer* buffer, GLuint unit, GLenum access, GLenum format)
 {
-    if (buffer->target != GL_TEXTURE_BUFFER)
+    if (buffer->target != IGNIS_TEXTURE_BUFFER)
     {
         IGNIS_ERROR("[Buffer] Buffer target is not GL_TEXTURE_BUFFER");
         return;
@@ -167,7 +166,7 @@ void ignisBindImageTexture(IgnisBuffer* buffer, GLuint unit, GLenum access, GLen
 
 void ignisRenderBufferStorage(IgnisBuffer* buffer, GLenum format, GLsizei width, GLsizei height)
 {
-    if (buffer->target != GL_RENDERBUFFER)
+    if (buffer->target != IGNIS_RENDERBUFFER)
     {
         IGNIS_ERROR("[Buffer] Buffer target is not GL_RENDERBUFFER");
         return;
@@ -192,5 +191,5 @@ void* ignisMapBufferRange(IgnisBuffer* buffer, GLintptr offset, GLsizeiptr lengt
 void ignisUnmapBuffer(IgnisBuffer* buffer)
 {
     if (glUnmapBuffer(buffer->target) == GL_FALSE)
-        IGNIS_CRITICAL("Buffer data has become corrupt");
+        IGNIS_CRITICAL("[Buffer] Buffer data has become corrupt");
 }

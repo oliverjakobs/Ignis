@@ -62,7 +62,7 @@ IgnisShader ignisCreateShaderSrcvf(const char* vert, const char* frag)
 {
     if (!(vert && frag)) return IGNIS_FAILURE;
 
-    GLenum types[] = { GL_VERTEX_SHADER, GL_FRAGMENT_SHADER };
+    IgnisShaderType types[] = { IGNIS_VERTEX_SHADER, IGNIS_FRAGMENT_SHADER };
     const char* sources[] = { vert, frag };
 
     return (IgnisShader)ignisCreateGLShaderProgram(types, sources, 2);
@@ -72,7 +72,7 @@ IgnisShader ignisCreateShaderSrcvgf(const char* vert, const char* geom, const ch
 {
     if (!(vert && geom && frag)) return IGNIS_FAILURE;
 
-    GLenum types[] = { GL_VERTEX_SHADER, GL_GEOMETRY_SHADER, GL_FRAGMENT_SHADER };
+    IgnisShaderType types[] = { IGNIS_VERTEX_SHADER, IGNIS_GEOMETRY_SHADER, IGNIS_FRAGMENT_SHADER };
     const char* sources[] = { vert, geom, frag };
 
     return (IgnisShader)ignisCreateGLShaderProgram(types, sources, 3);
@@ -210,7 +210,7 @@ void ignisSetUniformMat4l(IgnisShader shader, GLint location, GLsizei count, con
     glProgramUniformMatrix4fv(shader, location, count, GL_FALSE, values);
 }
 
-GLuint ignisCreateGLShaderProgram(GLenum* types, const char** sources, size_t count)
+GLuint ignisCreateGLShaderProgram(IgnisShaderType* types, const char** sources, size_t count)
 {
     IgnisShader program = glCreateProgram();
 
@@ -266,11 +266,26 @@ GLuint ignisCreateGLShaderProgram(GLenum* types, const char** sources, size_t co
     return program;
 }
 
-GLuint ignisCompileGLShader(GLenum type, const char* source)
+static const char* ignisGetShaderTypeName(IgnisShaderType type)
+{
+    switch (type)
+    {
+    case IGNIS_COMPUTE_SHADER:      return "COMPUTE_SHADER";
+    case IGNIS_VERTEX_SHADER:       return "VERTEX_SHADER";
+    case IGNIS_TESS_CONTROL_SHADER: return "TESS_CONTROL_SHADER";
+    case IGNIS_TESS_EVAL_SHADER:    return "TESS_EVALUATION_SHADER";
+    case IGNIS_GEOMETRY_SHADER:     return "GEOMETRY_SHADER";
+    case IGNIS_FRAGMENT_SHADER:     return "FRAGMENT_SHADER";
+    }
+
+    return "INVALID_SHADER_TYPE";
+}
+
+GLuint ignisCompileGLShader(IgnisShaderType type, const char* source)
 {
     if (source[0] == '\0')
     {
-        IGNIS_ERROR("[SHADER] Shader source is missing for %s", ignisGetShaderType(type));
+        IGNIS_ERROR("[SHADER] Shader source is missing for %s", ignisGetShaderTypeName(type));
         return IGNIS_FAILURE;
     }
 
@@ -283,7 +298,7 @@ GLuint ignisCompileGLShader(GLenum type, const char* source)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &result);
     if (result == GL_FALSE)
     {
-        IGNIS_ERROR("[SHADER] Compiling Error (%s)", ignisGetShaderType(type));
+        IGNIS_ERROR("[SHADER] Compiling Error (%s)", ignisGetShaderTypeName(type));
         ignisPrintShaderLog(shader);
         glDeleteShader(shader);
 
@@ -327,19 +342,4 @@ void ignisPrintProgramLog(GLuint program)
     IGNIS_ERROR("[SHADER] %.*s", log_length, log_buffer);
 
     ignisFree(log_buffer);
-}
-
-const char* ignisGetShaderType(GLenum type)
-{
-    switch (type)
-    {
-    case GL_COMPUTE_SHADER:         return "GL_COMPUTE_SHADER";
-    case GL_VERTEX_SHADER:          return "GL_VERTEX_SHADER";
-    case GL_TESS_CONTROL_SHADER:    return "GL_TESS_CONTROL_SHADER";
-    case GL_TESS_EVALUATION_SHADER: return "GL_TESS_EVALUATION_SHADER";
-    case GL_GEOMETRY_SHADER:        return "GL_GEOMETRY_SHADER";
-    case GL_FRAGMENT_SHADER:        return "GL_FRAGMENT_SHADER";
-    }
-
-    return "INVALID_SHADER_TYPE";
 }

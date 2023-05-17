@@ -21,21 +21,21 @@ static IgnisBatch2DStorage render_data;
 
 void ignisBatch2DInit(const char* vert, const char* frag)
 {
-    ignisGenerateVertexArray(&render_data.vao, 1);
+    ignisGenerateVertexArray(&render_data.vao, 2);
 
-    IgnisBufferElement layout[] =
-    {
-        {GL_FLOAT, 3, GL_FALSE},    /* position */
-        {GL_FLOAT, 2, GL_FALSE},    /* Texture coords*/
-        {GL_FLOAT, 1, GL_FALSE}     /* Texture index */
+    IgnisBufferElement layout[] = {
+        {IGNIS_FLOAT, 3, GL_FALSE},    /* position */
+        {IGNIS_FLOAT, 2, GL_FALSE},    /* Texture coords*/
+        {IGNIS_FLOAT, 1, GL_FALSE}     /* Texture index */
     };
 
-    ignisLoadArrayBufferLayout(&render_data.vao, 0, IGNIS_BATCH2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 3);
+    ignisLoadArrayBuffer(&render_data.vao, 0, IGNIS_BATCH2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    ignisSetVertexLayout(&render_data.vao, 0, layout, 3);
 
     GLuint indices[IGNIS_BATCH2D_INDEX_COUNT];
     ignisGenerateQuadIndices(indices, IGNIS_BATCH2D_INDEX_COUNT);
 
-    ignisLoadElementBuffer(&render_data.vao, indices, IGNIS_BATCH2D_INDEX_COUNT, GL_STATIC_DRAW);
+    ignisLoadElementBuffer(&render_data.vao, 1, indices, IGNIS_BATCH2D_INDEX_COUNT, GL_STATIC_DRAW);
 
     render_data.shader = ignisCreateShadervf(vert, frag);
 
@@ -70,7 +70,7 @@ void ignisBatch2DFlush()
     if (render_data.vertex_index == 0) return;
 
     ignisBindVertexArray(&render_data.vao);
-    ignisBufferSubData(&render_data.vao.array_buffers[0], 0, render_data.vertex_index * sizeof(float), render_data.vertices);
+    ignisBufferSubData(&render_data.vao.buffers[0], 0, render_data.vertex_index * sizeof(float), render_data.vertices);
 
     ignisUseShader(render_data.shader);
 

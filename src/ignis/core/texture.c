@@ -13,7 +13,7 @@ int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pi
     if (!texture) return IGNIS_FAILURE;
 
     IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
-    texture->name = ignisGenerateTexture(GL_TEXTURE_2D, w, h, pixels, config);
+    texture->name = ignisGenerateTexture(IGNIS_TEXTURE_2D, w, h, pixels, config);
     texture->width = w;
     texture->height = h;
 
@@ -65,7 +65,7 @@ int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t
         return IGNIS_FAILURE;
     }
 
-    texture->name = ignisGenerateTexture(GL_TEXTURE_2D, texture->width, texture->height, pixels, config);
+    texture->name = ignisGenerateTexture(IGNIS_TEXTURE_2D, texture->width, texture->height, pixels, config);
 
     /* check if bpp and format matches */
     if (bpp == 4 && (config.format != GL_RGBA || config.internal_format != GL_RGBA8))
@@ -83,7 +83,7 @@ void ignisDeleteTexture2D(IgnisTexture2D* texture)
     glDeleteTextures(1, &texture->name);
 }
 
-GLuint ignisGenerateTexture(GLuint target, int w, int h, const void* pixels, IgnisTextureConfig config)
+GLuint ignisGenerateTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config)
 {
     GLuint name;
     glGenTextures(1, &name);
@@ -97,23 +97,23 @@ GLuint ignisGenerateTexture(GLuint target, int w, int h, const void* pixels, Ign
 
     switch (target)
     {
-    case GL_TEXTURE_1D:
-    case GL_PROXY_TEXTURE_1D:
+    case IGNIS_TEXTURE_1D:
+    case IGNIS_PROXY_TEXTURE_1D:
         glTexImage1D(target, 0, config.internal_format, w, 0, config.format, GL_UNSIGNED_BYTE, pixels);
         break;
-    case GL_TEXTURE_2D:
-    case GL_PROXY_TEXTURE_2D:
-    case GL_TEXTURE_1D_ARRAY:
-    case GL_PROXY_TEXTURE_1D_ARRAY:
-    case GL_TEXTURE_RECTANGLE:
-    case GL_PROXY_TEXTURE_RECTANGLE:
-    case GL_TEXTURE_CUBE_MAP_POSITIVE_X:
-    case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:
-    case GL_TEXTURE_CUBE_MAP_POSITIVE_Y:
-    case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:
-    case GL_TEXTURE_CUBE_MAP_POSITIVE_Z:
-    case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:
-    case GL_PROXY_TEXTURE_CUBE_MAP:
+    case IGNIS_TEXTURE_2D:
+    case IGNIS_PROXY_TEXTURE_2D:
+    case IGNIS_TEXTURE_1D_ARRAY:
+    case IGNIS_PROXY_TEXTURE_1D_ARRAY:
+    case IGNIS_TEXTURE_RECTANGLE:
+    case IGNIS_PROXY_TEXTURE_RECTANGLE:
+    case IGNIS_TEXTURE_CUBE_MAP_POSITIVE_X:
+    case IGNIS_TEXTURE_CUBE_MAP_NEGATIVE_X:
+    case IGNIS_TEXTURE_CUBE_MAP_POSITIVE_Y:
+    case IGNIS_TEXTURE_CUBE_MAP_NEGATIVE_Y:
+    case IGNIS_TEXTURE_CUBE_MAP_POSITIVE_Z:
+    case IGNIS_TEXTURE_CUBE_MAP_NEGATIVE_Z:
+    case IGNIS_PROXY_TEXTURE_CUBE_MAP:
         glTexImage2D(target, 0, config.internal_format, w, h, 0, config.format, GL_UNSIGNED_BYTE, pixels);
         break;
     default:

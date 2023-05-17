@@ -48,8 +48,12 @@ static void ignisPrimitivesDataCreate(IgnisPrimitivesData* prim)
 {
     ignisGenerateVertexArray(&prim->vao, 1);
 
-    IgnisBufferElement layout[] = { {GL_FLOAT, 3, GL_FALSE}, {GL_FLOAT, 4, GL_FALSE} };
-    ignisLoadArrayBufferLayout(&prim->vao, 0, IGNIS_PRIMITIVES2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
+    IgnisBufferElement layout[] = {
+        {IGNIS_FLOAT, 3, GL_FALSE},
+        {IGNIS_FLOAT, 4, GL_FALSE}
+    };
+    ignisLoadArrayBuffer(&prim->vao, 0, IGNIS_PRIMITIVES2D_BUFFER_SIZE * sizeof(float), NULL, GL_DYNAMIC_DRAW);
+    ignisSetVertexLayout(&prim->vao, 0, layout, 2);
 
     prim->index = 0;
 }
@@ -59,7 +63,7 @@ static void ignisPrimitivesDataFlush(IgnisPrimitivesData* prim, GLenum mode)
     if (prim->index == 0) return;
 
     ignisBindVertexArray(&prim->vao);
-    ignisBufferSubData(&prim->vao.array_buffers[0], 0, prim->index * sizeof(float), prim->vertices);
+    ignisBufferSubData(&prim->vao.buffers[0], 0, prim->index * sizeof(float), prim->vertices);
 
     ignisUseShader(render_data.shader);
 

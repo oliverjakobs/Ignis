@@ -22,6 +22,7 @@ typedef struct
 {
     IgnisVertexArray vao;
     size_t vertex_count;
+    size_t element_count;
 } IgnisQuad;
 
 int ignisCreateQuad(IgnisQuad* quad, GLfloat* vertices, size_t vertex_count, GLenum usage, IgnisBufferElement* layout, size_t layout_size, GLuint* indices, GLsizei element_count);

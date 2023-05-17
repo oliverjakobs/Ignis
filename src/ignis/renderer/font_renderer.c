@@ -48,16 +48,18 @@ static IgnisFontRendererStorage render_data;
 
 void ignisFontRendererInit()
 {
-    ignisGenerateVertexArray(&render_data.vao, 1);
+    ignisGenerateVertexArray(&render_data.vao, 2);
 
     size_t size = IGNIS_FONTRENDERER_BUFFER_SIZE * sizeof(float);
-    IgnisBufferElement layout[] = { {GL_FLOAT, 2, GL_FALSE}, {GL_FLOAT, 2, GL_FALSE} };
-    ignisLoadArrayBufferLayout(&render_data.vao, 0, size, NULL, GL_DYNAMIC_DRAW, 0, layout, 2);
+    ignisLoadArrayBuffer(&render_data.vao, 0, size, NULL, IGNIS_DYNAMIC_DRAW);
+
+    IgnisBufferElement layout[] = { {IGNIS_FLOAT, 2, GL_FALSE}, {IGNIS_FLOAT, 2, GL_FALSE} };
+    ignisSetVertexLayout(&render_data.vao, 0, layout, 2);
 
     GLuint indices[IGNIS_FONTRENDERER_INDEX_COUNT];
     ignisGenerateQuadIndices(indices, IGNIS_FONTRENDERER_INDEX_COUNT);
 
-    ignisLoadElementBuffer(&render_data.vao, indices, IGNIS_FONTRENDERER_INDEX_COUNT, GL_STATIC_DRAW);
+    ignisLoadElementBuffer(&render_data.vao, 1, indices, IGNIS_FONTRENDERER_INDEX_COUNT, IGNIS_STATIC_DRAW);
 
     render_data.index = 0;
     render_data.quad_count = 0;
@@ -101,7 +103,7 @@ void ignisFontRendererFlush()
 
     ignisBindFont(render_data.font, 0);
     ignisBindVertexArray(&render_data.vao);
-    ignisBufferSubData(&render_data.vao.array_buffers[0], 0, render_data.index * sizeof(float), render_data.vertices);
+    ignisBufferSubData(&render_data.vao.buffers[0], 0, render_data.index * sizeof(float), render_data.vertices);
 
     ignisUseShader(render_data.shader);
 
