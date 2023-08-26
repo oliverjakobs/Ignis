@@ -119,7 +119,7 @@ extern "C"
 int ignisInit(int debug);
 void ignisDestroy();
 
-int ignisEnableBlend(GLenum sfactor, GLenum dfactor);
+int ignisEnableBlend(IgnisBlendFunc sfactor, IgnisBlendFunc dfactor);
 
 void ignisSetClearColor(IgnisColorRGBA color);
 void ignisClearColorBuffer(IgnisColorRGBA color);
@@ -143,27 +143,33 @@ const char* ignisGetGLSLVersion();
  */
 #ifndef IGNIS_DISABLE_LOGGING
 
-#define IGNIS_CRITICAL(s, ...)  _ignisError(IGNIS_LVL_CRITICAL, s, __VA_ARGS__)
-#define IGNIS_ERROR(s, ...)     _ignisError(IGNIS_LVL_CRITICAL, s, __VA_ARGS__)
-#define IGNIS_WARN(s, ...)      _ignisError(IGNIS_LVL_WARN, s, __VA_ARGS__)
+#define IGNIS_TRACE(s, ...)     _ignisLog(IGNIS_LOG_TRACE, s, __VA_ARGS__)
+#define IGNIS_INFO(s, ...)      _ignisLog(IGNIS_LOC_INFO, s, __VA_ARGS__)
+#define IGNIS_WARN(s, ...)      _ignisLog(IGNIS_LOG_WARN, s, __VA_ARGS__)
+#define IGNIS_ERROR(s, ...)     _ignisLog(IGNIS_LOG_ERROR, s, __VA_ARGS__)
+#define IGNIS_CRITICAL(s, ...)  _ignisLog(IGNIS_LOG_CRITICAL, s, __VA_ARGS__)
 
 #else
 
-#define IGNIS_CRITICAL(s, ...)
-#define IGNIS_ERROR(s, ...)
+#define IGNIS_TRACE(s, ...)
+#define IGNIS_INFO(s, ...)
 #define IGNIS_WARN(s, ...)
+#define IGNIS_ERROR(s, ...)
+#define IGNIS_CRITICAL(s, ...)
 
 #endif
 
 typedef enum
 {
-    IGNIS_LVL_WARN,
-    IGNIS_LVL_ERROR,
-    IGNIS_LVL_CRITICAL
-} ignisErrorLevel;
+    IGNIS_LOG_TRACE,
+    IGNIS_LOC_INFO,
+    IGNIS_LOG_WARN,
+    IGNIS_LOG_ERROR,
+    IGNIS_LOG_CRITICAL
+} ignisLogLevel;
 
-void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*));
-void _ignisError(ignisErrorLevel level, const char* fmt, ...);
+void ignisSetLogCallback(void (*callback)(ignisLogLevel, const char*));
+void _ignisLog(ignisLogLevel level, const char* fmt, ...);
 
 /*
  * --------------------------------------------------------------

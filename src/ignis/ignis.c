@@ -85,15 +85,14 @@ void ignisDestroy()
     ignisDeleteTexture2D(&IGNIS_DEFAULT_TEXTURE2D);
 }
 
-static void (*s_ignisErrorCb)(ignisErrorLevel level, const char* fmt);
+static void (*s_ignisLogCb)(ignisLogLevel level, const char* fmt);
 
-void ignisSetErrorCallback(void (*callback)(ignisErrorLevel, const char*))
-{
-    s_ignisErrorCb = callback;
-}
+void ignisSetLogCallback(void (*callback)(ignisLogLevel, const char*)) { s_ignisLogCb = callback; }
 
-void _ignisError(ignisErrorLevel level, const char* fmt, ...)
+void _ignisLog(ignisLogLevel level, const char* fmt, ...)
 {
+    if (!s_ignisLogCb) return;
+
     va_list args;
     va_start(args, fmt);
     size_t buffer_size = vsnprintf(NULL, 0, fmt, args);
@@ -101,14 +100,14 @@ void _ignisError(ignisErrorLevel level, const char* fmt, ...)
     vsnprintf(buffer, buffer_size + 1, fmt, args);
     va_end(args);
 
-    if (s_ignisErrorCb) s_ignisErrorCb(level, buffer);
+    s_ignisLogCb(level, buffer);
 
     ignisFree(buffer);
 }
 
-int ignisEnableBlend(GLenum sfactor, GLenum dfactor)
+int ignisEnableBlend(IgnisBlendFunc sfactor, IgnisBlendFunc dfactor)
 {
-    if (sfactor == GL_NONE && dfactor == GL_NONE)
+    if (sfactor == IGNIS_ZERO && dfactor == IGNIS_ZERO)
     {
         glDisable(GL_BLEND);
         return 0;
