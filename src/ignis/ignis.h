@@ -166,10 +166,10 @@ typedef enum
     IGNIS_LOG_WARN,
     IGNIS_LOG_ERROR,
     IGNIS_LOG_CRITICAL
-} ignisLogLevel;
+} IgnisLogLevel;
 
-void ignisSetLogCallback(void (*callback)(ignisLogLevel, const char*));
-void _ignisLog(ignisLogLevel level, const char* fmt, ...);
+void ignisSetLogCallback(void (*callback)(IgnisLogLevel, const char*));
+void _ignisLog(IgnisLogLevel level, const char* fmt, ...);
 
 /*
  * --------------------------------------------------------------

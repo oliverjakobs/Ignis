@@ -85,11 +85,11 @@ void ignisDestroy()
     ignisDeleteTexture2D(&IGNIS_DEFAULT_TEXTURE2D);
 }
 
-static void (*s_ignisLogCb)(ignisLogLevel level, const char* fmt);
+static void (*s_ignisLogCb)(IgnisLogLevel level, const char* fmt);
 
-void ignisSetLogCallback(void (*callback)(ignisLogLevel, const char*)) { s_ignisLogCb = callback; }
+void ignisSetLogCallback(void (*callback)(IgnisLogLevel, const char*)) { s_ignisLogCb = callback; }
 
-void _ignisLog(ignisLogLevel level, const char* fmt, ...)
+void _ignisLog(IgnisLogLevel level, const char* fmt, ...)
 {
     if (!s_ignisLogCb) return;
 
