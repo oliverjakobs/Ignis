@@ -86,8 +86,6 @@ void ignisBatch2DSetViewProjection(const float* mat_view_proj);
 void ignisBatch2DFlush();
 
 void ignisBatch2DRenderTexture(const IgnisTexture2D* texture, IgnisRect rect);
-void ignisBatch2DRenderTextureFrame(const IgnisTexture2D* texture, IgnisRect rect, uint32_t frame);
-
 void ignisBatch2DRenderTextureSrc(const IgnisTexture2D* texture, IgnisRect rect, IgnisRect src);
 
 /*

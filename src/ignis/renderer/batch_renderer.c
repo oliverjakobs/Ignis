@@ -120,11 +120,6 @@ void ignisBatch2DRenderTexture(const IgnisTexture2D* texture, IgnisRect rect)
     ignisBatch2DRenderTextureSrc(texture, rect, (IgnisRect) { 0.0f, 0.0f, 1.0f, 1.0f });
 }
 
-void ignisBatch2DRenderTextureFrame(const IgnisTexture2D* texture, IgnisRect rect, uint32_t frame)
-{
-    ignisBatch2DRenderTextureSrc(texture, rect, ignisGetTexture2DSrcRect(texture, 1, 1, frame));
-}
-
 void ignisBatch2DRenderTextureSrc(const IgnisTexture2D* texture, IgnisRect rect, IgnisRect src)
 {
     if (render_data.vertex_index + IGNIS_BATCH2D_QUAD_SIZE >= IGNIS_BATCH2D_BUFFER_SIZE)

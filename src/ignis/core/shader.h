@@ -22,6 +22,7 @@ void ignisUseShader(IgnisShader shader);
 GLint ignisGetUniformLocation(IgnisShader shader, const char* name);
 
 void ignisSetUniformi(IgnisShader shader, const char* name, int value);
+void ignisSetUniformui(IgnisShader shader, const char* name, uint32_t value);
 void ignisSetUniformf(IgnisShader shader, const char* name, float value);
 void ignisSetUniform1i(IgnisShader shader, const char* name, GLsizei count, const int* value);
 void ignisSetUniform1f(IgnisShader shader, const char* name, GLsizei count, const float* value);
@@ -34,6 +35,7 @@ void ignisSetUniformMat4(IgnisShader shader, const char* name, GLsizei count, co
 
 /* unchecked location */
 void ignisSetUniformil(IgnisShader shader, GLint location, int value);
+void ignisSetUniformuil(IgnisShader shader, GLint location, uint32_t value);
 void ignisSetUniformfl(IgnisShader shader, GLint location, float value);
 void ignisSetUniform1il(IgnisShader shader, GLint location, GLsizei count, const int* value);
 void ignisSetUniform1fl(IgnisShader shader, GLint location, GLsizei count, const float* value);

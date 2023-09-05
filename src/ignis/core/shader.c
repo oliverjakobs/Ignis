@@ -106,6 +106,12 @@ void ignisSetUniformi(IgnisShader shader, const char* name, int value)
     if (location >= 0) ignisSetUniformil(shader, location, value);
 }
 
+void ignisSetUniformui(IgnisShader shader, const char* name, uint32_t value)
+{
+    GLint location = ignisGetUniformLocation(shader, name);
+    if (location >= 0) ignisSetUniformuil(shader, location, value);
+}
+
 void ignisSetUniformf(IgnisShader shader, const char* name, float value)
 {
     GLint location = ignisGetUniformLocation(shader, name);
@@ -163,6 +169,11 @@ void ignisSetUniformMat4(IgnisShader shader, const char* name, GLsizei count, co
 void ignisSetUniformil(IgnisShader shader, GLint location, int value)
 {
     glProgramUniform1i(shader, location, value);
+}
+
+void ignisSetUniformuil(IgnisShader shader, GLint location, uint32_t value)
+{
+    glProgramUniform1ui(shader, location, value);
 }
 
 void ignisSetUniformfl(IgnisShader shader, GLint location, float value)
