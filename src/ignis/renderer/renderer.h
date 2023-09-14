@@ -48,6 +48,7 @@ typedef struct
 } IgnisRect;
 
 IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t cols, uint32_t rows, uint32_t frame);
+IgnisRect ignisGetTextureAtlas2DSrcRect(const IgnisTextureAtlas2D* atlas, uint32_t frame);
 
 /*
  * --------------------------------------------------------------

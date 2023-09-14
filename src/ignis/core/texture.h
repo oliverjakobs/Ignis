@@ -33,6 +33,13 @@ typedef struct
     int width, height;
 } IgnisTexture2D;
 
+typedef struct
+{
+    GLuint name;
+    int width, height;
+    int rows, cols;
+} IgnisTextureAtlas2D;
+
 int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* config);
 int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GLenum internal_format);
 

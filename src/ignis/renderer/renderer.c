@@ -195,6 +195,11 @@ IgnisRect ignisGetTexture2DSrcRect(const IgnisTexture2D* texture, uint32_t cols,
     return src;
 }
 
+IgnisRect ignisGetTextureAtlas2DSrcRect(const IgnisTextureAtlas2D* atlas, uint32_t frame)
+{
+    return ignisGetTexture2DSrcRect((IgnisTexture2D*)atlas, atlas->cols, atlas->rows, frame);
+}
+
 /* ---------------------| color |----------------------------------------------*/
 IgnisColorRGBA IGNIS_WHITE = { 1.0f, 1.0f, 1.0f, 1.0f };
 IgnisColorRGBA IGNIS_BLACK = { 0.0f, 0.0f, 0.0f, 1.0f };
