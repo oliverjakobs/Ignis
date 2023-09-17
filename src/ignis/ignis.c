@@ -1,6 +1,9 @@
-#include "Ignis.h"
+#include "ignis.h"
 
-void APIENTRY _ignisDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+#define GLAD_GL_IMPLEMENTATION
+#include "external/glad.h"
+
+static void GLAPIENTRY ignisDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
     /* ignore non-significant error/warning codes */
     if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
@@ -40,10 +43,10 @@ void APIENTRY _ignisDebugOutput(GLenum source, GLenum type, GLuint id, GLenum se
     }
 }
 
-int ignisInit(int debug)
+int ignisInit(ignisGLLoadProc loader, int debug)
 {
     /* loading glad */
-    if (!gladLoadGL())
+    if (!gladLoadGL(loader))
     {
         IGNIS_ERROR("[GLAD] Failed to initialize GLAD");
         return 0;
@@ -61,7 +64,7 @@ int ignisInit(int debug)
         {
             glEnable(GL_DEBUG_OUTPUT);
             glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-            glDebugMessageCallback(_ignisDebugOutput, NULL);
+            glDebugMessageCallback(ignisDebugOutput, NULL);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
         }
         else

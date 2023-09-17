@@ -6,7 +6,7 @@ extern "C"
 {
 #endif
 
-#include "../glad/glad.h"
+#include "../external/glad.h"
 #include "types.h"
 
 #define IGNIS_BUFFER_OFFSET(offset) ((void*) (offset))

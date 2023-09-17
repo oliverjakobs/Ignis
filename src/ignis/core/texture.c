@@ -1,12 +1,12 @@
 #include "texture.h"
 
-#include "../Ignis.h"
+#include "../ignis.h"
 
 #define STBI_MALLOC(size)           ignisMalloc(size)
 #define STBI_REALLOC(block, size)   ignisRealloc(block, size)
 #define STBI_FREE(block)            ignisFree(block)
 #define STB_IMAGE_IMPLEMENTATION
-#include "../stb/stb_image.h"
+#include "../external/stb_image.h"
 
 int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* configptr)
 {

@@ -8,7 +8,7 @@ extern "C"
 
 #include "core/texture.h"
 
-#include "stb/stb_truetype.h"
+#include "external/stb_truetype.h"
 
 typedef struct
 {

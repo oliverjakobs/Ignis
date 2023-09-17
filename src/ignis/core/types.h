@@ -6,10 +6,11 @@ extern "C"
 {
 #endif
 
-#include "../glad/glad.h"
+#include "../external/glad.h"
 
 #include <stdint.h>
 
+typedef void* (*ignisGLLoadProc)(const char* name);   // OpenGL extension functions loader signature (same as GLADloadproc)
 
 typedef enum IgnisType
 {

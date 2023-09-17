@@ -5,7 +5,7 @@
 #define STBTT_malloc(x,u)  ((void)(u),ignisMalloc(x))
 #define STBTT_free(x,u)    ((void)(u),ignisFree(x))
 #define STB_TRUETYPE_IMPLEMENTATION
-#include "stb/stb_truetype.h"
+#include "external/stb_truetype.h"
 
 int ignisCreateFont(IgnisFont* font, const char* path, float size)
 {

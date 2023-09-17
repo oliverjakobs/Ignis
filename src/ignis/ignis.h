@@ -116,7 +116,7 @@ extern "C"
 #define IGNIS_TEXTFORMAT_BUFFERS    4       // number of static buffers for text formatting
 #define IGNIS_FORMAT_BUFFER_LENGTH  512     // size of static text buffer
 
-int ignisInit(int debug);
+int ignisInit(ignisGLLoadProc loader, int debug);
 void ignisDestroy();
 
 int ignisEnableBlend(IgnisBlendFunc sfactor, IgnisBlendFunc dfactor);
