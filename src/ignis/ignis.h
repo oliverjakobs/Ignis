@@ -9,6 +9,7 @@ extern "C"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 
 /* You can #define IGNIS_ASSERT(x) before the #include to avoid using assert.h */

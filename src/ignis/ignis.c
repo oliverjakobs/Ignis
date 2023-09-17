@@ -46,7 +46,7 @@ static void GLAPIENTRY ignisDebugOutput(GLenum source, GLenum type, GLuint id, G
 int ignisInit(ignisGLLoadProc loader, int debug)
 {
     /* loading glad */
-    if (!gladLoadGL(loader))
+    if (!gladLoadGL((GLADloadfunc)loader))
     {
         IGNIS_ERROR("[GLAD] Failed to initialize GLAD");
         return 0;
