@@ -175,13 +175,13 @@ void ignisBindQuad(IgnisQuad* quad)
 void ignisDrawQuadElements(IgnisQuad* quad, GLenum mode)
 {
     ignisBindQuad(quad);
-    glDrawElements(mode, quad->element_count, GL_UNSIGNED_INT, NULL);
+    glDrawElements(mode, (GLsizei)quad->element_count, GL_UNSIGNED_INT, NULL);
 }
 
 void ignisDrawQuadElementsInstanced(IgnisQuad* quad, GLenum mode, GLsizei primcount)
 {
     ignisBindQuad(quad);
-    glDrawElementsInstanced(mode, quad->element_count, GL_UNSIGNED_INT, NULL, primcount);
+    glDrawElementsInstanced(mode, (GLsizei)quad->element_count, GL_UNSIGNED_INT, NULL, primcount);
 }
 
 /* ---------------------| rect |-----------------------------------------------*/

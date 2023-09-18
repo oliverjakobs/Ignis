@@ -68,7 +68,7 @@ int ignisLoadElementBuffer(IgnisVertexArray* vao, size_t index, const GLuint* in
 
     ignisBindVertexArray(vao);
 
-    if (ignisGenerateElementBuffer(&vao->buffers[index], count, indices, usage) != IGNIS_SUCCESS)
+    if (ignisGenerateElementBuffer(&vao->buffers[index], (GLsizei)count, indices, usage) != IGNIS_SUCCESS)
     {
         IGNIS_ERROR("[VertexArray] Failed to generate element buffer");
         return IGNIS_FAILURE;
@@ -86,7 +86,7 @@ int ignisSetVertexLayout(IgnisVertexArray* vao, GLuint attrib_index, IgnisBuffer
     size_t offset = 0;
     for (size_t i = 0; i < count; i++)
     {
-        ignisVertexAttribPointer(attrib_index, layout[i].count, layout[i].type, layout[i].normalized, stride, IGNIS_BUFFER_OFFSET(offset));
+        ignisVertexAttribPointer(attrib_index, layout[i].count, layout[i].type, layout[i].normalized, (GLsizei)stride, IGNIS_BUFFER_OFFSET(offset));
 
         offset += ignisGetTypeSize(layout[i].type) * layout[i].count;
         attrib_index++;
