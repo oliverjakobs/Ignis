@@ -23,7 +23,7 @@ typedef struct
     uint8_t flip_on_load;
 } IgnisTextureConfig;
 
-GLuint ignisGenerateTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config);
+void ignisWriteTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config);
 
 #define IGNIS_DEFAULT_CONFIG (IgnisTextureConfig){ GL_RGBA8, IGNIS_RGBA, IGNIS_LINEAR, IGNIS_LINEAR, IGNIS_REPEAT, IGNIS_REPEAT, 0 }
 
@@ -43,8 +43,8 @@ typedef struct
 int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* config);
 int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int width, int height, GLenum internal_format);
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* config);
-int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* config);
+int ignisLoadTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* config);
+int ignisLoadTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* config);
 
 void ignisDeleteTexture2D(IgnisTexture2D* texture);
 

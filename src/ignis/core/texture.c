@@ -8,12 +8,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "../external/stb_image.h"
 
-int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* configptr)
+int ignisGenerateTexture2D(IgnisTexture2D* texture, int w, int h, const void* pixels, IgnisTextureConfig* config)
 {
     if (!texture) return IGNIS_FAILURE;
 
-    IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
-    texture->name = ignisGenerateTexture(IGNIS_TEXTURE_2D, w, h, pixels, config);
+    glGenTextures(1, &texture->name);
+    glBindTexture(GL_TEXTURE_2D, texture->name);
+
+    ignisWriteTexture(IGNIS_TEXTURE_2D, w, h, pixels, config ? *config : IGNIS_DEFAULT_CONFIG);
+
     texture->width = w;
     texture->height = h;
 
@@ -26,6 +29,7 @@ int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int w, int h, GLenum inte
 
     glGenTextures(1, &texture->name);
     glBindTexture(GL_TEXTURE_2D, texture->name);
+
     glTexStorage2D(GL_TEXTURE_2D, 8, internal_format, w, h);
 
     texture->width = w;
@@ -34,7 +38,7 @@ int ignisGenerateTexStorage2D(IgnisTexture2D* texture, int w, int h, GLenum inte
     return texture->name;
 }
 
-int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* configptr)
+int ignisLoadTexture2D(IgnisTexture2D* texture, const char* path, IgnisTextureConfig* config)
 {
     if (!texture) return IGNIS_FAILURE;
 
@@ -43,14 +47,14 @@ int ignisCreateTexture2D(IgnisTexture2D* texture, const char* path, IgnisTexture
 
     if (!buffer) return IGNIS_FAILURE;
 
-    int result = ignisCreateTexture2DSrc(texture, buffer, buffer_len, configptr);
+    int result = ignisLoadTexture2DSrc(texture, buffer, buffer_len, config);
 
     ignisFree(buffer);
 
     return result;
 }
 
-int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* configptr)
+int ignisLoadTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t size, IgnisTextureConfig* configptr)
 {
     IgnisTextureConfig config = configptr ? *configptr : IGNIS_DEFAULT_CONFIG;
 
@@ -65,7 +69,11 @@ int ignisCreateTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t
         return IGNIS_FAILURE;
     }
 
-    texture->name = ignisGenerateTexture(IGNIS_TEXTURE_2D, texture->width, texture->height, pixels, config);
+    if (!texture->name)
+        glGenTextures(1, &texture->name);
+
+    glBindTexture(GL_TEXTURE_2D, texture->name);
+    ignisWriteTexture(IGNIS_TEXTURE_2D, texture->width, texture->height, pixels, config);
 
     /* check if bpp and format matches */
     if (bpp == 4 && (config.format != GL_RGBA || config.internal_format != GL_RGBA8))
@@ -83,12 +91,8 @@ void ignisDeleteTexture2D(IgnisTexture2D* texture)
     glDeleteTextures(1, &texture->name);
 }
 
-GLuint ignisGenerateTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config)
+void ignisWriteTexture(IgnisTextureTarget target, int w, int h, const void* pixels, IgnisTextureConfig config)
 {
-    GLuint name;
-    glGenTextures(1, &name);
-    glBindTexture(target, name);
-
     glTexParameteri(target, GL_TEXTURE_WRAP_S, config.wrap_s);
     glTexParameteri(target, GL_TEXTURE_WRAP_T, config.wrap_t);
 
@@ -118,12 +122,9 @@ GLuint ignisGenerateTexture(IgnisTextureTarget target, int w, int h, const void*
         break;
     default:
         IGNIS_ERROR("[Texture] Unsupported target (%d)", target);
-        glDeleteTextures(1, &name);
-        return IGNIS_FAILURE;
     }
     glGenerateMipmap(target);
 
-    return name;
 }
 
 void ignisBindTexture2D(const IgnisTexture2D* texture, GLuint slot)
