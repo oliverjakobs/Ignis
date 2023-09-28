@@ -222,6 +222,26 @@ const char* ignisGetGLVendor()    { return glGetString(GL_VENDOR); }
 const char* ignisGetGLRenderer()  { return glGetString(GL_RENDERER); }
 const char* ignisGetGLSLVersion() { return glGetString(GL_SHADING_LANGUAGE_VERSION); }
 
+void ignisQueryState(IgnisState* state)
+{
+    state->flags = 0;
+    if (glIsEnabled(GL_BLEND))
+        state->flags |= IGNIS_STATE_BLEND;
+
+    if (glIsEnabled(GL_CULL_FACE))
+        state->flags |= IGNIS_STATE_CULL_FACE;
+
+    if (glIsEnabled(GL_DEPTH_TEST))
+        state->flags |= IGNIS_STATE_DEPTH_TEST;
+
+    if (glIsEnabled(GL_SCISSOR_TEST))
+        state->flags |= IGNIS_STATE_DEPTH_TEST;
+}
+
+void ignisBindState(const IgnisState* state)
+{
+}
+
 static void* ignis_allocator;
 static ignisMallocCb  ignis_malloc;
 static ignisReallocCb ignis_realloc;

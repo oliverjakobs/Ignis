@@ -6,7 +6,6 @@
 #include "../core/texture.h"
 #include "../core/shader.h"
 #include "../vertex_array.h"
-#include "../font.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -88,27 +87,6 @@ void ignisBatch2DFlush();
 
 void ignisBatch2DRenderTexture(const IgnisTexture2D* texture, IgnisRect rect);
 void ignisBatch2DRenderTextureSrc(const IgnisTexture2D* texture, IgnisRect rect, IgnisRect src);
-
-/*
- * --------------------------------------------------------------
- *                          FontRenderer
- * --------------------------------------------------------------
- */
-void ignisFontRendererInit();
-void ignisFontRendererDestroy();
-
-void ignisFontRendererBindFont(IgnisFont* font);
-void ignisFontRendererBindFontColor(IgnisFont* font, IgnisColorRGBA color);
-
-void ignisFontRendererSetProjection(const float* proj);
-
-void ignisFontRendererFlush();
-
-void ignisFontRendererRenderText(float x, float y, const char* text);
-void ignisFontRendererRenderTextFormat(float x, float y, const char* fmt, ...);
-
-void ignisFontRendererTextFieldBegin(float x, float y, float spacing);
-void ignisFontRendererTextFieldLine(const char* fmt, ...);
 
 /*
  * --------------------------------------------------------------

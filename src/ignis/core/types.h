@@ -152,6 +152,22 @@ typedef enum IgnisBlendFunc
     IGNIS_ONE_MINUS_SRC1_ALPHA     = GL_ONE_MINUS_SRC1_ALPHA
 } IgnisBlendFunc;
 
+typedef enum IgnisBlendEquation
+{
+    IGNIS_FUNC_ADD              = GL_FUNC_ADD,
+    IGNIS_FUNC_SUBTRACT         = GL_FUNC_SUBTRACT,
+    IGNIS_FUNC_REVERSE_SUBTRACT = GL_FUNC_REVERSE_SUBTRACT,
+    IGNIS_FUNC_MIN              = GL_MIN,
+    IGNIS_FUNC_MAX              = GL_MAX
+} IgnisBlendEquation;
+
+typedef enum IgnisCullFaceMode
+{
+    IGNIS_BACK           = GL_BACK,
+    IGNIS_FRONT          = GL_FRONT,
+    IGNIS_FRONT_AND_BACK = GL_FRONT_AND_BACK
+} IgnisCullFaceMode;
+
 #ifdef __cplusplus
 }
 #endif

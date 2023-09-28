@@ -127,10 +127,15 @@ void ignisWriteTexture(IgnisTextureTarget target, int w, int h, const void* pixe
 
 }
 
-void ignisBindTexture2D(const IgnisTexture2D* texture, GLuint slot)
+void ignisBindTexture2D(const IgnisTexture2D* texture)
+{
+    glBindTexture(GL_TEXTURE_2D, (texture) ? texture->name : 0);
+}
+
+void ignisBindTexture2DSlot(const IgnisTexture2D* texture, GLuint slot)
 {
     glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, (texture) ? texture->name : 0);
+    ignisBindTexture2D(texture);
 }
 
 IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D = { 0 };

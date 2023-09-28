@@ -27,6 +27,7 @@ int ignisGenerateVertexArray(IgnisVertexArray* vao, size_t buffer_count);
 void ignisDeleteVertexArray(IgnisVertexArray* vao);
 
 void ignisBindVertexArray(IgnisVertexArray* vao);
+void ignisBindVertexArrayBuffers(IgnisVertexArray* vao);
 
 int ignisLoadArrayBuffer(IgnisVertexArray* vao, size_t index, size_t size, const void* data, IgnisUsage usage);
 int ignisLoadElementBuffer(IgnisVertexArray* vao, size_t index, const GLuint* indices, size_t count, IgnisUsage usage);
