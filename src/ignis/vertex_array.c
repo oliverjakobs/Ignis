@@ -39,6 +39,12 @@ void ignisBindVertexArray(IgnisVertexArray* vao)
     glBindVertexArray((vao) ? vao->name : 0);
 }
 
+void ignisBindVertexArrayBuffers(IgnisVertexArray* vao)
+{
+    for (size_t i = 0; i < vao->buffer_count; ++i)
+        ignisBindBuffer(&vao->buffers[i], vao->buffers[i].target);
+}
+
 int ignisLoadArrayBuffer(IgnisVertexArray* vao, size_t index, size_t size, const void* data, IgnisUsage usage)
 {
     if (index >= vao->buffer_count)

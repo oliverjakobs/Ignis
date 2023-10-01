@@ -48,7 +48,8 @@ int ignisLoadTexture2DSrc(IgnisTexture2D* texture, const uint8_t* data, size_t s
 
 void ignisDeleteTexture2D(IgnisTexture2D* texture);
 
-void ignisBindTexture2D(const IgnisTexture2D* texture, GLuint slot);
+void ignisBindTexture2D(const IgnisTexture2D* texture);
+void ignisBindTexture2DSlot(const IgnisTexture2D* texture, GLuint slot);
 
 /* default texture */
 extern IgnisTexture2D IGNIS_DEFAULT_TEXTURE2D;

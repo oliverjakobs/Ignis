@@ -101,7 +101,7 @@ void ignisRenderer2DRenderTextureModel(const IgnisTexture2D* texture, const floa
     ignisSetUniformMat4l(render_data.shader, render_data.uniform_location_model, 1, model);
     ignisSetUniform4fl(render_data.shader, render_data.uniform_location_color, 1, &color.r);
 
-    ignisBindTexture2D(texture, 0);
+    ignisBindTexture2D(texture);
 
     ignisDrawQuadElements(&render_data.quad, GL_TRIANGLES);
 }

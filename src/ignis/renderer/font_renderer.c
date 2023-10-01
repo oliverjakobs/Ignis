@@ -10,19 +10,18 @@ uniform mat4 u_Proj;                                \
 out vec2 v_TexCoord;                                \
 void main()                                         \
 {                                                   \
-    gl_Position = u_Proj * vec4(a_Pos, 1.0, 1.0);   \
+    gl_Position = u_Proj * vec4(a_Pos, 0.0, 1.0);   \
     v_TexCoord = a_TexCoord;                        \
 }";
 
-static const char* frag_src = "#version 330 core \n\
-layout(location = 0) out vec4 f_Color;          \
-uniform sampler2D u_Tex;                        \
-uniform vec4 u_Color;                           \
-in vec2 v_TexCoord;                             \
-void main()                                     \
-{                                               \
-    float alpha = texture(u_Tex, v_TexCoord).r; \
-    f_Color = vec4(u_Color.xyz, alpha);         \
+static const char* frag_src = "#version 330 core \n \
+layout(location = 0) out vec4 f_Color;              \
+uniform sampler2D u_Tex;                            \
+uniform vec4 u_Color;                               \
+in vec2 v_TexCoord;                                 \
+void main()                                         \
+{                                                   \
+    f_Color = u_Color * texture(u_Tex, v_TexCoord); \
 }";
 /* ---------------------| !shader |--------------------------------------------*/
 
@@ -101,7 +100,7 @@ void ignisFontRendererFlush()
 {
     if (render_data.index == 0) return;
 
-    ignisBindFont(render_data.font, 0);
+    ignisBindTexture2D(render_data.font->texture);
     ignisBindVertexArray(&render_data.vao);
     ignisBufferSubData(&render_data.vao.buffers[0], 0, render_data.index * sizeof(float), render_data.vertices);
 
@@ -121,16 +120,39 @@ void ignisFontRendererRenderText(float x, float y, const char* text)
         return;
     }
 
-    y += ignisFontGetHeight(render_data.font);
-
     for (size_t i = 0; i < strlen(text); i++)
     {
         if (render_data.index + IGNIS_FONTRENDERER_QUAD_SIZE >= IGNIS_FONTRENDERER_BUFFER_SIZE)
             ignisFontRendererFlush();
 
-        if (!ignisFontLoadCharQuad(render_data.font, text[i], &x, &y, render_data.vertices, render_data.index))
+        const IgnisGlyph* glyph = ignisFontFindGlyph(render_data.font, text[i]);
+        if (!glyph)
+        {
             IGNIS_WARN("[FontRenderer] Failed to load quad for %c", text[i]);
+            continue;
+        }
 
+        if (glyph == render_data.font->fallback)
+            IGNIS_WARN("[FontRenderer] Used fallback for %c", text[i]);
+
+        render_data.vertices[render_data.index + 0] = x + glyph->x0;
+        render_data.vertices[render_data.index + 1] = y + glyph->y0;
+        render_data.vertices[render_data.index + 2] = glyph->u0;
+        render_data.vertices[render_data.index + 3] = glyph->v0;
+        render_data.vertices[render_data.index + 4] = x + glyph->x0;
+        render_data.vertices[render_data.index + 5] = y + glyph->y1;
+        render_data.vertices[render_data.index + 6] = glyph->u0;
+        render_data.vertices[render_data.index + 7] = glyph->v1;
+        render_data.vertices[render_data.index + 8] = x + glyph->x1;
+        render_data.vertices[render_data.index + 9] = y + glyph->y1;
+        render_data.vertices[render_data.index + 10] = glyph->u1;
+        render_data.vertices[render_data.index + 11] = glyph->v1;
+        render_data.vertices[render_data.index + 12] = x + glyph->x1;
+        render_data.vertices[render_data.index + 13] = y + glyph->y0;
+        render_data.vertices[render_data.index + 14] = glyph->u1;
+        render_data.vertices[render_data.index + 15] = glyph->v0;
+
+        x += glyph->xadvance;
         render_data.index += IGNIS_FONTRENDERER_QUAD_SIZE;
         render_data.quad_count++;
     }
@@ -165,7 +187,7 @@ void ignisFontRendererTextFieldBegin(float x, float y, float spacing)
 {
     text_field.x = x;
     text_field.y = y;
-    text_field.line_height = render_data.font ? ignisFontGetHeight(render_data.font) : 0.0f;
+    text_field.line_height = render_data.font ? render_data.font->size : 0.0f;
     text_field.line_height += spacing;
 }
 

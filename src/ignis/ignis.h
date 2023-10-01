@@ -15,7 +15,7 @@ extern "C"
 /* You can #define IGNIS_ASSERT(x) before the #include to avoid using assert.h */
 #ifndef IGNIS_ASSERT
 #include <assert.h>
-#define IGNIS_ASSERT(x) assert(x)
+#define IGNIS_ASSERT(expr) assert(expr)
 #endif
 
 /* Ignis version numbers */
@@ -46,18 +46,6 @@ extern "C"
 #include "core/texture.h"
 #include "core/shader.h"
 #include "core/buffer.h"
-
-/*
- * --------------------------------------------------------------
- *                          font
- * --------------------------------------------------------------
- */
-#define IGNIS_FONT_FIRST_CHAR       32
-#define IGNIS_FONT_NUM_CHARS        96  /* ASCII 32..126 is 95 glyphs */
-#define IGNIS_FONT_BITMAP_WIDTH     512
-#define IGNIS_FONT_BITMAP_HEIGHT    512
-
-#include "font.h"
 
 /*
  * --------------------------------------------------------------
@@ -136,6 +124,31 @@ const char* ignisGetGLVersion();
 const char* ignisGetGLVendor();
 const char* ignisGetGLRenderer();
 const char* ignisGetGLSLVersion();
+
+/*
+ * --------------------------------------------------------------
+ *                          state
+ * --------------------------------------------------------------
+ */
+#define IGNIS_STATE_BLEND           0x01
+#define IGNIS_STATE_CULL_FACE       0x02
+#define IGNIS_STATE_DEPTH_TEST      0x04
+#define IGNIS_STATE_SCISSOR_TEST    0x08
+
+typedef struct
+{
+    uint8_t flags;
+
+    /* blend */
+    IgnisBlendEquation blend_eq;
+    IgnisBlendFunc sfactor, dfactor;
+
+    /* cull face */
+    IgnisCullFaceMode cull_mode;
+} IgnisState;
+
+void ignisQueryState(IgnisState* state);
+void ignisBindState(const IgnisState* state);
 
 /*
  * --------------------------------------------------------------
