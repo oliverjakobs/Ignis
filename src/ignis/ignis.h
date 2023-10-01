@@ -15,7 +15,7 @@ extern "C"
 /* You can #define IGNIS_ASSERT(x) before the #include to avoid using assert.h */
 #ifndef IGNIS_ASSERT
 #include <assert.h>
-#define IGNIS_ASSERT(x) assert(x)
+#define IGNIS_ASSERT(expr) assert(expr)
 #endif
 
 /* Ignis version numbers */

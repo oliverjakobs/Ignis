@@ -124,7 +124,6 @@ void ignisWriteTexture(IgnisTextureTarget target, int w, int h, const void* pixe
         IGNIS_ERROR("[Texture] Unsupported target (%d)", target);
     }
     glGenerateMipmap(target);
-
 }
 
 void ignisBindTexture2D(const IgnisTexture2D* texture)
