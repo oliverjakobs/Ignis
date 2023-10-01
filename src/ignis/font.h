@@ -26,7 +26,6 @@ typedef struct
 
 const IgnisGlyph* ignisFontFindGlyph(const IgnisFont* font, IgnisRune unicode);
 
-
 typedef enum
 {
     IGNIS_FONT_COORD_UV, /* texture coordinates inside font glyphs are clamped between 0-1 */

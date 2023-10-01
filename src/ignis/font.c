@@ -405,7 +405,13 @@ uint8_t ignisFontAtlasBake(IgnisFontAtlas* atlas, IgnisFontConfig* configs, size
         goto failed;
 
     /* create texture */
-    ignisGenerateTexture2D(&atlas->texture, width, height, pixels, NULL);
+    IgnisTextureConfig tex_config = IGNIS_DEFAULT_CONFIG;
+    if (fmt == IGNIS_FONT_FORMAT_ALPHA8)
+    {
+        tex_config.internal_format = GL_R8;
+        tex_config.format = GL_RED;
+    }
+    ignisGenerateTexture2D(&atlas->texture, width, height, pixels, &tex_config);
 
     /* initialize each font */
     atlas->fonts = malloc(sizeof(IgnisFont) * count);
@@ -426,8 +432,6 @@ uint8_t ignisFontAtlasBake(IgnisFontAtlas* atlas, IgnisFontConfig* configs, size
         font->glyphs = &atlas->glyphs[config->glyph_offset];
         font->fallback = ignisFontFindGlyph(font, config->fallback_glyph);
     }
-
-    // stbi_write_png("font.png", width, height, 4, pixel, 4 * width);
 
     /* free temporary memory */
     ignisFontBakerFree(&baker);
@@ -465,7 +469,7 @@ const IgnisGlyph* ignisFontFindGlyph(const IgnisFont* font, IgnisRune unicode)
         if (unicode >= f && unicode <= t)
             return &font->glyphs[total_glyphs + (unicode - f)];
         
-        total_glyphs += (t - f) + 1;
+        total_glyphs += (size_t)(t - f) + 1;
     }
     return font->fallback;
 }
@@ -512,7 +516,10 @@ uint8_t ignisFontAtlasLoadFromMemory(IgnisFontConfig* config, const void* data, 
 void ignisFontConfigClear(IgnisFontConfig* config, size_t count)
 {
     for (size_t i = 0; i < count; ++i)
-        if (config[i].ttf_blob) free((void*)config[i].ttf_blob);
+    {
+        IgnisFontConfig* cfg = &config[i];
+        if (cfg->ttf_blob) free((void*)cfg->ttf_blob);
+    }
 }
 
 
