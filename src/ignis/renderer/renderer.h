@@ -104,10 +104,10 @@ void ignisFontRendererSetProjection(const float* proj);
 
 void ignisFontRendererFlush();
 
-void ignisFontRendererRenderText(float x, float y, const char* text);
-void ignisFontRendererRenderTextFormat(float x, float y, const char* fmt, ...);
+void ignisFontRendererRenderText(float x, float y, float height, const char* text);
+void ignisFontRendererRenderTextFormat(float x, float y, float height, const char* fmt, ...);
 
-void ignisFontRendererTextFieldBegin(float x, float y, float spacing);
+void ignisFontRendererTextFieldBegin(float x, float y, float line_height, float spacing);
 void ignisFontRendererTextFieldLine(const char* fmt, ...);
 
 /*

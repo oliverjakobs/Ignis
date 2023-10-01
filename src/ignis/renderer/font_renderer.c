@@ -112,7 +112,35 @@ void ignisFontRendererFlush()
     render_data.quad_count = 0;
 }
 
-void ignisFontRendererRenderText(float x, float y, const char* text)
+static uint8_t ignisFontRendererLoadGlyph(size_t offset, const IgnisGlyph* glyph, float x, float y, float scale)
+{
+    if (!glyph) return IGNIS_FAILURE;
+
+    float x0 = x + (glyph->x0 * scale);
+    float y0 = y + (glyph->y0 * scale);
+    float x1 = x + (glyph->x1 * scale);
+    float y1 = y + (glyph->y1 * scale);
+    render_data.vertices[offset + 0] = x0;
+    render_data.vertices[offset + 1] = y0;
+    render_data.vertices[offset + 2] = glyph->u0;
+    render_data.vertices[offset + 3] = glyph->v0;
+    render_data.vertices[offset + 4] = x0;
+    render_data.vertices[offset + 5] = y1;
+    render_data.vertices[offset + 6] = glyph->u0;
+    render_data.vertices[offset + 7] = glyph->v1;
+    render_data.vertices[offset + 8] = x1;
+    render_data.vertices[offset + 9] = y1;
+    render_data.vertices[offset + 10] = glyph->u1;
+    render_data.vertices[offset + 11] = glyph->v1;
+    render_data.vertices[offset + 12] = x1;
+    render_data.vertices[offset + 13] = y0;
+    render_data.vertices[offset + 14] = glyph->u1;
+    render_data.vertices[offset + 15] = glyph->v0;
+
+    return IGNIS_SUCCESS;
+}
+
+void ignisFontRendererRenderText(float x, float y, float height, const char* text)
 {
     if (!render_data.font)
     {
@@ -120,57 +148,38 @@ void ignisFontRendererRenderText(float x, float y, const char* text)
         return;
     }
 
+    float scale = height / render_data.font->size;
     for (size_t i = 0; i < strlen(text); i++)
     {
         if (render_data.index + IGNIS_FONTRENDERER_QUAD_SIZE >= IGNIS_FONTRENDERER_BUFFER_SIZE)
             ignisFontRendererFlush();
 
         const IgnisGlyph* glyph = ignisFontFindGlyph(render_data.font, text[i]);
-        if (!glyph)
-        {
+        if (!ignisFontRendererLoadGlyph(render_data.index, glyph, x, y, scale))
             IGNIS_WARN("[FontRenderer] Failed to load quad for %c", text[i]);
-            continue;
-        }
 
         if (glyph == render_data.font->fallback)
             IGNIS_WARN("[FontRenderer] Used fallback for %c", text[i]);
 
-        render_data.vertices[render_data.index + 0] = x + glyph->x0;
-        render_data.vertices[render_data.index + 1] = y + glyph->y0;
-        render_data.vertices[render_data.index + 2] = glyph->u0;
-        render_data.vertices[render_data.index + 3] = glyph->v0;
-        render_data.vertices[render_data.index + 4] = x + glyph->x0;
-        render_data.vertices[render_data.index + 5] = y + glyph->y1;
-        render_data.vertices[render_data.index + 6] = glyph->u0;
-        render_data.vertices[render_data.index + 7] = glyph->v1;
-        render_data.vertices[render_data.index + 8] = x + glyph->x1;
-        render_data.vertices[render_data.index + 9] = y + glyph->y1;
-        render_data.vertices[render_data.index + 10] = glyph->u1;
-        render_data.vertices[render_data.index + 11] = glyph->v1;
-        render_data.vertices[render_data.index + 12] = x + glyph->x1;
-        render_data.vertices[render_data.index + 13] = y + glyph->y0;
-        render_data.vertices[render_data.index + 14] = glyph->u1;
-        render_data.vertices[render_data.index + 15] = glyph->v0;
-
-        x += glyph->xadvance;
+        x += glyph->xadvance * scale;
         render_data.index += IGNIS_FONTRENDERER_QUAD_SIZE;
         render_data.quad_count++;
     }
 }
 
-static void ignisFontRendererRenderTextVA(float x, float y, const char* fmt, va_list args)
+static void ignisFontRendererRenderTextVA(float x, float y, float height, const char* fmt, va_list args)
 {
     size_t buffer_size = vsnprintf(NULL, 0, fmt, args);
     vsnprintf(render_data.line_buffer, buffer_size + 1, fmt, args);
 
-    ignisFontRendererRenderText(x, y, render_data.line_buffer);
+    ignisFontRendererRenderText(x, y, height, render_data.line_buffer);
 }
 
-void ignisFontRendererRenderTextFormat(float x, float y, const char* fmt, ...)
+void ignisFontRendererRenderTextFormat(float x, float y, float height, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    ignisFontRendererRenderTextVA(x, y, fmt, args);
+    ignisFontRendererRenderTextVA(x, y, height, fmt, args);
     va_end(args);
 }
 
@@ -179,24 +188,25 @@ typedef struct
     float x;
     float y;
     float line_height;
+    float line_spacing;
 } IgnisTextField;
 
 static IgnisTextField text_field;
 
-void ignisFontRendererTextFieldBegin(float x, float y, float spacing)
+void ignisFontRendererTextFieldBegin(float x, float y, float line_height, float spacing)
 {
     text_field.x = x;
     text_field.y = y;
-    text_field.line_height = render_data.font ? render_data.font->size : 0.0f;
-    text_field.line_height += spacing;
+    text_field.line_height = line_height;
+    text_field.line_spacing = spacing;
 }
 
 void ignisFontRendererTextFieldLine(const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    ignisFontRendererRenderTextVA(text_field.x, text_field.y, fmt, args);
+    ignisFontRendererRenderTextVA(text_field.x, text_field.y, text_field.line_height, fmt, args);
     va_end(args);
 
-    text_field.y += text_field.line_height;
+    text_field.y += text_field.line_height + text_field.line_spacing;
 }

@@ -474,8 +474,7 @@ const IgnisGlyph* ignisFontFindGlyph(const IgnisFont* font, IgnisRune unicode)
     return font->fallback;
 }
 
-
-void ignisFontConfigLoadDefault(IgnisFontConfig* config, float pixel_height)
+static void ignisFontConfigLoadDefault(IgnisFontConfig* config, float pixel_height)
 {
     config->ttf_blob = NULL;
     config->ttf_size = 0;

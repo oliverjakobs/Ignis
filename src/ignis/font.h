@@ -49,8 +49,6 @@ typedef struct
     IgnisRune fallback_glyph;   /* fallback glyph to use if a given rune is not found */
 } IgnisFontConfig;
 
-void ignisFontConfigLoadDefault(IgnisFontConfig* config, float pixel_height);
-
 typedef struct
 {
     IgnisFont* fonts;
