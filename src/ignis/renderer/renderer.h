@@ -112,28 +112,31 @@ void ignisFontRendererTextFieldLine(const char* fmt, ...);
 
 /*
  * --------------------------------------------------------------
- *                          PrimitivesRenderer
+ *                          DebugRenderer
  * --------------------------------------------------------------
  */
-void ignisPrimitivesRendererInit();
-void ignisPrimitivesRendererDestroy();
+void ignisDebugRendererInit();
+void ignisDebugRendererDestroy();
 
-void ignisPrimitivesRendererSetViewProjection(const float* view_proj);
+void ignisDebugRendererSetViewProjection(const float* view_proj);
 
-void ignisPrimitivesRendererFlush();
+void ignisDebugRendererFlush();
 
-void ignisPrimitives2DRenderLine(float x1, float y1, float x2, float y2, IgnisColorRGBA color);
-void ignisPrimitives2DRenderRect(float x, float y, float w, float h, IgnisColorRGBA color);
-void ignisPrimitives2DRenderPoly(const float* vertices, size_t count, float x, float y, IgnisColorRGBA color);
-void ignisPrimitives2DRenderCircle(float x, float y, float radius, IgnisColorRGBA color);
+void ignisRenderLine2D(float x1, float y1, float x2, float y2, IgnisColorRGBA color);
+void ignisRenderRect(float x, float y, float w, float h, IgnisColorRGBA color);
+void ignisRenderPoly(const float* vertices, size_t count, float x, float y, IgnisColorRGBA color);
+void ignisRenderCircle(float x, float y, float radius, IgnisColorRGBA color);
 
-void ignisPrimitives2DFillRect(float x, float y, float w, float h, IgnisColorRGBA color);
-void ignisPrimitives2DFillPoly(const float* vertices, size_t count, float x, float y, IgnisColorRGBA color);
-void ignisPrimitives2DFillCircle(float x, float y, float radius, IgnisColorRGBA color);
+void ignisFillTriangle(float x0, float y0, float x1, float y1, float x2, float y2, IgnisColorRGBA color);
+void ignisFillRect(float x, float y, float w, float h, IgnisColorRGBA color);
+void ignisFillPoly(const float* vertices, size_t count, float x, float y, IgnisColorRGBA color);
+void ignisFillCircle(float x, float y, float radius, IgnisColorRGBA color);
 
-void ignisPrimitives3DRenderLine(float start[3], float end[3], IgnisColorRGBA color);
-void ignisPrimitives3DRenderTriangle(float v0[3], float v1[3], float v2[3], IgnisColorRGBA color);
-void ignisPrimitives3DRenderBox(float min[3], float max[3], IgnisColorRGBA color);
+void ignisRenderLine3D(float start[3], float end[3], IgnisColorRGBA color);
+void ignisRenderTriangle3D(float v0[3], float v1[3], float v2[3], IgnisColorRGBA color);
+void ignisRenderBox(float min[3], float max[3], IgnisColorRGBA color);
+
+void ignisRenderDebugGrid(float w, float h, float gap);
 
 /*
  * --------------------------------------------------------------
